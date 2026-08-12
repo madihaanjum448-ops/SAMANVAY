@@ -10,6 +10,7 @@ import AgencyCard from '../components/agency/AgencyCard';
 import MapView from '../components/map/MapView';
 import MapLegend from '../components/map/MapLegend';
 import { MOCK_AGENCIES, MOCK_INCIDENTS } from '../data/mockData';
+import { api } from '../services/api';
 
 export default function AgencyDirectory() {
   const navigate = useNavigate();
@@ -29,20 +30,25 @@ export default function AgencyDirectory() {
   const [incidents, setIncidents] = useState([]);
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
-  // Sync state with localStorage
+  // Sync state with backend API
   useEffect(() => {
     // Load simulation role
     const activeRole = localStorage.getItem('samanvay_role') || 'public';
     setRole(activeRole);
 
-    const initData = (key, fallback) => {
-      const stored = localStorage.getItem(key);
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    };
-    setAgencies(initData('samanvay_agencies', MOCK_AGENCIES));
-    setIncidents(initData('samanvay_incidents', MOCK_INCIDENTS));
+    async function loadData() {
+      try {
+        const [agenciesData, incidentsData] = await Promise.all([
+          api.agencies.getAll(),
+          api.incidents.getAll()
+        ]);
+        if (agenciesData?.length) setAgencies(agenciesData);
+        if (incidentsData?.length) setIncidents(incidentsData);
+      } catch (err) {
+        console.error('Failed to load agencies in directory:', err);
+      }
+    }
+    loadData();
   }, []);
 
   const handleFilterChange = (field, value) => {

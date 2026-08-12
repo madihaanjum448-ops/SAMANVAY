@@ -28,6 +28,7 @@ import {
   RESOURCE_INVENTORY, 
   MOCK_ACTIVITY_LOG 
 } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export default function AuthorityDashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,65 +44,49 @@ export default function AuthorityDashboard() {
 
   // Load state from localStorage or mock data
   useEffect(() => {
-    const initData = (key, fallback) => {
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        return JSON.parse(stored);
-      } else {
-        localStorage.setItem(key, JSON.stringify(fallback));
-        return fallback;
+    async function loadData() {
+      try {
+        const [agenciesData, incidentsData, requestsData, resourcesData, activityData] = await Promise.all([
+          api.agencies.getAll(),
+          api.incidents.getAll(),
+          api.requests.getAll(),
+          api.resources.getAll(),
+          api.activity.getAll()
+        ]);
+        if (agenciesData?.length) setAgencies(agenciesData);
+        if (incidentsData?.length) setIncidents(incidentsData);
+        if (requestsData?.length) setRequests(requestsData);
+        if (resourcesData?.length) setResources(resourcesData);
+        if (activityData?.length) setActivity(activityData);
+      } catch (err) {
+        console.error('Failed to load dashboard data from API:', err);
       }
-    };
-
-    setAgencies(initData('samanvay_agencies', MOCK_AGENCIES));
-    setIncidents(initData('samanvay_incidents', MOCK_INCIDENTS));
-    setRequests(initData('samanvay_requests', MOCK_REQUESTS));
-    setResources(initData('samanvay_resources', RESOURCE_INVENTORY));
-    setActivity(initData('samanvay_activity', MOCK_ACTIVITY_LOG));
+    }
+    loadData();
   }, [activeTab]);
 
-  // Sync state back helper
-  const syncState = (key, data, setter) => {
-    setter(data);
-    localStorage.setItem(key, JSON.stringify(data));
-  };
-
   // Verification actions
-  const handleApproveAgency = (id) => {
+  const handleApproveAgency = async (id) => {
+    await api.agencies.verify(id, 'VERIFIED', 'Priya Desai (Pune EOC)');
     const updated = agencies.map(a => 
       a.id === id ? { ...a, verificationStatus: 'VERIFIED', verifiedAt: new Date().toISOString().split('T')[0] } : a
     );
-    syncState('samanvay_agencies', updated, setAgencies);
+    setAgencies(updated);
 
-    // Add activity log
-    const agencyName = agencies.find(a => a.id === id)?.name || 'Agency';
-    const newLog = {
-      id: Date.now(),
-      type: 'verification',
-      action: 'Agency Approved',
-      detail: `${agencyName} approved to join coordination network`,
-      actor: 'Priya Desai (EOC)',
-      time: 'Just now',
-    };
-    syncState('samanvay_activity', [newLog, ...activity], setActivity);
+    // Refresh activity log
+    const updatedActivity = await api.activity.getAll();
+    if (updatedActivity?.length) setActivity(updatedActivity);
   };
 
-  const handleRejectAgency = (id) => {
+  const handleRejectAgency = async (id) => {
+    await api.agencies.verify(id, 'REJECTED', 'Priya Desai (Pune EOC)');
     const updated = agencies.map(a => 
       a.id === id ? { ...a, verificationStatus: 'REJECTED' } : a
     );
-    syncState('samanvay_agencies', updated, setAgencies);
+    setAgencies(updated);
 
-    const agencyName = agencies.find(a => a.id === id)?.name || 'Agency';
-    const newLog = {
-      id: Date.now(),
-      type: 'verification',
-      action: 'Agency Rejected',
-      detail: `${agencyName} registration rejected`,
-      actor: 'Priya Desai (EOC)',
-      time: 'Just now',
-    };
-    syncState('samanvay_activity', [newLog, ...activity], setActivity);
+    const updatedActivity = await api.activity.getAll();
+    if (updatedActivity?.length) setActivity(updatedActivity);
   };
 
   // Filter pending queue
