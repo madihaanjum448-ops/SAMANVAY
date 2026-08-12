@@ -1,245 +1,474 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, Map, Share2, ClipboardList, Activity, ArrowRight, ShieldAlert } from 'lucide-react';
+import { 
+  ShieldCheck, 
+  ArrowRight, 
+  Building2, 
+  Box, 
+  AlertTriangle, 
+  MapPin, 
+  Clock, 
+  CheckCircle2, 
+  Share2, 
+  Activity, 
+  Shield, 
+  BarChart3 
+} from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
+import MapView from '../components/map/MapView';
+import { MOCK_AGENCIES, MOCK_INCIDENTS } from '../data/mockData';
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
-  return (
-    <div className="min-h-screen bg-[#f5f3ef] text-stone-800 relative overflow-hidden flex flex-col">
-      {/* Dynamic Grid Background */}
-      <div className="absolute inset-0 topo-bg network-bg opacity-30 pointer-events-none" />
+  // Combine mock data for map preview
+  const mapMarkers = useMemo(() => {
+    const agencyMarkers = MOCK_AGENCIES.map(a => ({
+      id: a.id,
+      name: a.name,
+      coordinates: a.coordinates,
+      type: 'agency',
+      agencyType: a.agencyType,
+      status: a.status,
+      district: a.district,
+      state: a.state,
+      resources: a.resources
+    }));
 
-      {/* Landing Navbar */}
+    const incidentMarkers = MOCK_INCIDENTS.map(i => ({
+      id: i.id,
+      name: i.title,
+      coordinates: i.coordinates,
+      type: 'incident',
+      severity: i.severity,
+      incidentType: i.type,
+      location: i.location,
+      description: i.description,
+      time: i.reportedAt
+    }));
+
+    return [...agencyMarkers, ...incidentMarkers];
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#F7F5EF] text-[#111827] flex flex-col font-sans">
+      {/* Navigation Header */}
       <Navbar />
 
-      {/* Main Container */}
-      <main className="flex-1 flex flex-col pt-16">
+      {/* Main Content Area */}
+      <main className="flex-1 pt-20">
         
-        {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-          {/* Hero Content (left) */}
+        {/* ================================================== */}
+        {/* 4. HERO SECTION */}
+        {/* ================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* LEFT SIDE */}
           <div className="lg:col-span-6 flex flex-col gap-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 border border-teal-300 rounded-full text-teal-700 text-xs font-bold w-fit uppercase tracking-widest">
-              <ShieldAlert size={12} />
-              Unified Disaster response
+            {/* Small Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F0FDF4] border border-[#DCFCE7] rounded-full text-[#166534] text-xs font-bold w-fit uppercase tracking-widest">
+              <ShieldCheck size={14} className="text-[#166534]" />
+              UNIFIED DISASTER RESPONSE
             </div>
             
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-900 leading-tight tracking-tight">
-              Coordinate Response.<br />
-              <span className="text-teal-700">Save Time. Save Lives.</span>
+            {/* Main Heading */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] tracking-tight">
+              <span className="text-[#111827]">Coordinate Response.</span><br />
+              <span className="text-[#166534]">Save Time. Save Lives.</span>
             </h1>
             
-            <p className="text-base sm:text-lg text-stone-500 leading-relaxed max-w-xl">
-              SAMANVAY represents coordination between district authorities, verified rescue agencies, resources and real-time incident responses. Know who is available, where they are, and coordinate resources instantly.
+            {/* Supporting Text */}
+            <p className="text-base sm:text-lg text-[#64748B] leading-relaxed max-w-xl">
+              SAMANVAY connects verified agencies, resources and authorities on one platform for faster coordination during disasters.
             </p>
 
-            <div className="flex flex-wrap gap-4 mt-2">
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <button 
                 onClick={() => navigate('/agencies')}
-                className="bg-teal-700 hover:bg-teal-600 text-stone-900 font-bold px-6 py-3 rounded text-sm transition-all flex items-center gap-2  hover:shadow-md cursor-pointer"
+                className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3.5 rounded-md text-sm transition-all flex items-center gap-2 shadow-xs cursor-pointer"
               >
                 Explore Response Network
                 <ArrowRight size={16} />
               </button>
+              
               <button 
                 onClick={() => navigate('/register-agency')}
-                className="bg-white hover:bg-stone-50 text-teal-700 hover:text-teal-600 border border-stone-300 hover:border-teal-500 font-bold px-6 py-3 rounded text-sm transition-all cursor-pointer"
+                className="bg-white hover:bg-[#FAF9F5] text-[#166534] border border-[#E5E7EB] hover:border-[#CBD5E1] font-bold px-6 py-3.5 rounded-md text-sm transition-all cursor-pointer shadow-2xs"
               >
-                Register Rescue Agency
+                Register Your Agency
               </button>
+            </div>
+
+            {/* Trust Checklist Underneath */}
+            <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-[#475569] pt-3">
+              <span className="flex items-center gap-1.5 text-[#166534]">
+                <CheckCircle2 size={16} />
+                Verified Agencies
+              </span>
+              <span className="text-[#CBD5E1]">•</span>
+              <span>Real-time Updates</span>
+              <span className="text-[#CBD5E1]">•</span>
+              <span>Secure & Reliable</span>
             </div>
           </div>
 
-          {/* Hero Visual (right): Sophisticated Emergency Response Map/Network */}
-          <div className="lg:col-span-6 flex justify-center relative">
-            <div className="w-full max-w-md aspect-square bg-white/80 border border-stone-200 rounded-xl relative p-6 shadow-lg flex flex-col justify-between overflow-hidden">
-              {/* Grid backdrop */}
-              <div className="absolute inset-0 topo-bg network-bg opacity-15" />
-              
-              {/* Compass overlay */}
-              <div className="absolute top-4 right-4 text-[10px] text-stone-400 font-mono flex flex-col items-end">
-                <span>EOC COORDINATION UNIT</span>
-                <span>PUNE DISTRICT EOC v1.0</span>
-              </div>
-
-              {/* Animated SVG Network Visual */}
-              <div className="flex-1 w-full flex items-center justify-center relative my-6">
-                <svg className="w-full h-full max-h-[300px] overflow-visible" viewBox="0 0 400 400">
-                  {/* Central Node (EOC) */}
-                  <circle cx="200" cy="200" r="14" fill="#f5f3ef" stroke="#0f766e" strokeWidth="3" className="" />
-                  <circle cx="200" cy="200" r="24" fill="none" stroke="#0f766e" strokeWidth="1" strokeDasharray="3 3" className="animate-spin duration-1000" />
-                  
-                  {/* Surrounding Agency & Incident Nodes */}
-                  {/* NDRF (Verified Green) */}
-                  <line x1="200" y1="200" x2="80" y2="120" stroke="#d6d3ce" strokeWidth="1.5" />
-                  <circle cx="80" cy="120" r="8" fill="#22c55e" />
-                  <circle cx="80" cy="120" r="14" fill="none" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-                  <text x="80" y="105" fill="#0f766e" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">NDRF UNIT 6</text>
-
-                  {/* SDRF (Verified Green) */}
-                  <line x1="200" y1="200" x2="310" y2="90" stroke="#d6d3ce" strokeWidth="1.5" />
-                  <circle cx="310" cy="90" r="8" fill="#22c55e" />
-                  <text x="310" y="75" fill="#0f766e" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">SDRF UNIT 1</text>
-
-                  {/* Incident Alert (Red Diamond) */}
-                  <line x1="200" y1="200" x2="290" y2="280" stroke="#ef4444" strokeWidth="1" strokeDasharray="4 4" />
-                  <rect x="284" y="274" width="12" height="12" fill="#ef4444" transform="rotate(45 290 280)" />
-                  <circle cx="290" cy="280" r="18" fill="none" stroke="#ef4444" strokeWidth="1.5" className="animate-ping" style={{ animationDuration: '2s' }} />
-                  <text x="290" y="305" fill="#ef4444" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">INCIDENT: FLOOD</text>
-
-                  {/* Medical Unit (Yellow Dot) */}
-                  <line x1="200" y1="200" x2="100" y2="290" stroke="#d6d3ce" strokeWidth="1.5" />
-                  <circle cx="100" cy="290" r="8" fill="#eab308" />
-                  <text x="100" y="315" fill="#0f766e" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">MED UNIT 09</text>
-
-                  {/* Fire Service (Deployed - Red Dot) */}
-                  <line x1="80" y1="120" x2="110" y2="210" stroke="#d6d3ce" strokeWidth="1" />
-                  <line x1="200" y1="200" x2="110" y2="210" stroke="#d6d3ce" strokeWidth="1.5" />
-                  <circle cx="110" cy="210" r="8" fill="#ef4444" />
-                  <text x="110" y="195" fill="#0f766e" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">FIRE UNIT 3</text>
-
-                  {/* Data Signal Wave */}
-                  <circle cx="200" cy="200" r="60" fill="none" stroke="#0f766e" strokeWidth="1" opacity="0.15" />
-                  <circle cx="200" cy="200" r="120" fill="none" stroke="#0f766e" strokeWidth="1" opacity="0.08" />
-                </svg>
-              </div>
-
-              {/* Status bar bottom */}
-              <div className="border-t border-stone-200 pt-3 flex justify-between text-[9px] font-mono text-stone-500">
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-green-600 rounded-full "></span>
-                  48 AGENCIES ACTIVE
+          {/* RIGHT SIDE: Realistic EOC Photography */}
+          <div className="lg:col-span-6 relative">
+            <div className="relative rounded-2xl overflow-hidden border border-[#E5E7EB] bg-white shadow-md">
+              <img 
+                src="/images/hero_eoc.jpg" 
+                alt="Emergency Operations Center Control Room"
+                className="w-full h-[380px] sm:h-[440px] object-cover object-center"
+              />
+              {/* Subtle Overlay Badge */}
+              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-xs p-3.5 rounded-lg border border-[#E5E7EB] flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#166534] status-pulse"></span>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-[#111827]">PUNE DISTRICT EOC COMMAND ROOM</span>
+                    <span className="text-[10px] text-[#64748B] font-mono">LIVE GIS & RESCUE FEEDS ACTIVE</span>
+                  </div>
+                </div>
+                <span className="text-[11px] font-bold text-[#166534] bg-[#F0FDF4] px-2.5 py-1 rounded border border-[#DCFCE7]">
+                  24/7 ONLINE
                 </span>
-                <span>LAT: 18.5204 / LNG: 73.8567</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* FEATURE BLOCKS */}
-        <section id="about" className="bg-[#faf9f6] border-y border-stone-200 py-16 relative z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
-                Coordinated Emergency Response Architecture
-              </h2>
-              <p className="text-xs sm:text-sm text-stone-500 mt-2">
-                Operational capability tailored specifically for emergency response taskforces and district disaster management cells.
-              </p>
-            </div>
+        {/* ================================================== */}
+        {/* 5. LIVE PLATFORM STATISTICS STRIP */}
+        {/* ================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+          <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 sm:p-8 shadow-xs grid grid-cols-2 md:grid-cols-5 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#E5E7EB]">
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Feature 1 */}
-              <div className="bg-[#faf9f6] border border-stone-200 rounded-lg p-6 flex flex-col items-start gap-4">
-                <div className="p-3 rounded bg-teal-50 border border-teal-200 text-teal-700">
-                  <ShieldCheck size={20} />
+            {/* Stat 1 */}
+            <div className="flex flex-col items-center text-center p-2">
+              <div className="p-2.5 bg-[#F0FDF4] text-[#166534] rounded-lg mb-2">
+                <Building2 size={22} />
+              </div>
+              <span className="text-3xl font-extrabold text-[#111827] tracking-tight">48</span>
+              <span className="text-xs font-semibold text-[#64748B] mt-1 uppercase tracking-wider">Verified Agencies</span>
+            </div>
+
+            {/* Stat 2 */}
+            <div className="flex flex-col items-center text-center p-2 pt-4 sm:pt-2">
+              <div className="p-2.5 bg-[#F0FDF4] text-[#166534] rounded-lg mb-2">
+                <Box size={22} />
+              </div>
+              <span className="text-3xl font-extrabold text-[#111827] tracking-tight">128</span>
+              <span className="text-xs font-semibold text-[#64748B] mt-1 uppercase tracking-wider">Active Resources</span>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="flex flex-col items-center text-center p-2 pt-4 sm:pt-2">
+              <div className="p-2.5 bg-[#FEF2F2] text-[#DC2626] rounded-lg mb-2">
+                <AlertTriangle size={22} />
+              </div>
+              <span className="text-3xl font-extrabold text-[#111827] tracking-tight">24</span>
+              <span className="text-xs font-semibold text-[#64748B] mt-1 uppercase tracking-wider">Active Incidents</span>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="flex flex-col items-center text-center p-2 pt-4 sm:pt-2">
+              <div className="p-2.5 bg-[#F0FDF4] text-[#166534] rounded-lg mb-2">
+                <MapPin size={22} />
+              </div>
+              <span className="text-3xl font-extrabold text-[#111827] tracking-tight">16</span>
+              <span className="text-xs font-semibold text-[#64748B] mt-1 uppercase tracking-wider">Districts Covered</span>
+            </div>
+
+            {/* Stat 5 */}
+            <div className="flex flex-col items-center text-center p-2 pt-4 sm:pt-2 col-span-2 md:col-span-1">
+              <div className="p-2.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg mb-2">
+                <Clock size={22} />
+              </div>
+              <span className="text-3xl font-extrabold text-[#111827] tracking-tight">18:42</span>
+              <span className="text-xs font-semibold text-[#64748B] mt-1 uppercase tracking-wider">Avg. Response Time</span>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ================================================== */}
+        {/* 6. "THE PROBLEM WE SOLVE" SECTION */}
+        {/* ================================================== */}
+        <section className="bg-white border-y border-[#E5E7EB] py-16 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight uppercase">
+                THE PROBLEM WE SOLVE
+              </h2>
+              <div className="w-16 h-1 bg-[#166534] rounded-full mx-auto mt-3" />
+            </div>
+
+            {/* 4 Cards Responsive Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              {/* Card 1 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col card-hover">
+                <img 
+                  src="/images/flood_rescue.jpg" 
+                  alt="Disasters Strike Suddenly"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-[#111827] mb-2">
+                    Disasters Strike Suddenly
+                  </h3>
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    Floods, earthquakes, fires and other disasters cause massive disruption and loss.
+                  </p>
                 </div>
-                <h3 className="text-base font-bold text-stone-900 uppercase tracking-wider">VERIFIED AGENCIES</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  NDRF, SDRF, fire units, police taskforces, and volunteer NGOs register through multi-step checklists. District authorities verify credentials prior to mobilization.
+              </div>
+
+              {/* Card 2 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col card-hover">
+                <img 
+                  src="/images/agency_silos.jpg" 
+                  alt="Agencies Operate in Silos"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-[#111827] mb-2">
+                    Agencies Operate in Silos
+                  </h3>
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    Information is scattered across calls, messages and different departments.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col card-hover">
+                <img 
+                  src="/images/rescue_vehicles.jpg" 
+                  alt="Resources Are Unclear"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-[#111827] mb-2">
+                    Resources Are Unclear
+                  </h3>
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    Lack of visibility of available resources leads to delays and inefficient deployment.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 4 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col card-hover">
+                <img 
+                  src="/images/control_room.jpg" 
+                  alt="Coordination Is Difficult"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-[#111827] mb-2">
+                    Coordination Is Difficult
+                  </h3>
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    No single platform to coordinate, track and manage response in real-time.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================== */}
+        {/* 7. SAMANVAY SOLUTION SECTION */}
+        {/* ================================================== */}
+        <section className="bg-[#F0FDF4] border-b border-[#DCFCE7] py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              
+              {/* Feature 1 */}
+              <div className="flex flex-col items-start gap-3">
+                <div className="w-12 h-12 rounded-lg bg-white border border-[#DCFCE7] flex items-center justify-center text-[#166534] shadow-2xs">
+                  <Share2 size={24} />
+                </div>
+                <h3 className="text-base font-bold text-[#111827]">
+                  1. Unified Coordination
+                </h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  Brings all agencies and authorities onto one platform.
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="bg-[#faf9f6] border border-stone-200 rounded-lg p-6 flex flex-col items-start gap-4">
-                <div className="p-3 rounded bg-teal-50 border border-teal-200 text-teal-700">
-                  <Map size={20} />
+              <div className="flex flex-col items-start gap-3">
+                <div className="w-12 h-12 rounded-lg bg-white border border-[#DCFCE7] flex items-center justify-center text-[#166534] shadow-2xs">
+                  <Activity size={24} />
                 </div>
-                <h3 className="text-base font-bold text-stone-900 uppercase tracking-wider">RESOURCE VISIBILITY</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  Live availability statuses of rescue assets including inflatable motorboats, medical ambulances, search drones, heavy response vehicles, and field personnel.
+                <h3 className="text-base font-bold text-[#111827]">
+                  2. Real-time Visibility
+                </h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  Live tracking of incidents, resources and deployments.
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-[#faf9f6] border border-stone-200 rounded-lg p-6 flex flex-col items-start gap-4">
-                <div className="p-3 rounded bg-teal-50 border border-teal-200 text-teal-700">
-                  <Share2 size={20} />
+              <div className="flex flex-col items-start gap-3">
+                <div className="w-12 h-12 rounded-lg bg-white border border-[#DCFCE7] flex items-center justify-center text-[#166534] shadow-2xs">
+                  <ShieldCheck size={24} />
                 </div>
-                <h3 className="text-base font-bold text-stone-900 uppercase tracking-wider">COORDINATED RESPONSE</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  Send structured emergency assistance requests. Track milestones from initiation, EOC acknowledgement, resource dispatch, on-site deployment, through to resolution.
+                <h3 className="text-base font-bold text-[#111827]">
+                  3. Verified & Trusted
+                </h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  Only verified agencies and resources ensure reliability.
                 </p>
               </div>
+
+              {/* Feature 4 */}
+              <div className="flex flex-col items-start gap-3">
+                <div className="w-12 h-12 rounded-lg bg-white border border-[#DCFCE7] flex items-center justify-center text-[#166534] shadow-2xs">
+                  <BarChart3 size={24} />
+                </div>
+                <h3 className="text-base font-bold text-[#111827]">
+                  4. Data-driven Decisions
+                </h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  Insights and reports to improve response and preparedness.
+                </p>
+              </div>
+
             </div>
           </div>
         </section>
 
-        {/* HOW SAMANVAY WORKS */}
-        <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 mb-12">
-            Disaster Response Lifecycle
-          </h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-6 items-center max-w-5xl mx-auto">
-            {/* Step 1 */}
-            <div className="bg-white border border-stone-200 rounded p-4 relative">
-              <div className="text-teal-700 font-mono font-bold text-xs mb-1">01. REGISTER</div>
-              <p className="text-[10px] text-stone-500">Agencies submit profiles, map coordinates, and assets list.</p>
-            </div>
+        {/* ================================================== */}
+        {/* 8. RESPONSE NETWORK PREVIEW */}
+        {/* ================================================== */}
+        <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            <div className="hidden sm:block text-stone-400 text-lg font-bold">→</div>
-
-            {/* Step 2 */}
-            <div className="bg-white border border-stone-200 rounded p-4">
-              <div className="text-teal-700 font-mono font-bold text-xs mb-1">02. VERIFY</div>
-              <p className="text-[10px] text-stone-500">District authority reviews background data and approves credentials.</p>
+            {/* Left Content */}
+            <div className="lg:col-span-5 flex flex-col gap-5 text-left">
+              <span className="text-xs font-bold text-[#166534] uppercase tracking-widest">GIS OPERATIONAL NETWORK</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight">
+                One Network. Every Response.
+              </h2>
+              <p className="text-sm text-[#64748B] leading-relaxed">
+                District authorities and emergency teams can discover verified rescue agencies based on live geographic location, specialized expertise, operational availability, and deployment-ready equipment.
+              </p>
+              <div>
+                <button
+                  onClick={() => navigate('/agencies')}
+                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3 rounded-md text-sm transition-all inline-flex items-center gap-2 cursor-pointer shadow-xs"
+                >
+                  Explore Response Network
+                  <ArrowRight size={16} />
+                </button>
+              </div>
             </div>
 
-            <div className="hidden sm:block text-stone-400 text-lg font-bold">→</div>
-
-            {/* Step 3 */}
-            <div className="bg-white border border-stone-200 rounded p-4">
-              <div className="text-teal-700 font-mono font-bold text-xs mb-1">03. DISCOVER</div>
-              <p className="text-[10px] text-stone-500">Filter agencies near active incidents via the live GIS system.</p>
+            {/* Right Map Component */}
+            <div className="lg:col-span-7 h-[420px] rounded-xl overflow-hidden border border-[#E5E7EB] shadow-xs">
+              <MapView markers={mapMarkers} center={[18.5204, 73.8567]} zoom={11} />
             </div>
 
-            <div className="hidden sm:block text-stone-400 text-lg font-bold">→</div>
-
-            {/* Step 4 */}
-            <div className="bg-white border border-stone-200 rounded p-4">
-              <div className="text-teal-700 font-mono font-bold text-xs mb-1">04. COORDINATE</div>
-              <p className="text-[10px] text-stone-500">Send dispatch alerts and structured resource support requests.</p>
-            </div>
-
-            <div className="hidden sm:block text-stone-400 text-lg font-bold">→</div>
-
-            {/* Step 5 */}
-            <div className="bg-white border border-stone-200 rounded p-4">
-              <div className="text-teal-700 font-mono font-bold text-xs mb-1">05. RESPOND</div>
-              <p className="text-[10px] text-stone-500">Teams dispatch, update statuses on-ground, and resolve missions.</p>
-            </div>
-          </div>
-
-          <div className="mt-14 bg-[#faf9f6] border border-stone-200 max-w-2xl mx-auto rounded-lg p-6 flex flex-col items-center gap-4">
-            <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">Access Demo Control Rooms</h3>
-            <p className="text-xs text-stone-500 max-w-md">
-              Toggle simulated views instantly on any screen to view how authorities manage incidents, how agencies receive dispatches, or what public observer mode blocks.
-            </p>
-            <div className="flex gap-4">
-              <Link 
-                to="/authority/dashboard" 
-                className="bg-teal-700 hover:bg-teal-600 text-stone-900 font-bold px-4 py-2 rounded text-xs transition-colors cursor-pointer"
-              >
-                District EOC Dashboard
-              </Link>
-              <Link 
-                to="/agency/dashboard" 
-                className="bg-white hover:bg-stone-50 text-teal-700 hover:text-teal-600 border border-stone-300 hover:border-teal-500 font-bold px-4 py-2 rounded text-xs transition-colors cursor-pointer"
-              >
-                Agency Rescue Dashboard
-              </Link>
-            </div>
           </div>
         </section>
+
+        {/* ================================================== */}
+        {/* 9. HOW IT WORKS */}
+        {/* ================================================== */}
+        <section id="how-it-works" className="bg-white border-t border-[#E5E7EB] py-16 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight uppercase mb-4">
+              HOW IT WORKS
+            </h2>
+            <p className="text-sm text-[#64748B] max-w-xl mx-auto mb-14">
+              Standardized four-step operational workflow connecting rescue agencies and district control rooms.
+            </p>
+            
+            {/* 4-Step Timeline (Horizontal on desktop, Vertical on mobile) */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto relative">
+              
+              {/* Step 1 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-start text-left relative">
+                <span className="text-3xl font-black text-[#166534] font-mono mb-2">01</span>
+                <h3 className="text-base font-bold text-[#111827] mb-1">Register</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  Agencies submit their details, expertise, location and resources.
+                </p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-start text-left relative">
+                <span className="text-3xl font-black text-[#166534] font-mono mb-2">02</span>
+                <h3 className="text-base font-bold text-[#111827] mb-1">Verify</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  District authorities verify and approve agencies.
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-start text-left relative">
+                <span className="text-3xl font-black text-[#166534] font-mono mb-2">03</span>
+                <h3 className="text-base font-bold text-[#111827] mb-1">Discover</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  Authorities can find nearby agencies and available resources during incidents.
+                </p>
+              </div>
+
+              {/* Step 4 */}
+              <div className="bg-[#F7F5EF] border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-start text-left relative">
+                <span className="text-3xl font-black text-[#166534] font-mono mb-2">04</span>
+                <h3 className="text-base font-bold text-[#111827] mb-1">Coordinate</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  Send assistance requests, track deployment and resolve missions.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Interactive Demo Triggers */}
+            <div id="contact" className="mt-16 bg-[#F7F5EF] border border-[#E5E7EB] max-w-2xl mx-auto rounded-xl p-8 flex flex-col items-center gap-4">
+              <h3 className="text-base font-bold text-[#111827]">Access Control Rooms & Simulation</h3>
+              <p className="text-xs text-[#64748B] max-w-md leading-relaxed">
+                Toggle between simulated views to test how district authorities authorize assistance requests or how rescue agencies update live inventory.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Link 
+                  to="/authority/dashboard" 
+                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-5 py-2.5 rounded-md text-xs transition-colors cursor-pointer shadow-xs"
+                >
+                  District EOC Dashboard
+                </Link>
+                <Link 
+                  to="/agency/dashboard" 
+                  className="bg-white hover:bg-stone-50 text-[#166534] border border-[#E5E7EB] font-bold px-5 py-2.5 rounded-md text-xs transition-colors cursor-pointer"
+                >
+                  Agency Rescue Dashboard
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-stone-200 bg-[#faf9f6] py-6 text-center text-xs text-stone-400 relative z-10 font-mono">
-        <p>© 2026 SAMANVAY Unified Emergency response. All rights reserved.</p>
-        <p className="mt-1 text-[10px] text-stone-400">Prototype demo build for SIH project. Constructed using fictional records.</p>
+      <footer className="border-t border-[#E5E7EB] bg-[#F7F5EF] py-8 text-center text-xs text-[#64748B]">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Shield size={16} className="text-[#166534]" />
+            <span className="font-bold text-[#111827]">SAMANVAY</span>
+            <span>— Unified Disaster Response & Resource Coordination Platform</span>
+          </div>
+          <p>© 2026 National Emergency Response Operations Cell. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

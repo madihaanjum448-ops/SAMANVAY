@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import L from 'leaflet';
 import { 
   ShieldCheck, 
   MapPin, 
-  Users, 
-  Ship, 
-  Ambulance, 
-  Activity, 
   ArrowRight, 
   ArrowLeft, 
   CheckCircle2, 
   Building2,
-  FileText
+  FileText,
+  Shield
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FormInput from '../components/ui/FormInput';
@@ -72,8 +69,8 @@ export default function RegisterAgencyPage() {
 
     mapRef.current = map;
 
-    // Dark-mode Map Tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Light-mode Map Tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO'
     }).addTo(map);
 
@@ -117,7 +114,6 @@ export default function RegisterAgencyPage() {
   }, [step]);
 
   const handleUseCurrentLocation = () => {
-    // Simulate finding GPS
     const demoLat = 18.5354;
     const demoLng = 73.8776;
     setLocation(prev => ({
@@ -186,13 +182,11 @@ export default function RegisterAgencyPage() {
       submittedAt: new Date().toISOString()
     };
 
-    // Store new agency list locally
     const existing = localStorage.getItem('samanvay_agencies');
     let agenciesList = [];
     if (existing) {
       agenciesList = JSON.parse(existing);
     } else {
-      // Lazy load from default mockData (we will load default inside dashboards)
       agenciesList = [];
     }
     
@@ -219,34 +213,31 @@ export default function RegisterAgencyPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex flex-col items-center justify-center p-6 relative">
-        <div className="absolute inset-0 topo-bg network-bg opacity-15 pointer-events-none" />
+      <div className="min-h-screen bg-[#F7F5EF] text-[#111827] flex flex-col items-center justify-center p-6 font-sans">
         
-        <div className="max-w-md w-full bg-white border border-stone-200 rounded-xl p-8 text-center shadow-lg flex flex-col items-center gap-6 relative z-10 fade-in">
-          <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
-            <CheckCircle2 size={36} className="animate-bounce" />
+        <div className="max-w-md w-full bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center shadow-xs flex flex-col items-center gap-6 fade-in">
+          <div className="w-16 h-16 rounded-full bg-[#F0FDF4] border border-[#DCFCE7] flex items-center justify-center text-[#166534]">
+            <CheckCircle2 size={36} />
           </div>
 
           <div>
-            <h2 className="text-xl font-extrabold text-stone-900">REGISTRATION SUBMITTED</h2>
-            <div className="inline-block mt-2 px-3 py-1 bg-orange-500/10 border border-orange-200 text-orange-700 font-mono text-[10px] font-bold rounded uppercase tracking-wider">
+            <h2 className="text-2xl font-extrabold text-[#111827]">REGISTRATION SUBMITTED</h2>
+            <div className="inline-block mt-2 px-3 py-1 bg-[#FFF7ED] border border-[#FED7AA] text-[#EA580C] font-mono text-[11px] font-bold rounded-md uppercase tracking-wider">
               Status: PENDING VERIFICATION
             </div>
           </div>
 
-          <p className="text-xs text-stone-500 leading-relaxed">
+          <p className="text-xs text-[#64748B] leading-relaxed">
             Your rescue agency credentials and resource lists have been submitted for review. Your agency will become visible on the response network after verification by Pune District Authority EOC.
           </p>
 
-          <div className="w-full border-t border-stone-200 pt-6">
-            <Button
-              variant="secondary"
-              size="sm"
+          <div className="w-full border-t border-[#E5E7EB] pt-6">
+            <button
               onClick={() => navigate('/')}
-              className="w-full font-bold"
+              className="w-full bg-[#166534] hover:bg-[#14532D] text-white font-bold py-3 px-4 rounded-md text-xs transition-all shadow-xs cursor-pointer"
             >
               Return to Homepage
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -254,19 +245,18 @@ export default function RegisterAgencyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 relative pb-16 flex flex-col">
-      <div className="absolute inset-0 topo-bg network-bg opacity-15 pointer-events-none" />
+    <div className="min-h-screen bg-[#F7F5EF] text-[#111827] pb-16 flex flex-col font-sans">
 
       {/* Header */}
-      <header className="h-16 border-b border-stone-200 px-6 flex items-center justify-between bg-white/90  sticky top-0 z-20">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-teal-50 border border-teal-200 text-teal-700">
-            <Activity size={16} />
+      <header className="h-16 border-b border-[#E5E7EB] px-6 flex items-center justify-between bg-white sticky top-0 z-20 shadow-2xs">
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded bg-[#166534] flex items-center justify-center text-white font-bold">
+            <Shield size={18} />
           </div>
-          <span className="text-sm font-extrabold tracking-wider text-stone-900">SAMANVAY</span>
+          <span className="text-base font-extrabold tracking-wide text-[#111827]">SAMANVAY</span>
         </Link>
-        <span className="text-[10px] font-mono text-stone-500 uppercase tracking-widest">
-          Network Registration Form
+        <span className="text-xs font-bold text-[#166534] bg-[#F0FDF4] px-3 py-1 rounded-full border border-[#DCFCE7] uppercase tracking-wider">
+          OFFICIAL AGENCY REGISTRATION
         </span>
       </header>
 
@@ -275,8 +265,8 @@ export default function RegisterAgencyPage() {
         
         {/* Title */}
         <div className="mb-6 text-center">
-          <h2 className="text-xl font-extrabold text-stone-900 tracking-tight">Rescue Agency Registry</h2>
-          <p className="text-xs text-stone-500 mt-1">Provide precise specifications to integrate your force into SAMANVAY.</p>
+          <h2 className="text-2xl font-extrabold text-[#111827] tracking-tight">Register Rescue Agency</h2>
+          <p className="text-xs text-[#64748B] mt-1">Provide force details and deployable resources to integrate with SAMANVAY EOC.</p>
         </div>
 
         {/* Wizard Steps indicator */}
@@ -285,18 +275,18 @@ export default function RegisterAgencyPage() {
             <React.Fragment key={s}>
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs border transition-all ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
                     step === s
-                      ? 'bg-teal-700 border-cyan-400 text-stone-900 '
+                      ? 'bg-[#166534] text-white shadow-xs'
                       : step > s
-                      ? 'bg-teal-50 border-teal-600 text-teal-700'
-                      : 'bg-[#faf9f6] border-stone-200 text-stone-500'
+                      ? 'bg-[#F0FDF4] border border-[#DCFCE7] text-[#166534]'
+                      : 'bg-white border border-[#E5E7EB] text-[#64748B]'
                   }`}
                 >
                   {s}
                 </div>
-                <span className={`text-[8px] font-mono font-bold tracking-wider mt-1.5 uppercase ${
-                  step === s ? 'text-teal-700' : 'text-stone-500'
+                <span className={`text-[10px] font-bold tracking-wider mt-1.5 uppercase ${
+                  step === s ? 'text-[#166534]' : 'text-[#64748B]'
                 }`}>
                   {s === 1 && 'Info'}
                   {s === 2 && 'Expertise'}
@@ -306,8 +296,8 @@ export default function RegisterAgencyPage() {
               </div>
               {s < 4 && (
                 <div
-                  className={`flex-1 h-[2.5px] -mt-4 transition-all duration-300 ${
-                    step > s ? 'bg-teal-700' : 'bg-stone-100'
+                  className={`flex-1 h-[2px] -mt-4 transition-all duration-300 ${
+                    step > s ? 'bg-[#166534]' : 'bg-[#E5E7EB]'
                   }`}
                 />
               )}
@@ -316,16 +306,16 @@ export default function RegisterAgencyPage() {
         </div>
 
         {/* Wizard Body Card */}
-        <div className="bg-white border border-stone-200 rounded-lg p-6 flex-1 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 flex-1 shadow-xs flex flex-col justify-between">
           
           <form onSubmit={step === 4 ? handleSubmit : (e) => e.preventDefault()} className="flex-1 flex flex-col">
             
             {/* STEP 1: Agency Information */}
             {step === 1 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
-                  <Building2 size={16} className="text-teal-700" />
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 1: Agency Information</h3>
+                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
+                  <Building2 size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 1: Agency Information</h3>
                 </div>
                 
                 <FormInput
@@ -390,11 +380,11 @@ export default function RegisterAgencyPage() {
             {/* STEP 2: Expertise */}
             {step === 2 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-teal-700" />
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 2: Tactical Rescue Expertise</h3>
+                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 2: Tactical Rescue Expertise</h3>
                 </div>
-                <p className="text-[11px] text-stone-500 leading-normal">
+                <p className="text-xs text-[#64748B] leading-normal">
                   Select disaster rescue disciplines that your tactical unit has certified capabilities to coordinate.
                 </p>
 
@@ -404,10 +394,10 @@ export default function RegisterAgencyPage() {
                     return (
                       <label 
                         key={opt}
-                        className={`flex items-center gap-3 p-3 rounded border text-xs cursor-pointer select-none transition-all ${
+                        className={`flex items-center gap-3 p-3 rounded-lg border text-xs cursor-pointer select-none transition-all ${
                           checked
-                            ? 'bg-teal-50 border-teal-300 text-teal-700 font-semibold'
-                            : 'bg-[#f5f3ef]/40 border-stone-300 text-stone-500 hover:border-stone-300/60'
+                            ? 'bg-[#F0FDF4] border-[#DCFCE7] text-[#166534] font-bold'
+                            : 'bg-white border-[#E5E7EB] text-[#475569] hover:border-[#CBD5E1]'
                         }`}
                       >
                         <input
@@ -416,10 +406,10 @@ export default function RegisterAgencyPage() {
                           onChange={() => handleExpertiseToggle(opt)}
                           className="hidden"
                         />
-                        <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center ${
-                          checked ? 'border-cyan-400 bg-teal-700 text-stone-900' : 'border-stone-300'
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                          checked ? 'border-[#166534] bg-[#166534] text-white' : 'border-[#CBD5E1]'
                         }`}>
-                          {checked && <span className="text-[8px] font-extrabold">✓</span>}
+                          {checked && <span className="text-[10px] font-bold">✓</span>}
                         </div>
                         <span>{opt}</span>
                       </label>
@@ -432,9 +422,9 @@ export default function RegisterAgencyPage() {
             {/* STEP 3: Location */}
             {step === 3 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
-                  <MapPin size={16} className="text-teal-700" />
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 3: Base Location</h3>
+                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
+                  <MapPin size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 3: Base Location</h3>
                 </div>
 
                 <FormInput
@@ -466,16 +456,16 @@ export default function RegisterAgencyPage() {
                 {/* Location Map Selector */}
                 <div className="flex flex-col gap-1.5 flex-1 min-h-[220px]">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Map Pin Locator</span>
+                    <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Map Pin Locator</span>
                     <button
                       type="button"
                       onClick={handleUseCurrentLocation}
-                      className="text-teal-700 hover:text-teal-600 font-bold uppercase tracking-wider text-[10px] cursor-pointer flex items-center gap-1 bg-teal-50 border border-teal-600/20 px-2 py-0.5 rounded"
+                      className="text-[#166534] font-bold uppercase tracking-wider text-[10px] cursor-pointer flex items-center gap-1 bg-[#F0FDF4] border border-[#DCFCE7] px-2.5 py-1 rounded"
                     >
                       Use Demo HQ Location
                     </button>
                   </div>
-                  <div className="flex-1 w-full h-[220px] rounded border border-stone-200 overflow-hidden relative">
+                  <div className="flex-1 w-full h-[220px] rounded-lg border border-[#E5E7EB] overflow-hidden relative">
                     <div ref={mapContainerRef} className="w-full h-full" />
                   </div>
                 </div>
@@ -485,11 +475,11 @@ export default function RegisterAgencyPage() {
             {/* STEP 4: Resources */}
             {step === 4 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
-                  <FileText size={16} className="text-teal-700" />
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 4: Resource Counts</h3>
+                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
+                  <FileText size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 4: Resource Counts</h3>
                 </div>
-                <p className="text-[11px] text-stone-500 leading-normal">
+                <p className="text-xs text-[#64748B] leading-normal">
                   Define active inventories immediately available. All parameters will be verified by the District EOC.
                 </p>
 
@@ -539,52 +529,49 @@ export default function RegisterAgencyPage() {
                 </div>
 
                 <div className="mt-2">
-                  <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Other Equipment Details</label>
+                  <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Other Equipment Details</label>
                   <textarea
                     rows={2}
                     value={resources.other}
                     onChange={(e) => setResources(prev => ({ ...prev, other: e.target.value }))}
                     placeholder="e.g. Hydraulic cutters, chemical containment gear, life vests, SAT phones..."
-                    className="w-full bg-[#faf9f6] border border-stone-200 focus:border-teal-500 text-xs rounded p-2 text-stone-900 focus:outline-none transition-colors"
+                    className="w-full bg-[#F7F5EF] border border-[#E5E7EB] focus:border-[#166534] text-xs rounded-md p-3 text-[#111827] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
             )}
 
             {/* Bottom Actions Row */}
-            <div className="flex items-center justify-between border-t border-stone-200 pt-5 mt-6">
+            <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-5 mt-6">
               {step > 1 ? (
-                <Button
+                <button
                   type="button"
-                  variant="secondary"
-                  size="sm"
                   onClick={prevStep}
-                  icon={<ArrowLeft size={12} />}
+                  className="bg-white hover:bg-[#F7F5EF] text-[#374151] border border-[#E5E7EB] font-bold px-4 py-2 rounded-md text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
+                  <ArrowLeft size={14} />
                   Back
-                </Button>
+                </button>
               ) : (
                 <div />
               )}
 
               {step < 4 ? (
-                <Button
+                <button
                   type="button"
-                  variant="primary"
-                  size="sm"
                   onClick={nextStep}
-                  iconRight={<ArrowRight size={12} />}
+                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-5 py-2 rounded-md text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   Continue
-                </Button>
+                  <ArrowRight size={14} />
+                </button>
               ) : (
-                <Button
+                <button
                   type="submit"
-                  variant="success"
-                  size="sm"
+                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-5 py-2.5 rounded-md text-xs transition-all cursor-pointer shadow-xs"
                 >
                   Submit for Verification
-                </Button>
+                </button>
               )}
             </div>
 

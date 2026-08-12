@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Ship, Ambulance, Truck, Package, ShieldAlert } from 'lucide-react';
+import { Users, Ship, Ambulance, ShieldAlert } from 'lucide-react';
 import AuthoritySidebar from '../components/layout/AuthoritySidebar';
 import AgencySidebar from '../components/layout/AgencySidebar';
 import TopHeader from '../components/layout/TopHeader';
@@ -34,10 +34,8 @@ export default function ResourceInventory() {
     localStorage.setItem(key, JSON.stringify(data));
   };
 
-  // Check if viewing as tactical agency
   const currentAgency = agencies.find(a => a.id === agencyId) || MOCK_AGENCIES[1];
 
-  // Map agency resources object into table format
   const getAgencyTableData = () => {
     const res = currentAgency.resources || {};
     return [
@@ -50,14 +48,12 @@ export default function ResourceInventory() {
     ];
   };
 
-  // Update logic for EOC district aggregates
   const handleUpdateDistrict = (id, updatedFields) => {
     const updated = districtResources.map(row => 
       row.id === id ? { ...row, ...updatedFields } : row
     );
     syncState('samanvay_resources', updated, setDistrictResources);
 
-    // Push into logs
     const storedLogs = localStorage.getItem('samanvay_activity') || '[]';
     const logsList = JSON.parse(storedLogs);
     const rowName = districtResources.find(r => r.id === id)?.name || 'Resource';
@@ -66,14 +62,13 @@ export default function ResourceInventory() {
       type: 'system',
       action: 'Asset Log Updated',
       detail: `EOC database updated: ${rowName} capacity adjusted`,
-      actor: 'Priya Desai (EOC)',
+      actor: 'Priya Desai (EOC Lead)',
       time: 'Just now',
     };
     logsList.unshift(newLog);
     localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
   };
 
-  // Update logic for specific agency
   const handleUpdateAgency = (id, updatedFields) => {
     const keyMap = {
       pers: 'personnel',
@@ -104,7 +99,6 @@ export default function ResourceInventory() {
     });
     syncState('samanvay_agencies', updatedAgencies, setAgencies);
 
-    // Push into logs
     const storedLogs = localStorage.getItem('samanvay_activity') || '[]';
     const logsList = JSON.parse(storedLogs);
     const rowLabel = key.charAt(0).toUpperCase() + key.slice(1);
@@ -120,7 +114,6 @@ export default function ResourceInventory() {
     localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
   };
 
-  // Summarize stats
   const tableData = role === 'agency' ? getAgencyTableData() : districtResources;
 
   const personnelTotal = tableData.find(d => d.name === 'Personnel')?.total || 0;
@@ -135,7 +128,7 @@ export default function ResourceInventory() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#111827] flex font-sans">
       {/* Sidebar navigation */}
       {renderSidebar()}
 
@@ -152,8 +145,8 @@ export default function ResourceInventory() {
             
             {/* Header info */}
             <div>
-              <h2 className="text-xl font-extrabold text-stone-900 tracking-tight">Resource Inventory Database</h2>
-              <p className="text-xs text-stone-500 mt-1">
+              <h2 className="text-2xl font-extrabold text-[#111827] tracking-tight">Resource Inventory Database</h2>
+              <p className="text-xs text-[#64748B] mt-1">
                 {role === 'agency' 
                   ? 'Internal asset allocation table. Ensure counts are updated in compliance with EOC mandates.'
                   : 'Master catalog of municipal dispatches, reserve stocks, and active responder counts.'
@@ -163,30 +156,30 @@ export default function ResourceInventory() {
 
             {/* Public view blocker warning */}
             {role === 'public' ? (
-              <div className="bg-white border border-stone-200 rounded-lg p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6">
-                <div className="p-3 bg-orange-50 border border-orange-200 text-orange-700 rounded-full">
-                  <ShieldAlert size={24} />
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6 shadow-xs">
+                <div className="p-3.5 bg-[#FFF7ED] border border-[#FED7AA] text-[#EA580C] rounded-full">
+                  <ShieldAlert size={28} />
                 </div>
-                <h3 className="text-base font-extrabold text-stone-900">Access Denied</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  Resource allocations, reserve capacities, and deployment metrics are classified. Please log in as District Authority EOC or Rescue Agency dispatcher to view and edit inventories.
+                <h3 className="text-lg font-extrabold text-[#111827]">Access Restricted</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  Resource allocations, reserve capacities, and deployment metrics are restricted. Please log in as District Authority EOC or Rescue Agency dispatcher to view and edit inventories.
                 </p>
               </div>
             ) : (
               <>
                 {/* Stats Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <StatCard label="Total Force Capacity" value={personnelTotal} icon={<Users size={16} />} color="cyan" />
-                  <StatCard label="Available Personnel" value={personnelAvail} icon={<Users size={16} />} color="green" />
-                  <StatCard label="Boats On Standby" value={boatsAvail} icon={<Ship size={16} />} color="blue" />
-                  <StatCard label="Ambulances Ready" value={ambulancesAvail} icon={<Ambulance size={16} />} color="yellow" />
+                  <StatCard label="Total Force Capacity" value={personnelTotal} icon={<Users size={18} />} color="cyan" />
+                  <StatCard label="Available Personnel" value={personnelAvail} icon={<Users size={18} />} color="green" />
+                  <StatCard label="Boats On Standby" value={boatsAvail} icon={<Ship size={18} />} color="blue" />
+                  <StatCard label="Ambulances Ready" value={ambulancesAvail} icon={<Ambulance size={18} />} color="yellow" />
                 </div>
 
                 {/* Editable Resource Table */}
-                <div>
-                  <div className="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                    <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Asset Capacity Database</h3>
-                    <span className="text-[10px] text-stone-500 font-mono">EDITABLE DEMO STATE</span>
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs">
+                  <div className="flex justify-between items-center mb-4 border-b border-[#E5E7EB] pb-3">
+                    <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Asset Capacity Database</h3>
+                    <span className="text-[10px] text-[#64748B] font-mono font-bold">LIVE EDITABLE INVENTORY</span>
                   </div>
                   <ResourceTable 
                     data={tableData} 

@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import { 
-  ShieldCheck, 
   MapPin, 
   Phone, 
   Mail, 
   Clock, 
   Radio, 
-  AlertTriangle, 
   Users, 
   Ship, 
   Ambulance, 
@@ -16,8 +14,7 @@ import {
   Plane, 
   Package, 
   Send,
-  ArrowLeft,
-  X
+  ArrowLeft
 } from 'lucide-react';
 import AuthoritySidebar from '../components/layout/AuthoritySidebar';
 import AgencySidebar from '../components/layout/AgencySidebar';
@@ -34,9 +31,18 @@ export default function AgencyDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [role, setRole] = useState('public');
-  const [agencies, setAgencies] = useState([]);
-  const [incidents, setIncidents] = useState([]);
-  const [requests, setRequests] = useState([]);
+  const [agencies] = useState(() => {
+    const stored = localStorage.getItem('samanvay_agencies');
+    return stored ? JSON.parse(stored) : MOCK_AGENCIES;
+  });
+  const [incidents] = useState(() => {
+    const stored = localStorage.getItem('samanvay_incidents');
+    return stored ? JSON.parse(stored) : MOCK_INCIDENTS;
+  });
+  const [requests] = useState(() => {
+    const stored = localStorage.getItem('samanvay_requests');
+    return stored ? JSON.parse(stored) : MOCK_REQUESTS;
+  });
   
   // Modal State
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -53,16 +59,6 @@ export default function AgencyDetails() {
   useEffect(() => {
     const activeRole = localStorage.getItem('samanvay_role') || 'public';
     setRole(activeRole);
-
-    const initData = (key, fallback) => {
-      const stored = localStorage.getItem(key);
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    };
-    setAgencies(initData('samanvay_agencies', MOCK_AGENCIES));
-    setIncidents(initData('samanvay_incidents', MOCK_INCIDENTS));
-    setRequests(initData('samanvay_requests', MOCK_REQUESTS));
   }, [id]);
 
   const agency = agencies.find(a => a.id === id) || MOCK_AGENCIES.find(a => a.id === id) || MOCK_AGENCIES[1];
@@ -80,7 +76,7 @@ export default function AgencyDetails() {
 
     mapRef.current = map;
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO'
     }).addTo(map);
 
@@ -110,11 +106,9 @@ export default function AgencyDetails() {
   const handleRequestSubmit = (e) => {
     e.preventDefault();
     
-    // Determine from Name/ID based on simulation role
     let fromId = 'AG-003';
     let fromName = 'Pune Fire Brigade — Central';
     if (role === 'agency') {
-      // simulate from NDRF
       fromId = 'AG-001';
       fromName = 'NDRF Battalion 6';
     } else if (role === 'authority') {
@@ -191,7 +185,7 @@ export default function AgencyDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#111827] flex font-sans">
       {/* Sidebar navigation */}
       {renderSidebar()}
 
@@ -207,30 +201,30 @@ export default function AgencyDetails() {
           {/* Back Navigation */}
           <button 
             onClick={() => navigate('/agencies')}
-            className="flex items-center gap-1.5 text-xs text-stone-500 hover:text-teal-700 font-bold uppercase tracking-wider mb-5 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#166534] font-bold uppercase tracking-wider mb-5 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} /> Back to Force Registry
           </button>
 
           {/* Profile Content card */}
-          <div className="bg-white border border-stone-200 rounded-lg p-6 flex flex-col gap-6 fade-in shadow-lg">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 flex flex-col gap-6 fade-in shadow-xs">
             
             {/* Header Block */}
-            <div className="flex items-start justify-between flex-wrap gap-4 border-b border-stone-200 pb-5">
+            <div className="flex items-start justify-between flex-wrap gap-4 border-b border-[#E5E7EB] pb-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded bg-teal-50 border border-teal-300 text-teal-700">
-                  <Radio size={24} className="animate-pulse" />
+                <div className="w-12 h-12 rounded-xl bg-[#F0FDF4] border border-[#DCFCE7] flex items-center justify-center text-[#166534]">
+                  <Radio size={24} className="status-pulse" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h1 className="text-lg sm:text-xl font-extrabold text-stone-900 leading-tight">{agency.name}</h1>
+                    <h1 className="text-xl sm:text-2xl font-extrabold text-[#111827] leading-tight">{agency.name}</h1>
                     <VerificationBadge status={agency.verificationStatus} />
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-stone-500 mt-2 font-mono">
-                    <MapPin size={12} className="text-stone-500" />
+                  <div className="flex items-center gap-2 text-xs text-[#64748B] mt-2 font-mono">
+                    <MapPin size={14} className="text-[#64748B]" />
                     <span>{agency.district}, {agency.state}</span>
                     <span>•</span>
-                    <Clock size={12} className="text-stone-500" />
+                    <Clock size={14} className="text-[#64748B]" />
                     <span>Updated {agency.lastUpdated}</span>
                   </div>
                 </div>
@@ -246,18 +240,18 @@ export default function AgencyDetails() {
                 
                 {/* About Section */}
                 <div>
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Operational Profile</h3>
-                  <p className="text-xs text-stone-700 leading-relaxed bg-[#f5f3ef]/40 border border-stone-300 p-3 rounded">
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-2">Operational Profile</h3>
+                  <p className="text-xs text-[#475569] leading-relaxed bg-[#F7F5EF] border border-[#E5E7EB] p-4 rounded-xl">
                     {agency.about || 'Verified tactical response group registered under the SAMANVAY system. Dedicated to providing emergency rescue operations and resource mobilization during disasters.'}
                   </p>
                 </div>
 
                 {/* Expertise */}
                 <div>
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Tactical Rescue Expertise</h3>
-                  <div className="flex flex-wrap gap-1.5">
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-2">Tactical Rescue Expertise</h3>
+                  <div className="flex flex-wrap gap-2">
                     {agency.expertise.map((exp, idx) => (
-                      <span key={idx} className="bg-stone-100 text-stone-700 text-xs font-semibold px-2.5 py-0.5 rounded border border-stone-300">
+                      <span key={idx} className="bg-[#F7F5EF] text-[#475569] text-xs font-semibold px-3 py-1 rounded-md border border-[#E5E7EB]">
                         {exp}
                       </span>
                     ))}
@@ -266,33 +260,33 @@ export default function AgencyDetails() {
 
                 {/* Contact Section (Masked if Public) */}
                 <div>
-                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Secure Communications Channel</h3>
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-2">Secure Communications Channel</h3>
                   
                   {role === 'public' ? (
-                    <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-700 font-mono leading-relaxed">
+                    <div className="bg-[#FFF7ED] border border-[#FED7AA] p-4 rounded-xl text-xs text-[#EA580C] font-mono leading-relaxed">
                       ⚠️ <strong>SECURE COMMUNICATIONS MASKED:</strong> Authorized EOC credentials or tactical agency verification is required to view exact phone lines and operational email routers.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-stone-500 bg-[#f5f3ef]/40 border border-stone-300 p-4 rounded">
-                      <div className="flex items-center gap-2">
-                        <Phone size={14} className="text-stone-500" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-[#64748B] bg-[#F7F5EF] border border-[#E5E7EB] p-4.5 rounded-xl">
+                      <div className="flex items-center gap-2.5">
+                        <Phone size={16} className="text-[#166534]" />
                         <div>
-                          <span className="text-[9px] text-stone-400 block uppercase font-bold">Operational Phone</span>
-                          <span className="text-stone-900 font-bold">{agency.phone}</span>
+                          <span className="text-[10px] text-[#64748B] block uppercase font-bold">Operational Phone</span>
+                          <span className="text-[#111827] font-bold">{agency.phone}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Mail size={14} className="text-stone-500" />
+                      <div className="flex items-center gap-2.5">
+                        <Mail size={16} className="text-[#166534]" />
                         <div>
-                          <span className="text-[9px] text-stone-400 block uppercase font-bold">Secure Email Router</span>
-                          <span className="text-stone-900 font-bold">{agency.email}</span>
+                          <span className="text-[10px] text-[#64748B] block uppercase font-bold">Secure Email Router</span>
+                          <span className="text-[#111827] font-bold">{agency.email}</span>
                         </div>
                       </div>
-                      <div className="col-span-1 sm:col-span-2 border-t border-stone-300 pt-2.5 mt-1 flex items-start gap-2">
-                        <MapPin size={14} className="text-stone-500 mt-0.5" />
+                      <div className="col-span-1 sm:col-span-2 border-t border-[#E5E7EB] pt-3 mt-1 flex items-start gap-2.5">
+                        <MapPin size={16} className="text-[#166534] mt-0.5" />
                         <div>
-                          <span className="text-[9px] text-stone-400 block uppercase font-bold">HQ Base Street Address</span>
-                          <span className="text-stone-900 font-sans">{agency.address}</span>
+                          <span className="text-[10px] text-[#64748B] block uppercase font-bold">HQ Base Address</span>
+                          <span className="text-[#111827] font-sans font-medium">{agency.address}</span>
                         </div>
                       </div>
                     </div>
@@ -301,20 +295,20 @@ export default function AgencyDetails() {
               </div>
 
               {/* Right Map location column */}
-              <div className="lg:col-span-5 flex flex-col gap-4">
-                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Base GIS Location</h3>
-                <div className="flex-1 min-h-[220px] rounded border border-stone-200 overflow-hidden relative">
+              <div className="lg:col-span-5 flex flex-col gap-3">
+                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Base GIS Location</h3>
+                <div className="flex-1 min-h-[240px] rounded-xl border border-[#E5E7EB] overflow-hidden relative shadow-2xs">
                   <div ref={mapContainerRef} className="w-full h-full" />
                 </div>
               </div>
             </div>
 
             {/* Resources inventories Section */}
-            <div className="border-t border-stone-200 pt-6">
-              <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-4">Resource Capacity Allocations</h3>
+            <div className="border-t border-[#E5E7EB] pt-6">
+              <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-4">Resource Capacity Allocations</h3>
               
               {role === 'public' ? (
-                <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-700 font-mono leading-relaxed">
+                <div className="bg-[#FFF7ED] border border-[#FED7AA] p-4 rounded-xl text-xs text-[#EA580C] font-mono leading-relaxed">
                   ⚠️ <strong>EXACT ASSETS INVENTORY RESTRICTED:</strong> Public observers can see availability status but cannot view exact staff numbers, boat counts, or medical inventory lists.
                 </div>
               ) : (
@@ -323,19 +317,19 @@ export default function AgencyDetails() {
                     const item = agency.resources[key];
                     const percentage = item.total > 0 ? Math.round((item.available / item.total) * 100) : 0;
                     return (
-                      <div key={key} className="bg-[#f5f3ef] border border-stone-300 p-4 rounded flex flex-col gap-3">
-                        <div className="flex justify-between items-center text-xs text-stone-500">
+                      <div key={key} className="bg-[#F7F5EF] border border-[#E5E7EB] p-4 rounded-xl flex flex-col gap-3">
+                        <div className="flex justify-between items-center text-xs text-[#64748B]">
                           <div className="flex items-center gap-2">
-                            <span className="text-teal-700">{resourceIcons[key]}</span>
-                            <span className="font-bold text-stone-900 uppercase tracking-wider text-[10px]">{resourceLabels[key] || key}</span>
+                            <span className="text-[#166534]">{resourceIcons[key]}</span>
+                            <span className="font-bold text-[#111827] uppercase tracking-wider text-[10px]">{resourceLabels[key] || key}</span>
                           </div>
                         </div>
                         <div className="flex items-end justify-between">
-                          <span className="text-lg font-bold text-stone-900 font-mono">{item.available} <span className="text-xs text-stone-500">/ {item.total}</span></span>
-                          <span className="text-[10px] text-green-700 font-mono font-bold">{percentage}% Available</span>
+                          <span className="text-lg font-bold text-[#111827] font-mono">{item.available} <span className="text-xs text-[#64748B]">/ {item.total}</span></span>
+                          <span className="text-xs text-[#166534] font-mono font-bold">{percentage}% Available</span>
                         </div>
-                        <div className="w-full h-1 bg-slate-950 rounded-full overflow-hidden">
-                          <div className="h-full bg-teal-700 rounded-full" style={{ width: `${percentage}%` }} />
+                        <div className="w-full h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
+                          <div className="h-full bg-[#166534] rounded-full" style={{ width: `${percentage}%` }} />
                         </div>
                       </div>
                     );
@@ -345,20 +339,20 @@ export default function AgencyDetails() {
             </div>
 
             {/* Bottom Actions Row */}
-            <div className="border-t border-stone-200 pt-6 flex justify-end gap-3 flex-wrap">
+            <div className="border-t border-[#E5E7EB] pt-6 flex justify-end gap-3 flex-wrap">
               {role === 'public' ? (
                 <button
                   disabled
-                  className="bg-white text-stone-400 border border-stone-300 text-xs font-bold px-6 py-3 rounded cursor-not-allowed"
+                  className="bg-[#F7F5EF] text-[#64748B] border border-[#E5E7EB] text-xs font-bold px-6 py-3 rounded-lg cursor-not-allowed"
                 >
                   Send Assistance Request (EOC Login Required)
                 </button>
               ) : (
                 <button
                   onClick={() => setIsRequestModalOpen(true)}
-                  className="bg-teal-700 hover:bg-teal-600 text-stone-900 font-bold px-6 py-3 rounded text-xs transition-colors flex items-center gap-1.5 cursor-pointer "
+                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3 rounded-lg text-xs transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <Send size={13} /> Send Assistance Request
+                  <Send size={14} /> Send Assistance Request
                 </button>
               )}
             </div>
@@ -367,7 +361,7 @@ export default function AgencyDetails() {
         </main>
       </div>
 
-      {/* Structured assistance request Modal */}
+      {/* Assistance Request Modal */}
       <Modal
         isOpen={isRequestModalOpen}
         onClose={() => setIsRequestModalOpen(false)}
@@ -403,18 +397,18 @@ export default function AgencyDetails() {
           />
 
           <div>
-            <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Details Message Directive</label>
+            <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Details Message Directive</label>
             <textarea
               rows={3}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder="e.g. stranded civilians on rooftops in Sector 5 Hadapsar require immediate motorboat evacuation support..."
-              className="w-full bg-[#faf9f6] border border-stone-200 focus:border-teal-500 text-xs rounded p-2 text-stone-900 focus:outline-none transition-colors"
+              className="w-full bg-[#F7F5EF] border border-[#E5E7EB] focus:border-[#166534] text-xs rounded-md p-3 text-[#111827] focus:outline-none transition-colors"
               required
             />
           </div>
 
-          <div className="flex justify-end gap-2.5 pt-3 border-t border-stone-200">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-[#E5E7EB]">
             <Button
               type="button"
               variant="secondary"

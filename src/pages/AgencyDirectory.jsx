@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Users, Map, SlidersHorizontal, Grid, Search, Plus, Phone, Mail } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import AuthoritySidebar from '../components/layout/AuthoritySidebar';
 import AgencySidebar from '../components/layout/AgencySidebar';
 import TopHeader from '../components/layout/TopHeader';
@@ -12,7 +11,6 @@ import MapLegend from '../components/map/MapLegend';
 import { MOCK_AGENCIES, MOCK_INCIDENTS } from '../data/mockData';
 
 export default function AgencyDirectory() {
-  const navigate = useNavigate();
   const [role, setRole] = useState('public');
   
   // Filters State
@@ -61,7 +59,6 @@ export default function AgencyDirectory() {
   };
 
   // Filter logic
-  // Return only verified agencies in public view. In EOC view show all.
   const filteredAgencies = agencies.filter((agency) => {
     // In observer view, show only VERIFIED agencies.
     if (role === 'public' && agency.verificationStatus !== 'VERIFIED') return false;
@@ -101,11 +98,10 @@ export default function AgencyDirectory() {
         coordinates: a.coordinates,
         district: a.district,
         state: a.state,
-        resources: role === 'public' ? null : a.resources // mask resources if public
+        resources: role === 'public' ? null : a.resources
       });
     });
 
-    // Also plot active incidents if authority/agency is logged in
     if (role !== 'public') {
       incidents.filter(i => i.status === 'ACTIVE').forEach(i => {
         list.push({
@@ -127,11 +123,11 @@ export default function AgencyDirectory() {
   const renderSidebar = () => {
     if (role === 'authority') return <AuthoritySidebar />;
     if (role === 'agency') return <AgencySidebar />;
-    return null; // Public observer has top Navbar instead of Sidebar
+    return null;
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#111827] flex font-sans">
       {/* Sidebar navigation for logged-in users */}
       {renderSidebar()}
 
@@ -157,13 +153,13 @@ export default function AgencyDirectory() {
           <div className="flex-1 flex flex-col gap-6">
             
             {/* Top row filter actions for mobile */}
-            <div className="lg:hidden flex items-center justify-between gap-3 bg-white border border-stone-200 p-3 rounded-lg">
-              <span className="text-xs font-bold text-stone-900 uppercase tracking-wider">Rescue Force registry</span>
+            <div className="lg:hidden flex items-center justify-between gap-3 bg-white border border-[#E5E7EB] p-3.5 rounded-xl shadow-xs">
+              <span className="text-xs font-bold text-[#111827] uppercase tracking-wider">Rescue Force registry</span>
               <button
                 onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-                className="bg-white border border-stone-300 text-teal-700 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer flex items-center gap-1"
+                className="bg-white border border-[#E5E7EB] text-[#166534] text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer flex items-center gap-1.5"
               >
-                <SlidersHorizontal size={12} /> Filters
+                <SlidersHorizontal size={14} /> Filters
               </button>
             </div>
 
@@ -178,12 +174,12 @@ export default function AgencyDirectory() {
             )}
 
             {/* Split Screen layout: Top Map, Bottom Cards */}
-            <div className="bg-white border border-stone-200 rounded-lg p-4 h-[320px] relative">
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 h-[340px] relative shadow-xs">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Live Response Network Status</h3>
-                <span className="text-[10px] text-stone-500 font-mono">SHOWING {filteredAgencies.length} VERIFIED AGENCIES</span>
+                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Live Response Network GIS</h3>
+                <span className="text-[10px] text-[#64748B] font-mono font-bold">SHOWING {filteredAgencies.length} VERIFIED AGENCIES</span>
               </div>
-              <div className="flex-1 h-[240px] relative rounded overflow-hidden border border-stone-300">
+              <div className="flex-1 h-[250px] relative rounded-lg overflow-hidden border border-[#E5E7EB]">
                 <MapView markers={getMapMarkers()} />
                 <MapLegend />
               </div>
@@ -191,13 +187,13 @@ export default function AgencyDirectory() {
 
             {/* Grid listings of agencies */}
             <div>
-              <div className="flex items-center justify-between mb-4 border-b border-stone-200 pb-2">
-                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Vetted Rescue Forces</h3>
-                <span className="text-xs text-stone-500 font-mono">{filteredAgencies.length} matches</span>
+              <div className="flex items-center justify-between mb-4 border-b border-[#E5E7EB] pb-2.5">
+                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Vetted Rescue Forces</h3>
+                <span className="text-xs text-[#64748B] font-mono">{filteredAgencies.length} matches</span>
               </div>
 
               {filteredAgencies.length === 0 ? (
-                <div className="py-16 text-center text-xs text-stone-500 font-mono uppercase bg-white border border-stone-200 rounded-lg">
+                <div className="py-16 text-center text-xs text-[#64748B] font-mono uppercase bg-white border border-[#E5E7EB] rounded-xl">
                   No agencies match current coordinates or query filters.
                 </div>
               ) : (
@@ -205,7 +201,6 @@ export default function AgencyDirectory() {
                   {filteredAgencies.map((agency) => (
                     <AgencyCard key={agency.id} agency={{
                       ...agency,
-                      // Mask fields if public role
                       phone: role === 'public' ? 'Credential Access Required' : agency.phone,
                       email: role === 'public' ? 'Credential Access Required' : agency.email,
                       resources: role === 'public' ? {

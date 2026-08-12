@@ -1,57 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Color Palette — Professional Government Light Theme ── */
-  --color-ivory-950: #faf9f6;
-  --color-ivory-900: #f7f5ef;
-  --color-ivory-850: #f0ede8;
-  --color-ivory-800: #fffffe;
-  --color-ivory-750: #fafaf8;
-  --color-ivory-700: #f7f6f3;
-  --color-ivory-600: #ede9e3;
-  --color-ivory-500: #e5e2dd;
-
-  --color-stone-850: #e8e5df;
-  --color-stone-800: #e5e2dd;
-  --color-stone-750: #d6d3ce;
-  --color-stone-700: #c8c5c0;
-  --color-stone-600: #a8a29e;
+  /* ── SAMANVAY Government Public-Service Color Palette ── */
+  --color-ivory-bg: #F7F5EF;
+  --color-ivory-card: #FFFFFF;
+  --color-ivory-subtle: #F0EDE6;
 
   /* Forest Greens */
-  --color-teal-700: #14532d;
-  --color-teal-600: #166534;
-  --color-teal-500: #3f6f4a;
-  --color-teal-200: #d1fae5;
-  --color-teal-50: #f0fdf4;
+  --color-forest-900: #14532D;
+  --color-forest-800: #166534;
+  --color-forest-700: #15803D;
+  --color-forest-600: #16A34A;
+  --color-forest-500: #3F6F4A;
+  --color-forest-100: #DCFCE7;
+  --color-forest-50: #F0FDF4;
 
-  --color-govblue-500: #2563eb;
-  --color-govblue-400: #3b82f6;
+  /* Charcoal Typography */
+  --color-charcoal-900: #111827;
+  --color-charcoal-800: #1F2937;
+  --color-charcoal-700: #374151;
+  --color-slate-muted: #64748B;
+  --color-border-subtle: #E5E7EB;
 
-  --color-critical: #dc2626;
+  /* Emergency Accents */
+  --color-critical: #DC2626;
   --color-critical-dim: rgba(220, 38, 38, 0.08);
-  --color-high: #ea580c;
-  --color-high-dim: rgba(234, 88, 12, 0.08);
-  --color-medium: #d97706;
-  --color-medium-dim: rgba(217, 119, 6, 0.08);
-  --color-low: #16a34a;
-  --color-low-dim: rgba(22, 163, 74, 0.08);
+  --color-warning: #EA580C;
+  --color-warning-dim: rgba(234, 88, 12, 0.08);
 
-  --color-available: #16a34a;
-  --color-limited: #d97706;
-  --color-deployed: #dc2626;
-  --color-offline: #78716c;
-
-  --color-verified: #166534;
-  --color-pending: #ea580c;
-  --color-rejected: #dc2626;
-
-  /* ── Font Family ── */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  /* ── Border Radius ── */
-  --radius-card: 8px;
-  --radius-badge: 4px;
 }
 
 /* ── Base Reset ── */
@@ -62,10 +41,12 @@
 html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
+  background-color: #F7F5EF;
+  color: #111827;
 }
 
 body {
-  background-color: #f7f5ef;
+  background-color: #F7F5EF;
   color: #111827;
   margin: 0;
   padding: 0;
@@ -76,72 +57,68 @@ body {
 
 /* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f3ef;
+  background: #F7F5EF;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c8c5c0;
+  background: #CBD5E1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
+  background: #94A3B8;
 }
 
 /* ── Leaflet Map Overrides ── */
 .leaflet-container {
-  background: #f0ede8 !important;
+  background: #F0EDE6 !important;
   font-family: var(--font-sans) !important;
+  border-radius: 8px;
 }
 
 .leaflet-control-zoom {
-  border: 1px solid #d6d3ce !important;
-  background: #ffffff !important;
+  border: 1px solid #E5E7EB !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
 .leaflet-control-zoom a {
-  background: #ffffff !important;
-  color: #57534e !important;
-  border-bottom: 1px solid #e5e2dd !important;
+  background: #FFFFFF !important;
+  color: #1F2937 !important;
+  border-bottom: 1px solid #E5E7EB !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: #f5f3ef !important;
-  color: #0f766e !important;
+  background: #F0FDF4 !important;
+  color: #166534 !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #ffffff !important;
-  border: 1px solid #e5e2dd !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
   border-radius: 8px !important;
-  color: #1c1917 !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+  color: #111827 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
 .leaflet-popup-tip {
-  background: #ffffff !important;
+  background: #FFFFFF !important;
 }
 
 .leaflet-popup-close-button {
-  color: #78716c !important;
+  color: #64748B !important;
 }
 
 .leaflet-popup-close-button:hover {
-  color: #1c1917 !important;
+  color: #111827 !important;
 }
 
-.custom-marker-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ── Pulse animation for critical incidents ── */
+/* ── Status Pulse & Animations ── */
 @keyframes pulse-ring {
   0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 
 .pulse-critical::before {
@@ -156,9 +133,17 @@ body {
   left: -4px;
 }
 
-/* ── Subtle fade-in ── */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -166,106 +151,17 @@ body {
   animation: fadeIn 0.25s ease-out;
 }
 
-/* ── Status indicator pulse ── */
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.status-pulse {
-  animation: status-pulse 2s ease-in-out infinite;
-}
-
-/* ── Sidebar transitions ── */
-.sidebar-transition {
-  transition: width 0.25s ease, transform 0.25s ease;
-}
-
 /* ── Card hover effect ── */
 .card-hover {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card-hover:hover {
-  border-color: #c8c5c0;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* ── Timeline connector ── */
-.timeline-step {
-  position: relative;
-}
-
-.timeline-step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 11px;
-  top: 28px;
-  width: 2px;
-  height: calc(100% - 12px);
-  background: linear-gradient(to bottom, #d6d3ce, #e5e2dd);
-}
-
-/* ── Step wizard progress ── */
-.step-connector {
-  flex: 1;
-  height: 2px;
-  background: #e5e2dd;
-  transition: background 0.3s ease;
-}
-
-.step-connector.active {
-  background: #0f766e;
-}
-
-/* ── Map marker styles ── */
-.marker-available {
-  background: #16a34a;
-  border: 2px solid #15803d;
-  border-radius: 50%;
-  width: 14px;
-  height: 14px;
-}
-
-.marker-limited {
-  background: #d97706;
-  border: 2px solid #b45309;
-  border-radius: 50%;
-  width: 14px;
-  height: 14px;
-}
-
-.marker-deployed {
-  background: #dc2626;
-  border: 2px solid #b91c1c;
-  border-radius: 50%;
-  width: 14px;
-  height: 14px;
-}
-
-.marker-incident {
-  background: #2563eb;
-  border: 2px solid #1d4ed8;
-  border-radius: 3px;
-  width: 14px;
-  height: 14px;
-  transform: rotate(45deg);
-}
-
-/* ── Request status timeline ── */
-.req-status-done {
-  color: #16a34a;
-}
-
-.req-status-active {
-  color: #0f766e;
-}
-
-.req-status-pending {
-  color: #78716c;
-}
-
-/* ── Table styles ── */
+/* ── Data Tables ── */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -273,64 +169,32 @@ body {
 
 .data-table th {
   text-align: left;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #78716c;
+  color: #64748B;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e5e2dd;
-  background: #faf9f6;
+  border-bottom: 1px solid #E5E7EB;
+  background: #F7F5EF;
 }
 
 .data-table td {
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid #f0ede8;
+  border-bottom: 1px solid #E5E7EB;
   font-size: 0.875rem;
-  color: #44403c;
+  color: #1F2937;
 }
 
 .data-table tr:hover td {
-  background: #faf9f6;
+  background: #FAFAFA;
 }
 
-/* ── Utility: no-scrollbar ── */
+/* ── Scrollbar utility ── */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* ── Subtle topographic contour background for landing page ── */
-.topo-bg {
-  background-color: #f5f3ef;
-  background-image:
-    /* Subtle contour lines */
-    url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 300 Q150 200 300 250 Q450 300 550 200' fill='none' stroke='%230f766e' stroke-width='0.6' opacity='0.04'/%3E%3Cpath d='M0 400 Q200 350 350 380 Q500 410 600 340' fill='none' stroke='%230f766e' stroke-width='0.5' opacity='0.03'/%3E%3Cpath d='M30 150 Q180 100 320 130 Q460 160 580 100' fill='none' stroke='%230f766e' stroke-width='0.5' opacity='0.035'/%3E%3Cpath d='M0 500 Q150 460 300 490 Q450 520 600 460' fill='none' stroke='%230f766e' stroke-width='0.4' opacity='0.025'/%3E%3Cpath d='M80 50 Q200 30 350 60 Q500 90 580 30' fill='none' stroke='%230f766e' stroke-width='0.4' opacity='0.03'/%3E%3Ccircle cx='120' cy='180' r='1.2' fill='%230f766e' opacity='0.06'/%3E%3Ccircle cx='400' cy='320' r='1' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='500' cy='150' r='0.8' fill='%230f766e' opacity='0.04'/%3E%3Ccircle cx='250' cy='450' r='1' fill='%230f766e' opacity='0.05'/%3E%3C/svg%3E");
-  background-size: 600px 600px;
-}
-
-/* ── Subtle network lines for landing hero ── */
-.network-bg {
-  background-image:
-    url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='50' y1='80' x2='200' y2='150' stroke='%230f766e' stroke-width='0.4' opacity='0.04'/%3E%3Cline x1='200' y1='150' x2='350' y2='100' stroke='%230f766e' stroke-width='0.4' opacity='0.04'/%3E%3Cline x1='200' y1='150' x2='150' y2='300' stroke='%230f766e' stroke-width='0.4' opacity='0.03'/%3E%3Cline x1='200' y1='150' x2='320' y2='280' stroke='%230f766e' stroke-width='0.3' opacity='0.03'/%3E%3Ccircle cx='200' cy='150' r='2' fill='%230f766e' opacity='0.06'/%3E%3Ccircle cx='50' cy='80' r='1.5' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='350' cy='100' r='1.5' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='150' cy='300' r='1.5' fill='%230f766e' opacity='0.04'/%3E%3Ccircle cx='320' cy='280' r='1.5' fill='%230f766e' opacity='0.04'/%3E%3C/svg%3E");
-  background-size: 400px 400px;
-}
-
-/* ── Grid map background effect (light version) ── */
-.map-grid-bg {
-  background-image:
-    linear-gradient(rgba(15, 118, 110, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 118, 110, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* ── Clean white panel (replaces glassmorphism) ── */
-.glass-card {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #e5e2dd;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }

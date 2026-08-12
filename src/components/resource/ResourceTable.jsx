@@ -27,8 +27,6 @@ export default function ResourceTable({ data = [], onUpdate }) {
     const intVal = Math.max(0, parseInt(val) || 0);
     setEditValues(prev => {
       const next = { ...prev, [field]: intVal };
-      // Keep math consistent: total = available + deployed (or let the user define, but keeping it auto-updating makes sense!)
-      // Wait, let's allow total to be independent, but make sure available and deployed don't exceed total.
       if (field === 'available') {
         next.deployed = Math.max(0, next.total - intVal);
       } else if (field === 'deployed') {
@@ -50,7 +48,7 @@ export default function ResourceTable({ data = [], onUpdate }) {
   };
 
   return (
-    <div className="bg-white border border-stone-200 rounded-lg overflow-x-auto fade-in">
+    <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden fade-in shadow-2xs">
       <table className="data-table">
         <thead>
           <tr>
@@ -68,8 +66,8 @@ export default function ResourceTable({ data = [], onUpdate }) {
             return (
               <tr key={row.id}>
                 <td>
-                  <div className="flex items-center gap-2 font-semibold text-stone-900">
-                    <span className="text-teal-700">
+                  <div className="flex items-center gap-2 font-bold text-[#111827]">
+                    <span className="text-[#166534]">
                       {icons[row.name] || <Package size={14} />}
                     </span>
                     <span>{row.name}</span>
@@ -81,10 +79,10 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.total}
                       onChange={(e) => handleInputChange('total', e.target.value)}
-                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-stone-900 font-mono text-center focus:outline-none focus:border-teal-500"
+                      className="w-20 bg-[#F7F5EF] border border-[#CBD5E1] rounded px-2 py-1 text-xs text-[#111827] font-mono text-center focus:outline-none focus:border-[#166534]"
                     />
                   ) : (
-                    <span className="font-mono">{row.total}</span>
+                    <span className="font-mono text-[#111827] font-semibold">{row.total}</span>
                   )}
                 </td>
                 <td>
@@ -93,10 +91,10 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.available}
                       onChange={(e) => handleInputChange('available', e.target.value)}
-                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-green-700 font-mono text-center focus:outline-none focus:border-green-500"
+                      className="w-20 bg-[#F0FDF4] border border-[#DCFCE7] rounded px-2 py-1 text-xs text-[#166534] font-mono text-center focus:outline-none focus:border-[#166534]"
                     />
                   ) : (
-                    <span className="text-green-700 font-mono">{row.available}</span>
+                    <span className="text-[#166534] font-mono font-bold">{row.available}</span>
                   )}
                 </td>
                 <td>
@@ -105,28 +103,28 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.deployed}
                       onChange={(e) => handleInputChange('deployed', e.target.value)}
-                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-red-700 font-mono text-center focus:outline-none focus:border-red-500"
+                      className="w-20 bg-[#FEF2F2] border border-[#FECACA] rounded px-2 py-1 text-xs text-[#DC2626] font-mono text-center focus:outline-none focus:border-[#DC2626]"
                     />
                   ) : (
-                    <span className="text-red-700 font-mono">{row.deployed}</span>
+                    <span className="text-[#DC2626] font-mono font-bold">{row.deployed}</span>
                   )}
                 </td>
                 <td>
-                  <span className="text-xs text-stone-500 font-mono">{row.lastUpdated}</span>
+                  <span className="text-xs text-[#64748B] font-mono">{row.lastUpdated}</span>
                 </td>
                 <td className="text-right">
                   {isEditing ? (
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => handleSave(row.id)}
-                        className="p-1 hover:bg-green-50 text-green-700 border border-green-200 rounded transition-colors"
+                        className="p-1.5 hover:bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] rounded-md transition-colors cursor-pointer"
                         title="Save Changes"
                       >
                         <Check size={14} />
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="p-1 hover:bg-red-50 text-red-700 border border-red-200 rounded transition-colors"
+                        className="p-1.5 hover:bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] rounded-md transition-colors cursor-pointer"
                         title="Cancel"
                       >
                         <X size={14} />
@@ -135,10 +133,10 @@ export default function ResourceTable({ data = [], onUpdate }) {
                   ) : (
                     <button
                       onClick={() => handleEditClick(row)}
-                      className="p-1.5 hover:bg-stone-100 text-stone-500 hover:text-stone-900 border border-transparent hover:border-stone-200 rounded transition-colors"
+                      className="p-1.5 hover:bg-[#F7F5EF] text-[#64748B] hover:text-[#111827] border border-transparent hover:border-[#E5E7EB] rounded-md transition-colors cursor-pointer"
                       title="Edit Row"
                     >
-                      <Edit2 size={13} />
+                      <Edit2 size={14} />
                     </button>
                   )}
                 </td>

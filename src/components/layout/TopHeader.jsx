@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Bell, ShieldAlert, Laptop, Eye, HelpCircle } from 'lucide-react';
+import { Bell, Laptop, HelpCircle } from 'lucide-react';
 import NotificationPanel from '../ui/NotificationPanel';
 import { MOCK_NOTIFICATIONS } from '../../data/mockData';
 
@@ -21,7 +21,6 @@ export default function TopHeader({ title = 'Pune District' }) {
     } else if (path.startsWith('/agency')) {
       role = 'agency';
     } else if (path === '/resources' || path === '/requests' || path.startsWith('/incidents')) {
-      // Shared views default to active role
       role = localStorage.getItem('samanvay_role') || 'authority';
     } else if (path === '/' || path === '/agencies' || path.startsWith('/agencies/')) {
       role = localStorage.getItem('samanvay_role') || 'public';
@@ -62,55 +61,55 @@ export default function TopHeader({ title = 'Pune District' }) {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="h-16 bg-[#faf9f6] border-b border-stone-200 px-6 flex items-center justify-between sticky top-0 z-30">
-      {/* Title & Status */}
+    <header className="h-16 bg-[#F7F5EF] border-b border-[#E5E7EB] px-6 flex items-center justify-between sticky top-0 z-30 font-sans">
+      {/* Title & Operational Status */}
       <div className="flex items-center gap-4">
         <div>
-          <h1 className="text-sm font-bold text-stone-900 uppercase tracking-wider">{title}</h1>
+          <h1 className="text-sm font-bold text-[#111827] uppercase tracking-wider">{title} EOC</h1>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-600 status-pulse"></span>
-            <span className="text-[10px] font-semibold text-green-700 uppercase tracking-widest">SYSTEM OPERATIONAL</span>
+            <span className="w-2 h-2 rounded-full bg-[#166534] status-pulse"></span>
+            <span className="text-[10px] font-bold text-[#166534] uppercase tracking-widest">SYSTEM OPERATIONAL</span>
           </div>
         </div>
       </div>
 
-      {/* Center/Right Simulation tools & Profile */}
+      {/* Role Switcher & Notifications */}
       <div className="flex items-center gap-4">
         {/* Simulation Role Selector */}
-        <div className="flex items-center gap-2 bg-white border border-stone-200 rounded px-2.5 py-1 text-xs">
-          <Laptop size={12} className="text-teal-700" />
-          <span className="text-[10px] text-stone-500 font-semibold uppercase tracking-wider">Simulation Mode:</span>
+        <div className="flex items-center gap-2 bg-white border border-[#E5E7EB] rounded-md px-3 py-1.5 text-xs shadow-2xs">
+          <Laptop size={14} className="text-[#166534]" />
+          <span className="text-[10px] text-[#64748B] font-bold uppercase tracking-wider">Role View:</span>
           <select
             value={simulatedRole}
             onChange={handleRoleChange}
-            className="bg-transparent text-teal-700 font-bold focus:outline-none cursor-pointer text-xs"
+            className="bg-transparent text-[#166534] font-bold focus:outline-none cursor-pointer text-xs"
           >
-            <option value="authority" className="bg-white text-stone-700">District Authority (EOC)</option>
-            <option value="agency" className="bg-white text-stone-700">Rescue Agency (SDRF)</option>
-            <option value="public" className="bg-white text-stone-700">Public Observer View</option>
+            <option value="authority" className="bg-white text-[#111827]">District Authority (EOC)</option>
+            <option value="agency" className="bg-white text-[#111827]">Rescue Agency (SDRF)</option>
+            <option value="public" className="bg-white text-[#111827]">Public Observer View</option>
           </select>
         </div>
 
-        {/* Info Box */}
-        <div className="hidden lg:flex items-center gap-1.5 text-xs text-stone-500 bg-white border border-stone-200 rounded px-2.5 py-1 select-none font-mono">
-          <HelpCircle size={12} className="text-stone-500" />
-          <span>Fictional Prototype</span>
+        {/* Prototype Indicator */}
+        <div className="hidden lg:flex items-center gap-1.5 text-xs text-[#64748B] bg-white border border-[#E5E7EB] rounded-md px-3 py-1.5 font-mono shadow-2xs">
+          <HelpCircle size={14} className="text-[#64748B]" />
+          <span>Government Prototype</span>
         </div>
 
         {/* Notifications Trigger */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className={`p-2 rounded border transition-all ${
+            className={`p-2 rounded-md border transition-all cursor-pointer ${
               showNotifications 
-                ? 'bg-teal-50 border-teal-200 text-teal-700' 
-                : 'bg-white border-stone-200 hover:border-stone-300 text-stone-500 hover:text-stone-900'
+                ? 'bg-[#F0FDF4] border-[#DCFCE7] text-[#166534]' 
+                : 'bg-white border-[#E5E7EB] hover:border-[#CBD5E1] text-[#64748B] hover:text-[#111827] shadow-2xs'
             }`}
           >
             <div className="relative">
-              <Bell size={14} />
+              <Bell size={16} />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-teal-600 rounded-full animate-ping" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#DC2626] rounded-full animate-ping" />
               )}
             </div>
           </button>
