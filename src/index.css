@@ -1,0 +1,319 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Color Palette ── */
+  --color-navy-950: #050a18;
+  --color-navy-900: #080f1f;
+  --color-navy-850: #0b1428;
+  --color-navy-800: #0f1c35;
+  --color-navy-750: #121f3d;
+  --color-navy-700: #162447;
+  --color-navy-600: #1e3163;
+  --color-navy-500: #2a4480;
+  --color-navy-400: #3a5fa0;
+  --color-navy-300: #5a80c0;
+
+  --color-slate-850: #1a2235;
+  --color-slate-800: #1e2a40;
+  --color-slate-750: #243048;
+  --color-slate-700: #2a3855;
+  --color-slate-600: #344565;
+
+  --color-cyan-500: #06b6d4;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-300: #67e8f9;
+  --color-cyan-200: #a5f3fc;
+
+  --color-sky-500: #0ea5e9;
+  --color-sky-400: #38bdf8;
+
+  --color-critical: #ef4444;
+  --color-critical-dim: rgba(239, 68, 68, 0.15);
+  --color-high: #f97316;
+  --color-high-dim: rgba(249, 115, 22, 0.15);
+  --color-medium: #eab308;
+  --color-medium-dim: rgba(234, 179, 8, 0.15);
+  --color-low: #22c55e;
+  --color-low-dim: rgba(34, 197, 94, 0.15);
+
+  --color-available: #22c55e;
+  --color-limited: #eab308;
+  --color-deployed: #ef4444;
+  --color-offline: #6b7280;
+
+  --color-verified: #06b6d4;
+  --color-pending: #f97316;
+  --color-rejected: #ef4444;
+
+  /* ── Font Family ── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Border Radius ── */
+  --radius-card: 8px;
+  --radius-badge: 4px;
+}
+
+/* ── Base Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #080f1f;
+  color: #e2e8f0;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0f1c35;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a4480;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a5fa0;
+}
+
+/* ── Leaflet Map Overrides ── */
+.leaflet-container {
+  background: #0f1c35 !important;
+  font-family: var(--font-sans) !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #2a3855 !important;
+  background: #0f1c35 !important;
+}
+
+.leaflet-control-zoom a {
+  background: #1e2a40 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #2a3855 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #243048 !important;
+  color: #22d3ee !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #1e2a40 !important;
+  border: 1px solid #2a3855 !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+}
+
+.leaflet-popup-tip {
+  background: #1e2a40 !important;
+}
+
+.leaflet-popup-close-button {
+  color: #64748b !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #e2e8f0 !important;
+}
+
+.custom-marker-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Pulse animation for critical incidents ── */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.pulse-critical::before {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  animation: pulse-ring 1.5s ease-out infinite;
+  background: rgba(239, 68, 68, 0.4);
+  width: 24px;
+  height: 24px;
+  top: -4px;
+  left: -4px;
+}
+
+/* ── Subtle fade-in ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ── Status indicator pulse ── */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* ── Sidebar transitions ── */
+.sidebar-transition {
+  transition: width 0.25s ease, transform 0.25s ease;
+}
+
+/* ── Card hover effect ── */
+.card-hover {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  border-color: #2a4480;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.08);
+}
+
+/* ── Timeline connector ── */
+.timeline-step {
+  position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 28px;
+  width: 2px;
+  height: calc(100% - 12px);
+  background: linear-gradient(to bottom, #2a4480, #162447);
+}
+
+/* ── Step wizard progress ── */
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: #1e2a40;
+  transition: background 0.3s ease;
+}
+
+.step-connector.active {
+  background: #06b6d4;
+}
+
+/* ── Map marker styles ── */
+.marker-available {
+  background: #22c55e;
+  border: 2px solid #16a34a;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+}
+
+.marker-limited {
+  background: #eab308;
+  border: 2px solid #ca8a04;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+}
+
+.marker-deployed {
+  background: #ef4444;
+  border: 2px solid #dc2626;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+}
+
+.marker-incident {
+  background: #3b82f6;
+  border: 2px solid #2563eb;
+  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+}
+
+/* ── Request status timeline ── */
+.req-status-done {
+  color: #22c55e;
+}
+
+.req-status-active {
+  color: #06b6d4;
+}
+
+.req-status-pending {
+  color: #475569;
+}
+
+/* ── Table styles ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1e2a40;
+}
+
+.data-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid #1e2a40;
+  font-size: 0.875rem;
+  color: #cbd5e1;
+}
+
+.data-table tr:hover td {
+  background: rgba(30, 42, 64, 0.5);
+}
+
+/* ── Utility: no-scrollbar ── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Grid map background effect ── */
+.map-grid-bg {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Glassmorphism (used sparingly) ── */
+.glass-card {
+  background: rgba(15, 28, 53, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
