@@ -324,7 +324,7 @@ export default function RegisterAgencyPage() {
                   label="Agency Type"
                   options={AGENCY_TYPES}
                   value={agencyInfo.type}
-                  onChange={(e) => handleInfoChange('type', e.target.value)}
+                  onChange={(value) => handleInfoChange('type',value)}
                   required
                 />
 

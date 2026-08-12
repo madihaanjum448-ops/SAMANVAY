@@ -19,7 +19,9 @@ export default function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const selectedOption = options.find((opt) => opt.value === value);
+  const selectedOption = options.find((opt) =>
+  typeof opt === 'string' ? opt === value : opt.value === value
+);
 
   // Close when clicking outside of the component
   useEffect(() => {
@@ -70,10 +72,11 @@ export default function Dropdown({
               <div className="px-3 py-2 text-sm text-stone-500">No options available</div>
             ) : (
               options.map((option) => {
-                const isSelected = option.value === value;
+                const isSelected =
+  typeof option === 'string' ? option === value : option.value === value;
                 return (
                   <button
-                    key={option.value}
+                    key={typeof option === 'string' ? option : option.value}
                     type="button"
                     onClick={() => {
                       if (onChange) onChange(option.value);
@@ -88,7 +91,7 @@ export default function Dropdown({
                       }
                     `}
                   >
-                    <span>{option.label}</span>
+                    <span>{typeof option === 'string' ? option : option.label}</span>
                     {isSelected && <Check size={14} className="text-teal-700" />}
                   </button>
                 );
