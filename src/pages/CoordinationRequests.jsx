@@ -10,6 +10,7 @@ import Dropdown from '../components/ui/Dropdown';
 import FormInput from '../components/ui/FormInput';
 import Button from '../components/ui/Button';
 import { MOCK_REQUESTS, MOCK_INCIDENTS, MOCK_AGENCIES } from '../data/mockData';
+import { api } from '../services/api';
 
 export default function CoordinationRequests() {
   const [role, setRole] = useState('authority');
@@ -30,24 +31,27 @@ export default function CoordinationRequests() {
     const activeRole = localStorage.getItem('samanvay_role') || 'authority';
     setRole(activeRole);
 
-    const initData = (key, fallback) => {
-      const stored = localStorage.getItem(key);
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    };
-
-    setRequests(initData('samanvay_requests', MOCK_REQUESTS));
-    setIncidents(initData('samanvay_incidents', MOCK_INCIDENTS));
-    setAgencies(initData('samanvay_agencies', MOCK_AGENCIES));
+    async function loadData() {
+      try {
+        const [requestsData, incidentsData, agenciesData] = await Promise.all([
+          api.requests.getAll(),
+          api.incidents.getAll(),
+          api.agencies.getAll()
+        ]);
+        if (requestsData?.length) setRequests(requestsData);
+        if (incidentsData?.length) setIncidents(incidentsData);
+        if (agenciesData?.length) setAgencies(agenciesData);
+      } catch (err) {
+        console.error('Failed to load coordination requests:', err);
+      }
+    }
+    loadData();
   }, []);
 
-  const syncState = (key, data, setter) => {
-    setter(data);
-    localStorage.setItem(key, JSON.stringify(data));
-  };
+  const handleStatusChange = async (reqId, newStatus) => {
+    const actor = role === 'authority' ? 'Priya Desai (EOC)' : 'Agency Dispatcher';
+    await api.requests.updateStatus(reqId, newStatus, actor);
 
-  const handleStatusChange = (reqId, newStatus) => {
     const updated = requests.map(r => {
       if (r.id === reqId) {
         const timeKey = newStatus === 'ACKNOWLEDGED' ? 'acknowledgedAt' : newStatus === 'DEPLOYED' ? 'deployedAt' : 'resolvedAt';
@@ -60,6 +64,7 @@ export default function CoordinationRequests() {
       }
       return r;
     });
+
     syncState('samanvay_requests', updated, setRequests);
 
     // Activity logging
@@ -76,9 +81,10 @@ export default function CoordinationRequests() {
     };
     logsList.unshift(newLog);
     localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
+
   };
 
-  const handleCreateRequest = (e) => {
+  const handleCreateRequest = async (e) => {
     e.preventDefault();
 
     let fromId = 'EOC-PUNE';
@@ -91,8 +97,7 @@ export default function CoordinationRequests() {
     const selectedTo = agencies.find(a => a.id === toSelected);
     const selectedInc = incidents.find(i => i.id === incidentSelected);
 
-    const newRequest = {
-      id: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
+    const newRequestPayload = {
       from: fromId,
       fromName: fromName,
       to: toSelected,
@@ -101,7 +106,13 @@ export default function CoordinationRequests() {
       incidentLabel: selectedInc ? `${selectedInc.type} — ${selectedInc.location}` : 'General Coordinate Action',
       required: resourcesRequired,
       urgency: urgencySelected,
-      message: messageText,
+      message: messageText
+    };
+
+    const res = await api.requests.create(newRequestPayload);
+    const createdReq = res?.request || {
+      ...newRequestPayload,
+      id: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
       status: 'INITIATED',
       createdAt: new Date().toISOString(),
       timeline: [
@@ -112,22 +123,7 @@ export default function CoordinationRequests() {
       ]
     };
 
-    const updated = [newRequest, ...requests];
-    syncState('samanvay_requests', updated, setRequests);
-
-    // Activity log
-    const storedLogs = localStorage.getItem('samanvay_activity') || '[]';
-    const logsList = JSON.parse(storedLogs);
-    const newLog = {
-      id: Date.now(),
-      type: 'request',
-      action: 'Request Initiated',
-      detail: `${newRequest.id} created by ${fromName}`,
-      actor: fromName,
-      time: 'Just now',
-    };
-    logsList.unshift(newLog);
-    localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
+    setRequests([createdReq, ...requests]);
 
     setIsCreateOpen(false);
     setToSelected('');

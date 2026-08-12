@@ -15,6 +15,7 @@ import Button from '../components/ui/Button';
 import FormInput from '../components/ui/FormInput';
 import Dropdown from '../components/ui/Dropdown';
 import { AGENCY_TYPES, EXPERTISE_OPTIONS } from '../data/mockData';
+import { api } from '../services/api';
 
 export default function RegisterAgencyPage() {
   const navigate = useNavigate();
@@ -149,38 +150,25 @@ export default function RegisterAgencyPage() {
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Add registered agency into local storage list to simulate updating EOC Queue!
-    const newAgency = {
-      id: `AG-NEW-${Date.now()}`,
+    const newAgencyPayload = {
       name: agencyInfo.name,
       type: agencyInfo.type,
-      district: agencyInfo.district,
-      state: agencyInfo.state,
+      district: agencyInfo.district || 'Pune',
+      state: agencyInfo.state || 'Maharashtra',
       phone: agencyInfo.phone,
       email: agencyInfo.email,
-      status: 'AVAILABLE',
-      verificationStatus: 'PENDING',
-      verifiedAt: null,
-      coordinates: [parseFloat(location.lat), parseFloat(location.lng)],
       expertise: expertise,
-      resources: {
-        personnel: { total: resources.personnel, available: resources.personnel },
-        ambulances: { total: resources.ambulances, available: resources.ambulances },
-        rescueVehicles: { total: resources.vehicles, available: resources.vehicles },
-        boats: { total: resources.boats, available: resources.boats },
-        drones: { total: resources.drones, available: resources.drones },
-        medicalKits: { total: resources.kits, available: resources.kits }
+      location: {
+        lat: location.lat,
+        lng: location.lng,
+        address: location.address
       },
-      address: location.address,
-      lastUpdated: '1 min ago',
-      distance: 8.0,
-      activeIncidents: 0,
-      totalMissions: 0,
-      submittedAt: new Date().toISOString()
+      resources: resources
     };
+
 
     const existing = localStorage.getItem('samanvay_agencies');
     let agenciesList = [];
@@ -207,6 +195,10 @@ export default function RegisterAgencyPage() {
     };
     notifs.unshift(newNotif);
     localStorage.setItem('samanvay_notifications', JSON.stringify(notifs));
+
+    // Dispatch to Backend API
+    await api.agencies.register(newAgencyPayload);
+
 
     setSubmitted(true);
   };

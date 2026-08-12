@@ -20,30 +20,36 @@ import {
   MOCK_INCIDENTS, 
   MOCK_REQUESTS 
 } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export default function AgencyDashboard() {
   const navigate = useNavigate();
   const agencyId = 'AG-002'; // Logged-in agency: SDRF UNIT 01
 
-  // Local state synced with localStorage
+  // Local state synced with backend API
   const [agencies, setAgencies] = useState([]);
   const [incidents, setIncidents] = useState([]);
   const [requests, setRequests] = useState([]);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [tempStatus, setTempStatus] = useState('');
 
-  // Load and sync from localStorage
+  // Load from Backend API
   useEffect(() => {
-    const initData = (key, fallback) => {
-      const stored = localStorage.getItem(key);
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    };
-
-    setAgencies(initData('samanvay_agencies', MOCK_AGENCIES));
-    setIncidents(initData('samanvay_incidents', MOCK_INCIDENTS));
-    setRequests(initData('samanvay_requests', MOCK_REQUESTS));
+    async function loadData() {
+      try {
+        const [agenciesData, incidentsData, requestsData] = await Promise.all([
+          api.agencies.getAll(),
+          api.incidents.getAll(),
+          api.requests.getAll()
+        ]);
+        if (agenciesData?.length) setAgencies(agenciesData);
+        if (incidentsData?.length) setIncidents(incidentsData);
+        if (requestsData?.length) setRequests(requestsData);
+      } catch (err) {
+        console.error('Failed to load agency data from API:', err);
+      }
+    }
+    loadData();
   }, []);
 
   const syncState = (key, data, setter) => {

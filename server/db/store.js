@@ -1,0 +1,333 @@
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
+  INITIAL_AGENCIES,
+  INITIAL_INCIDENTS,
+  INITIAL_REQUESTS,
+  INITIAL_RESOURCES,
+  INITIAL_ACTIVITY,
+  INITIAL_NOTIFICATIONS
+} from './seedData.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const DB_FILE = path.join(DATA_DIR, 'samanvay_db.json');
+
+class DataStore {
+  constructor() {
+    this.data = {
+      agencies: [],
+      incidents: [],
+      requests: [],
+      resources: [],
+      activity: [],
+      notifications: [],
+      users: [
+        {
+          id: 'USR-001',
+          name: 'Priya Desai (EOC Officer)',
+          email: 'authority@pune.gov.in',
+          role: 'authority',
+          district: 'Pune',
+          state: 'Maharashtra'
+        },
+        {
+          id: 'USR-002',
+          name: 'Capt. Rajesh V. (NDRF Commander)',
+          email: 'ndrf6.pune@ndrf.gov.in',
+          role: 'agency',
+          agencyId: 'AG-001',
+          district: 'Pune',
+          state: 'Maharashtra'
+        }
+      ]
+    };
+    this.initialized = false;
+  }
+
+  async init() {
+    if (this.initialized) return;
+
+    try {
+      await fs.mkdir(DATA_DIR, { recursive: true });
+      const raw = await fs.readFile(DB_FILE, 'utf-8');
+      this.data = JSON.parse(raw);
+      console.log('📦 SAMANVAY DB: Loaded existing database file.');
+    } catch (err) {
+      console.log('🌱 SAMANVAY DB: Initializing with seed dataset...');
+      this.data.agencies = [...INITIAL_AGENCIES];
+      this.data.incidents = [...INITIAL_INCIDENTS];
+      this.data.requests = [...INITIAL_REQUESTS];
+      this.data.resources = [...INITIAL_RESOURCES];
+      this.data.activity = [...INITIAL_ACTIVITY];
+      this.data.notifications = [...INITIAL_NOTIFICATIONS];
+      await this.persist();
+    }
+    this.initialized = true;
+  }
+
+  async persist() {
+    try {
+      await fs.mkdir(DATA_DIR, { recursive: true });
+      await fs.writeFile(DB_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('❌ Failed to persist SAMANVAY database:', err);
+    }
+  }
+
+  // --- AGENCIES ---
+  getAgencies(filter = {}) {
+    return this.data.agencies.filter(a => {
+      if (filter.verificationStatus && a.verificationStatus !== filter.verificationStatus) {
+        return false;
+      }
+      if (filter.district && a.district.toLowerCase() !== filter.district.toLowerCase()) {
+        return false;
+      }
+      if (filter.type && a.type !== filter.type) {
+        return false;
+      }
+      if (filter.status && a.status !== filter.status) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  getAgencyById(id) {
+    return this.data.agencies.find(a => a.id === id);
+  }
+
+  async addAgency(agencyPayload) {
+    const id = agencyPayload.id || `AG-${String(this.data.agencies.length + 1).padStart(3, '0')}`;
+    const newAgency = {
+      ...agencyPayload,
+      id,
+      verificationStatus: 'PENDING',
+      verifiedAt: null,
+      verifiedBy: null,
+      submittedAt: new Date().toISOString(),
+      activeIncidents: 0,
+      totalMissions: 0
+    };
+
+    this.data.agencies.push(newAgency);
+
+    // Add activity log and notification
+    this.addActivity({
+      type: 'verification',
+      action: 'Agency Registration Received',
+      detail: `${newAgency.name} (${newAgency.type}) submitted for district verification`,
+      actor: 'Public Portal',
+      severity: null
+    });
+
+    this.addNotification({
+      type: 'alert',
+      title: 'New Agency Registration',
+      message: `${newAgency.name} submitted for verification in ${newAgency.district}.`
+    });
+
+    await this.persist();
+    return newAgency;
+  }
+
+  async verifyAgency(id, status, verifierName = 'District Collector / EOC Officer') {
+    const agency = this.getAgencyById(id);
+    if (!agency) return null;
+
+    agency.verificationStatus = status; // 'VERIFIED' | 'REJECTED'
+    if (status === 'VERIFIED') {
+      agency.verifiedAt = new Date().toISOString().split('T')[0];
+      agency.verifiedBy = verifierName;
+    }
+
+    this.addActivity({
+      type: 'verification',
+      action: status === 'VERIFIED' ? 'Agency Verified' : 'Agency Rejected',
+      detail: `${agency.name} status updated to ${status}`,
+      actor: verifierName,
+      severity: null
+    });
+
+    this.addNotification({
+      type: status === 'VERIFIED' ? 'system' : 'alert',
+      title: `Agency ${status}`,
+      message: `${agency.name} has been ${status.toLowerCase()} for emergency deployment.`
+    });
+
+    await this.persist();
+    return agency;
+  }
+
+  async updateAgencyResources(id, resources) {
+    const agency = this.getAgencyById(id);
+    if (!agency) return null;
+
+    agency.resources = { ...agency.resources, ...resources };
+    agency.lastUpdated = 'Just now';
+    await this.persist();
+    return agency;
+  }
+
+  // --- COORDINATION REQUESTS (CAP-Lite) ---
+  getRequests(filter = {}) {
+    return this.data.requests.filter(r => {
+      if (filter.from && r.from !== filter.from) return false;
+      if (filter.to && r.to !== filter.to) return false;
+      if (filter.status && r.status !== filter.status) return false;
+      if (filter.incident && r.incident !== filter.incident) return false;
+      return true;
+    });
+  }
+
+  getRequestById(id) {
+    return this.data.requests.find(r => r.id === id);
+  }
+
+  async addRequest(reqPayload) {
+    const id = reqPayload.id || `REQ-${Math.floor(1000 + Math.random() * 9000)}`;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const newRequest = {
+      ...reqPayload,
+      id,
+      status: 'INITIATED',
+      createdAt: now.toISOString(),
+      acknowledgedAt: null,
+      deployedAt: null,
+      resolvedAt: null,
+      timeline: [
+        { status: 'INITIATED', time: timeStr, done: true },
+        { status: 'ACKNOWLEDGED', time: null, done: false },
+        { status: 'DEPLOYED', time: null, done: false },
+        { status: 'RESOLVED', time: null, done: false }
+      ]
+    };
+
+    this.data.requests.unshift(newRequest);
+
+    this.addActivity({
+      type: 'request',
+      action: 'Coordination Request Dispatched',
+      detail: `${newRequest.id}: ${newRequest.fromName || newRequest.from} ➔ ${newRequest.toName || newRequest.to} (${newRequest.required})`,
+      actor: newRequest.fromName || 'Field Unit',
+      severity: newRequest.urgency === 'IMMEDIATE' ? 'CRITICAL' : 'HIGH'
+    });
+
+    this.addNotification({
+      type: 'request',
+      title: 'New Coordination Request',
+      message: `${newRequest.required} requested for ${newRequest.incidentLabel || 'Incident'}.`
+    });
+
+    await this.persist();
+    return newRequest;
+  }
+
+  async updateRequestStatus(id, newStatus, actor = 'Agency Dispatcher') {
+    const req = this.getRequestById(id);
+    if (!req) return null;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    req.status = newStatus;
+
+    if (newStatus === 'ACKNOWLEDGED') req.acknowledgedAt = now.toISOString();
+    if (newStatus === 'DEPLOYED') req.deployedAt = now.toISOString();
+    if (newStatus === 'RESOLVED') req.resolvedAt = now.toISOString();
+
+    // Update timeline step
+    const timelineStep = req.timeline.find(t => t.status === newStatus);
+    if (timelineStep) {
+      timelineStep.time = timeStr;
+      timelineStep.done = true;
+    }
+
+    this.addActivity({
+      type: 'request',
+      action: `Request ${newStatus}`,
+      detail: `${req.id} transitioned to ${newStatus} (${req.required})`,
+      actor: actor,
+      severity: null
+    });
+
+    this.addNotification({
+      type: 'request',
+      title: `Request ${newStatus}`,
+      message: `${req.id} (${req.required}) status is now ${newStatus}.`
+    });
+
+    await this.persist();
+    return req;
+  }
+
+  // --- INCIDENTS ---
+  getIncidents() {
+    return this.data.incidents;
+  }
+
+  getIncidentById(id) {
+    return this.data.incidents.find(i => i.id === id);
+  }
+
+  async addIncident(incPayload) {
+    const id = incPayload.id || `INC-${String(this.data.incidents.length + 1).padStart(3, '0')}`;
+    const newIncident = {
+      ...incPayload,
+      id,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+      timeline: [
+        { time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), event: 'Incident Reported', status: 'done', actor: 'EOC' }
+      ]
+    };
+    this.data.incidents.unshift(newIncident);
+
+    this.addActivity({
+      type: 'incident',
+      action: `Incident ${newIncident.severity} Reported`,
+      detail: `${newIncident.type} at ${newIncident.location}`,
+      actor: 'Emergency Control Room',
+      severity: newIncident.severity
+    });
+
+    await this.persist();
+    return newIncident;
+  }
+
+  // --- RESOURCES & AUDIT LOGS ---
+  getResources() {
+    return this.data.resources;
+  }
+
+  getActivityLogs() {
+    return this.data.activity;
+  }
+
+  getNotifications() {
+    return this.data.notifications;
+  }
+
+  addActivity(item) {
+    this.data.activity.unshift({
+      id: Date.now() + Math.random(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      ...item
+    });
+  }
+
+  addNotification(item) {
+    this.data.notifications.unshift({
+      id: Date.now() + Math.random(),
+      time: 'Just now',
+      read: false,
+      ...item
+    });
+  }
+}
+
+export const store = new DataStore();
