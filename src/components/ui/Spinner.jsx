@@ -8,9 +8,9 @@ export default function Spinner({ size = 'md', color = 'cyan', className = '' })
   };
 
   const colorClasses = {
-    cyan: 'border-cyan-500/20 border-t-cyan-500',
-    white: 'border-white/20 border-t-white',
-    slate: 'border-slate-700 border-t-slate-400',
+    cyan: 'border-teal-200 border-t-teal-600',
+    white: 'border-stone-200 border-t-stone-800',
+    slate: 'border-stone-300 border-t-stone-500',
   };
 
   return (

@@ -127,14 +127,14 @@ export default function AgencyDashboard() {
   const activeMissions = incidents.filter(i => i.status === 'ACTIVE' && i.assignedAgencies.includes(agencyId));
 
   const statusColors = {
-    AVAILABLE: 'text-green-400 bg-green-500/10 border-green-500/30',
-    LIMITED: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
-    DEPLOYED: 'text-red-400 bg-red-500/10 border-red-500/30',
-    OFFLINE: 'text-slate-400 bg-slate-500/10 border-slate-500/30',
+    AVAILABLE: 'text-green-700 bg-green-50 border-green-200',
+    LIMITED: 'text-amber-700 bg-amber-50 border-amber-200',
+    DEPLOYED: 'text-red-700 bg-red-50 border-red-200',
+    OFFLINE: 'text-stone-500 bg-slate-500/10 border-slate-500/30',
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 flex">
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
       {/* Sidebar Navigation */}
       <AgencySidebar />
 
@@ -148,19 +148,19 @@ export default function AgencyDashboard() {
         <main className="p-6 flex-1 overflow-y-auto flex flex-col gap-6">
           
           {/* Top Status Header Board */}
-          <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 fade-in">
+          <div className="bg-white border border-stone-200 rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 fade-in">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400">
+              <div className="w-10 h-10 rounded bg-green-50 border border-green-200 flex items-center justify-center text-green-700">
                 <Radio size={20} className="animate-pulse" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-extrabold text-white tracking-wide">{currentAgency.name}</h2>
-                  <span className="inline-flex items-center gap-0.5 text-[9px] text-green-400 bg-green-500/5 px-1.5 py-0.2 rounded border border-green-500/10 font-bold">
+                  <h2 className="text-base font-extrabold text-stone-900 tracking-wide">{currentAgency.name}</h2>
+                  <span className="inline-flex items-center gap-0.5 text-[9px] text-green-700 bg-green-50 px-1.5 py-0.2 rounded border border-green-200 font-bold">
                     ✓ VERIFIED
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-1 uppercase tracking-wider flex items-center gap-2">
+                <div className="text-[10px] text-stone-500 font-mono mt-1 uppercase tracking-wider flex items-center gap-2">
                   <span>Base HQ: Shivajinagar, Pune</span>
                   <span>•</span>
                   <span>Updated {currentAgency.lastUpdated}</span>
@@ -179,7 +179,7 @@ export default function AgencyDashboard() {
                   setTempStatus(currentAgency.status);
                   setShowStatusModal(true);
                 }}
-                className="bg-navy-800 hover:bg-navy-750 text-cyan-400 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500 text-xs font-bold px-3 py-2 rounded transition-all cursor-pointer"
+                className="bg-white hover:bg-[#f5f3ef] text-teal-700 hover:text-teal-600 border border-stone-200 hover:border-teal-600 text-xs font-bold px-3 py-2 rounded transition-all cursor-pointer"
               >
                 Update Status
               </button>
@@ -190,72 +190,72 @@ export default function AgencyDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             
             {/* Personnel */}
-            <div className="bg-[#0f1c35] border border-slate-850 p-4 rounded-lg flex flex-col justify-between h-24">
-              <div className="flex justify-between items-center text-slate-500">
+            <div className="bg-white border border-stone-200 p-4 rounded-lg flex flex-col justify-between h-24">
+              <div className="flex justify-between items-center text-stone-500">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Rescue Staff</span>
-                <Users size={14} className="text-cyan-400" />
+                <Users size={14} className="text-teal-700" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-mono">
-                  {res.personnel?.available || 0} <span className="text-xs text-slate-500">/ {res.personnel?.total || 0}</span>
+                <div className="text-xl font-bold text-stone-900 font-mono">
+                  {res.personnel?.available || 0} <span className="text-xs text-stone-500">/ {res.personnel?.total || 0}</span>
                 </div>
-                <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-wider">Available staff</span>
+                <span className="text-[9px] text-stone-400 font-semibold uppercase tracking-wider">Available staff</span>
               </div>
             </div>
 
             {/* Boats */}
-            <div className="bg-[#0f1c35] border border-slate-850 p-4 rounded-lg flex flex-col justify-between h-24">
-              <div className="flex justify-between items-center text-slate-500">
+            <div className="bg-white border border-stone-200 p-4 rounded-lg flex flex-col justify-between h-24">
+              <div className="flex justify-between items-center text-stone-500">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Rescue Boats</span>
-                <Ship size={14} className="text-cyan-400" />
+                <Ship size={14} className="text-teal-700" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-mono">
-                  {res.boats?.available || 0} <span className="text-xs text-slate-500">/ {res.boats?.total || 0}</span>
+                <div className="text-xl font-bold text-stone-900 font-mono">
+                  {res.boats?.available || 0} <span className="text-xs text-stone-500">/ {res.boats?.total || 0}</span>
                 </div>
-                <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-wider">Inflatable boats</span>
+                <span className="text-[9px] text-stone-400 font-semibold uppercase tracking-wider">Inflatable boats</span>
               </div>
             </div>
 
             {/* Ambulances */}
-            <div className="bg-[#0f1c35] border border-slate-850 p-4 rounded-lg flex flex-col justify-between h-24">
-              <div className="flex justify-between items-center text-slate-500">
+            <div className="bg-white border border-stone-200 p-4 rounded-lg flex flex-col justify-between h-24">
+              <div className="flex justify-between items-center text-stone-500">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Ambulances</span>
-                <Ambulance size={14} className="text-cyan-400" />
+                <Ambulance size={14} className="text-teal-700" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-mono">
-                  {res.ambulances?.available || 0} <span className="text-xs text-slate-500">/ {res.ambulances?.total || 0}</span>
+                <div className="text-xl font-bold text-stone-900 font-mono">
+                  {res.ambulances?.available || 0} <span className="text-xs text-stone-500">/ {res.ambulances?.total || 0}</span>
                 </div>
-                <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-wider">Medical vehicles</span>
+                <span className="text-[9px] text-stone-400 font-semibold uppercase tracking-wider">Medical vehicles</span>
               </div>
             </div>
 
             {/* Rescue Vehicles */}
-            <div className="bg-[#0f1c35] border border-slate-850 p-4 rounded-lg flex flex-col justify-between h-24">
-              <div className="flex justify-between items-center text-slate-500">
+            <div className="bg-white border border-stone-200 p-4 rounded-lg flex flex-col justify-between h-24">
+              <div className="flex justify-between items-center text-stone-500">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Rescue Trucks</span>
-                <Truck size={14} className="text-cyan-400" />
+                <Truck size={14} className="text-teal-700" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-mono">
-                  {res.rescueVehicles?.available || 0} <span className="text-xs text-slate-500">/ {res.rescueVehicles?.total || 0}</span>
+                <div className="text-xl font-bold text-stone-900 font-mono">
+                  {res.rescueVehicles?.available || 0} <span className="text-xs text-stone-500">/ {res.rescueVehicles?.total || 0}</span>
                 </div>
-                <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-wider">Heavy transport</span>
+                <span className="text-[9px] text-stone-400 font-semibold uppercase tracking-wider">Heavy transport</span>
               </div>
             </div>
 
             {/* Drones */}
-            <div className="bg-[#0f1c35] border border-slate-850 p-4 rounded-lg flex flex-col justify-between h-24 col-span-2 md:col-span-1">
-              <div className="flex justify-between items-center text-slate-500">
+            <div className="bg-white border border-stone-200 p-4 rounded-lg flex flex-col justify-between h-24 col-span-2 md:col-span-1">
+              <div className="flex justify-between items-center text-stone-500">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Search Drones</span>
-                <Plane size={14} className="text-cyan-400" />
+                <Plane size={14} className="text-teal-700" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-mono">
-                  {res.drones?.available || 0} <span className="text-xs text-slate-500">/ {res.drones?.total || 0}</span>
+                <div className="text-xl font-bold text-stone-900 font-mono">
+                  {res.drones?.available || 0} <span className="text-xs text-stone-500">/ {res.drones?.total || 0}</span>
                 </div>
-                <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-wider">Aerial tracking</span>
+                <span className="text-[9px] text-stone-400 font-semibold uppercase tracking-wider">Aerial tracking</span>
               </div>
             </div>
 
@@ -265,7 +265,7 @@ export default function AgencyDashboard() {
           <div className="flex justify-end gap-3 mt-1 select-none">
             <button
               onClick={() => navigate('/resources')}
-              className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold px-4 py-2 rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+              className="bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
             >
               <Edit size={13} /> Update Resources Inventory
             </button>
@@ -275,33 +275,33 @@ export default function AgencyDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Incoming Requests Column */}
-            <div className="lg:col-span-7 bg-[#0f1c35] border border-slate-800 rounded-lg p-5 flex flex-col justify-between">
+            <div className="lg:col-span-7 bg-white border border-stone-200 rounded-lg p-5 flex flex-col justify-between">
               <div>
-                <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
+                <div className="flex justify-between items-center mb-4 border-b border-stone-200 pb-2">
                   <div>
-                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">Incoming Assistance Alerts</h3>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Emergency requests from EOC or fellow response teams.</p>
+                    <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Incoming Assistance Alerts</h3>
+                    <p className="text-[10px] text-stone-500 mt-0.5">Emergency requests from EOC or fellow response teams.</p>
                   </div>
-                  <span className="bg-cyan-500/10 text-cyan-400 text-xs font-mono font-bold px-2 py-0.5 border border-cyan-500/25 rounded">
+                  <span className="bg-teal-50 text-teal-700 text-xs font-mono font-bold px-2 py-0.5 border border-teal-200 rounded">
                     {incomingRequests.length} Active Alerts
                   </span>
                 </div>
 
                 <div className="space-y-3 max-h-[360px] overflow-y-auto no-scrollbar">
                   {incomingRequests.length === 0 ? (
-                    <div className="py-12 text-center text-xs text-slate-500 font-mono uppercase">
+                    <div className="py-12 text-center text-xs text-stone-500 font-mono uppercase">
                       No pending dispatch orders. Command console idle.
                     </div>
                   ) : (
                     incomingRequests.map((req) => (
                       <div 
                         key={req.id} 
-                        className="bg-navy-900 border border-slate-850 p-4 rounded flex flex-col gap-3"
+                        className="bg-[#f5f3ef] border border-stone-200 p-4 rounded flex flex-col gap-3"
                       >
-                        <div className="flex justify-between items-start border-b border-slate-850 pb-2">
+                        <div className="flex justify-between items-start border-b border-stone-200 pb-2">
                           <div>
-                            <span className="text-[9px] font-mono font-bold text-slate-500">{req.id}</span>
-                            <h4 className="text-xs font-bold text-white mt-0.5">From: {req.fromName}</h4>
+                            <span className="text-[9px] font-mono font-bold text-stone-500">{req.id}</span>
+                            <h4 className="text-xs font-bold text-stone-900 mt-0.5">From: {req.fromName}</h4>
                           </div>
                           <div className="flex items-center gap-1.5">
                             <UrgencyBadge urgency={req.urgency} />
@@ -310,21 +310,21 @@ export default function AgencyDashboard() {
                         </div>
 
                         <div className="text-xs">
-                          <span className="text-[9px] text-slate-500 block uppercase font-bold">Items Required:</span>
-                          <span className="text-white font-mono font-bold">{req.required}</span>
+                          <span className="text-[9px] text-stone-500 block uppercase font-bold">Items Required:</span>
+                          <span className="text-stone-900 font-mono font-bold">{req.required}</span>
                         </div>
 
-                        <p className="text-xs text-slate-400 italic bg-[#0a1020] p-2 rounded.5 border border-slate-850/50">
+                        <p className="text-xs text-stone-500 italic bg-[#faf9f6] p-2 rounded.5 border border-stone-300">
                           "{req.message}"
                         </p>
 
-                        <div className="flex justify-between items-center pt-2 mt-1 border-t border-slate-850">
-                          <span className="text-[9px] text-slate-500 font-mono">Issued {new Date(req.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <div className="flex justify-between items-center pt-2 mt-1 border-t border-stone-200">
+                          <span className="text-[9px] text-stone-500 font-mono">Issued {new Date(req.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                           <div className="flex gap-2">
                             {req.status === 'INITIATED' && (
                               <button
                                 onClick={() => handleRequestStatusChange(req.id, 'ACKNOWLEDGED')}
-                                className="bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/25 text-xs font-bold px-3 py-1 rounded cursor-pointer"
+                                className="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-bold px-3 py-1 rounded cursor-pointer"
                               >
                                 Acknowledge
                               </button>
@@ -332,7 +332,7 @@ export default function AgencyDashboard() {
                             {req.status === 'ACKNOWLEDGED' && (
                               <button
                                 onClick={() => handleRequestStatusChange(req.id, 'DEPLOYED')}
-                                className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/25 text-xs font-bold px-3 py-1 rounded cursor-pointer"
+                                className="bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 text-xs font-bold px-3 py-1 rounded cursor-pointer"
                               >
                                 Dispatch Staff
                               </button>
@@ -340,7 +340,7 @@ export default function AgencyDashboard() {
                             {req.status === 'DEPLOYED' && (
                               <button
                                 onClick={() => handleRequestStatusChange(req.id, 'RESOLVED')}
-                                className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/25 text-xs font-bold px-3 py-1 rounded cursor-pointer"
+                                className="bg-green-50 hover:bg-green-600/20 text-green-700 border border-green-200 text-xs font-bold px-3 py-1 rounded cursor-pointer"
                               >
                                 Complete Mission
                               </button>
@@ -355,23 +355,23 @@ export default function AgencyDashboard() {
               
               <Link 
                 to="/requests" 
-                className="w-full text-center bg-navy-800 hover:bg-navy-750 text-cyan-400 border border-slate-800 hover:border-cyan-500 text-xs font-semibold py-1.5 rounded transition-all mt-4"
+                className="w-full text-center bg-white hover:bg-[#f5f3ef] text-teal-700 border border-stone-200 hover:border-teal-600 text-xs font-semibold py-1.5 rounded transition-all mt-4"
               >
                 Open Coordination Center
               </Link>
             </div>
 
             {/* Active Missions column */}
-            <div className="lg:col-span-5 bg-[#0f1c35] border border-slate-800 rounded-lg p-5 flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-white border border-stone-200 rounded-lg p-5 flex flex-col justify-between">
               <div>
-                <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">Active Tactical Missions</h3>
-                  <span className="text-[10px] text-slate-500 font-mono font-bold">{activeMissions.length} Missions</span>
+                <div className="flex justify-between items-center mb-4 border-b border-stone-200 pb-2">
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Active Tactical Missions</h3>
+                  <span className="text-[10px] text-stone-500 font-mono font-bold">{activeMissions.length} Missions</span>
                 </div>
 
                 <div className="space-y-3 overflow-y-auto no-scrollbar max-h-[360px]">
                   {activeMissions.length === 0 ? (
-                    <div className="py-12 text-center text-xs text-slate-500 font-mono uppercase">
+                    <div className="py-12 text-center text-xs text-stone-500 font-mono uppercase">
                       No active incident orders. On standby status.
                     </div>
                   ) : (
@@ -379,23 +379,23 @@ export default function AgencyDashboard() {
                       <div 
                         key={mission.id}
                         onClick={() => navigate(`/incidents/${mission.id}`)}
-                        className="p-3.5 bg-navy-900 border border-slate-850 hover:border-slate-700/60 rounded cursor-pointer transition-all flex flex-col gap-2 relative group"
+                        className="p-3.5 bg-[#f5f3ef] border border-stone-200 hover:border-stone-300 rounded cursor-pointer transition-all flex flex-col gap-2 relative group"
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <span className="text-[9px] font-bold text-slate-500 font-mono">{mission.id}</span>
-                            <h4 className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors mt-0.5">
+                            <span className="text-[9px] font-bold text-stone-500 font-mono">{mission.id}</span>
+                            <h4 className="text-xs font-bold text-stone-900 group-hover:text-teal-700 transition-colors mt-0.5">
                               {mission.type} — {mission.location}
                             </h4>
                           </div>
-                          <span className="text-[9.5px] text-red-400 bg-red-500/5 border border-red-500/10 px-1.5 py-0.2 rounded font-bold uppercase tracking-wide">
+                          <span className="text-[9.5px] text-red-700 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded font-bold uppercase tracking-wide">
                             ACTIVE
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 leading-normal">
+                        <p className="text-[11px] text-stone-500 leading-normal">
                           {mission.description}
                         </p>
-                        <div className="text-[9px] text-slate-500 font-mono mt-1 uppercase tracking-wider">
+                        <div className="text-[9px] text-stone-500 font-mono mt-1 uppercase tracking-wider">
                           Reported {new Date(mission.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                         </div>
                       </div>
@@ -431,7 +431,7 @@ export default function AgencyDashboard() {
             required
           />
 
-          <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-stone-200">
             <Button
               type="button"
               variant="secondary"

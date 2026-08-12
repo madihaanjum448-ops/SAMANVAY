@@ -131,7 +131,7 @@ export default function AgencyDirectory() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 flex">
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
       {/* Sidebar navigation for logged-in users */}
       {renderSidebar()}
 
@@ -157,11 +157,11 @@ export default function AgencyDirectory() {
           <div className="flex-1 flex flex-col gap-6">
             
             {/* Top row filter actions for mobile */}
-            <div className="lg:hidden flex items-center justify-between gap-3 bg-[#0f1c35] border border-slate-800 p-3 rounded-lg">
-              <span className="text-xs font-bold text-white uppercase tracking-wider">Rescue Force registry</span>
+            <div className="lg:hidden flex items-center justify-between gap-3 bg-white border border-stone-200 p-3 rounded-lg">
+              <span className="text-xs font-bold text-stone-900 uppercase tracking-wider">Rescue Force registry</span>
               <button
                 onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-                className="bg-navy-800 border border-slate-700 text-cyan-400 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer flex items-center gap-1"
+                className="bg-white border border-stone-300 text-teal-700 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer flex items-center gap-1"
               >
                 <SlidersHorizontal size={12} /> Filters
               </button>
@@ -178,12 +178,12 @@ export default function AgencyDirectory() {
             )}
 
             {/* Split Screen layout: Top Map, Bottom Cards */}
-            <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-4 h-[320px] relative">
+            <div className="bg-white border border-stone-200 rounded-lg p-4 h-[320px] relative">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Live Response Network Status</h3>
-                <span className="text-[10px] text-slate-500 font-mono">SHOWING {filteredAgencies.length} VERIFIED AGENCIES</span>
+                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Live Response Network Status</h3>
+                <span className="text-[10px] text-stone-500 font-mono">SHOWING {filteredAgencies.length} VERIFIED AGENCIES</span>
               </div>
-              <div className="flex-1 h-[240px] relative rounded overflow-hidden border border-slate-850">
+              <div className="flex-1 h-[240px] relative rounded overflow-hidden border border-stone-300">
                 <MapView markers={getMapMarkers()} />
                 <MapLegend />
               </div>
@@ -191,13 +191,13 @@ export default function AgencyDirectory() {
 
             {/* Grid listings of agencies */}
             <div>
-              <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Vetted Rescue Forces</h3>
-                <span className="text-xs text-slate-500 font-mono">{filteredAgencies.length} matches</span>
+              <div className="flex items-center justify-between mb-4 border-b border-stone-200 pb-2">
+                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Vetted Rescue Forces</h3>
+                <span className="text-xs text-stone-500 font-mono">{filteredAgencies.length} matches</span>
               </div>
 
               {filteredAgencies.length === 0 ? (
-                <div className="py-16 text-center text-xs text-slate-500 font-mono uppercase bg-[#0f1c35] border border-slate-800 rounded-lg">
+                <div className="py-16 text-center text-xs text-stone-500 font-mono uppercase bg-white border border-stone-200 rounded-lg">
                   No agencies match current coordinates or query filters.
                 </div>
               ) : (

@@ -1,49 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Color Palette ── */
-  --color-navy-950: #050a18;
-  --color-navy-900: #080f1f;
-  --color-navy-850: #0b1428;
-  --color-navy-800: #0f1c35;
-  --color-navy-750: #121f3d;
-  --color-navy-700: #162447;
-  --color-navy-600: #1e3163;
-  --color-navy-500: #2a4480;
-  --color-navy-400: #3a5fa0;
-  --color-navy-300: #5a80c0;
+  /* ── Color Palette — Professional Government Light Theme ── */
+  --color-ivory-950: #faf9f6;
+  --color-ivory-900: #f7f5ef;
+  --color-ivory-850: #f0ede8;
+  --color-ivory-800: #fffffe;
+  --color-ivory-750: #fafaf8;
+  --color-ivory-700: #f7f6f3;
+  --color-ivory-600: #ede9e3;
+  --color-ivory-500: #e5e2dd;
 
-  --color-slate-850: #1a2235;
-  --color-slate-800: #1e2a40;
-  --color-slate-750: #243048;
-  --color-slate-700: #2a3855;
-  --color-slate-600: #344565;
+  --color-stone-850: #e8e5df;
+  --color-stone-800: #e5e2dd;
+  --color-stone-750: #d6d3ce;
+  --color-stone-700: #c8c5c0;
+  --color-stone-600: #a8a29e;
 
-  --color-cyan-500: #06b6d4;
-  --color-cyan-400: #22d3ee;
-  --color-cyan-300: #67e8f9;
-  --color-cyan-200: #a5f3fc;
+  /* Forest Greens */
+  --color-teal-700: #14532d;
+  --color-teal-600: #166534;
+  --color-teal-500: #3f6f4a;
+  --color-teal-200: #d1fae5;
+  --color-teal-50: #f0fdf4;
 
-  --color-sky-500: #0ea5e9;
-  --color-sky-400: #38bdf8;
+  --color-govblue-500: #2563eb;
+  --color-govblue-400: #3b82f6;
 
-  --color-critical: #ef4444;
-  --color-critical-dim: rgba(239, 68, 68, 0.15);
-  --color-high: #f97316;
-  --color-high-dim: rgba(249, 115, 22, 0.15);
-  --color-medium: #eab308;
-  --color-medium-dim: rgba(234, 179, 8, 0.15);
-  --color-low: #22c55e;
-  --color-low-dim: rgba(34, 197, 94, 0.15);
+  --color-critical: #dc2626;
+  --color-critical-dim: rgba(220, 38, 38, 0.08);
+  --color-high: #ea580c;
+  --color-high-dim: rgba(234, 88, 12, 0.08);
+  --color-medium: #d97706;
+  --color-medium-dim: rgba(217, 119, 6, 0.08);
+  --color-low: #16a34a;
+  --color-low-dim: rgba(22, 163, 74, 0.08);
 
-  --color-available: #22c55e;
-  --color-limited: #eab308;
-  --color-deployed: #ef4444;
-  --color-offline: #6b7280;
+  --color-available: #16a34a;
+  --color-limited: #d97706;
+  --color-deployed: #dc2626;
+  --color-offline: #78716c;
 
-  --color-verified: #06b6d4;
-  --color-pending: #f97316;
-  --color-rejected: #ef4444;
+  --color-verified: #166534;
+  --color-pending: #ea580c;
+  --color-rejected: #dc2626;
 
   /* ── Font Family ── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -65,8 +65,8 @@ html {
 }
 
 body {
-  background-color: #080f1f;
-  color: #e2e8f0;
+  background-color: #f7f5ef;
+  color: #111827;
   margin: 0;
   padding: 0;
   line-height: 1.6;
@@ -80,56 +80,56 @@ body {
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f1c35;
+  background: #f5f3ef;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a4480;
+  background: #c8c5c0;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a5fa0;
+  background: #a8a29e;
 }
 
 /* ── Leaflet Map Overrides ── */
 .leaflet-container {
-  background: #0f1c35 !important;
+  background: #f0ede8 !important;
   font-family: var(--font-sans) !important;
 }
 
 .leaflet-control-zoom {
-  border: 1px solid #2a3855 !important;
-  background: #0f1c35 !important;
+  border: 1px solid #d6d3ce !important;
+  background: #ffffff !important;
 }
 
 .leaflet-control-zoom a {
-  background: #1e2a40 !important;
-  color: #94a3b8 !important;
-  border-bottom: 1px solid #2a3855 !important;
+  background: #ffffff !important;
+  color: #57534e !important;
+  border-bottom: 1px solid #e5e2dd !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: #243048 !important;
-  color: #22d3ee !important;
+  background: #f5f3ef !important;
+  color: #0f766e !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #1e2a40 !important;
-  border: 1px solid #2a3855 !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e2dd !important;
   border-radius: 8px !important;
-  color: #e2e8f0 !important;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+  color: #1c1917 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
 }
 
 .leaflet-popup-tip {
-  background: #1e2a40 !important;
+  background: #ffffff !important;
 }
 
 .leaflet-popup-close-button {
-  color: #64748b !important;
+  color: #78716c !important;
 }
 
 .leaflet-popup-close-button:hover {
-  color: #e2e8f0 !important;
+  color: #1c1917 !important;
 }
 
 .custom-marker-icon {
@@ -149,7 +149,7 @@ body {
   position: absolute;
   border-radius: 50%;
   animation: pulse-ring 1.5s ease-out infinite;
-  background: rgba(239, 68, 68, 0.4);
+  background: rgba(220, 38, 38, 0.3);
   width: 24px;
   height: 24px;
   top: -4px;
@@ -187,8 +187,8 @@ body {
 }
 
 .card-hover:hover {
-  border-color: #2a4480;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.08);
+  border-color: #c8c5c0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 /* ── Timeline connector ── */
@@ -203,49 +203,49 @@ body {
   top: 28px;
   width: 2px;
   height: calc(100% - 12px);
-  background: linear-gradient(to bottom, #2a4480, #162447);
+  background: linear-gradient(to bottom, #d6d3ce, #e5e2dd);
 }
 
 /* ── Step wizard progress ── */
 .step-connector {
   flex: 1;
   height: 2px;
-  background: #1e2a40;
+  background: #e5e2dd;
   transition: background 0.3s ease;
 }
 
 .step-connector.active {
-  background: #06b6d4;
+  background: #0f766e;
 }
 
 /* ── Map marker styles ── */
 .marker-available {
-  background: #22c55e;
-  border: 2px solid #16a34a;
+  background: #16a34a;
+  border: 2px solid #15803d;
   border-radius: 50%;
   width: 14px;
   height: 14px;
 }
 
 .marker-limited {
-  background: #eab308;
-  border: 2px solid #ca8a04;
+  background: #d97706;
+  border: 2px solid #b45309;
   border-radius: 50%;
   width: 14px;
   height: 14px;
 }
 
 .marker-deployed {
-  background: #ef4444;
-  border: 2px solid #dc2626;
+  background: #dc2626;
+  border: 2px solid #b91c1c;
   border-radius: 50%;
   width: 14px;
   height: 14px;
 }
 
 .marker-incident {
-  background: #3b82f6;
-  border: 2px solid #2563eb;
+  background: #2563eb;
+  border: 2px solid #1d4ed8;
   border-radius: 3px;
   width: 14px;
   height: 14px;
@@ -254,15 +254,15 @@ body {
 
 /* ── Request status timeline ── */
 .req-status-done {
-  color: #22c55e;
+  color: #16a34a;
 }
 
 .req-status-active {
-  color: #06b6d4;
+  color: #0f766e;
 }
 
 .req-status-pending {
-  color: #475569;
+  color: #78716c;
 }
 
 /* ── Table styles ── */
@@ -277,20 +277,21 @@ body {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #78716c;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #1e2a40;
+  border-bottom: 1px solid #e5e2dd;
+  background: #faf9f6;
 }
 
 .data-table td {
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid #1e2a40;
+  border-bottom: 1px solid #f0ede8;
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: #44403c;
 }
 
 .data-table tr:hover td {
-  background: rgba(30, 42, 64, 0.5);
+  background: #faf9f6;
 }
 
 /* ── Utility: no-scrollbar ── */
@@ -303,17 +304,33 @@ body {
   scrollbar-width: none;
 }
 
-/* ── Grid map background effect ── */
+/* ── Subtle topographic contour background for landing page ── */
+.topo-bg {
+  background-color: #f5f3ef;
+  background-image:
+    /* Subtle contour lines */
+    url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 300 Q150 200 300 250 Q450 300 550 200' fill='none' stroke='%230f766e' stroke-width='0.6' opacity='0.04'/%3E%3Cpath d='M0 400 Q200 350 350 380 Q500 410 600 340' fill='none' stroke='%230f766e' stroke-width='0.5' opacity='0.03'/%3E%3Cpath d='M30 150 Q180 100 320 130 Q460 160 580 100' fill='none' stroke='%230f766e' stroke-width='0.5' opacity='0.035'/%3E%3Cpath d='M0 500 Q150 460 300 490 Q450 520 600 460' fill='none' stroke='%230f766e' stroke-width='0.4' opacity='0.025'/%3E%3Cpath d='M80 50 Q200 30 350 60 Q500 90 580 30' fill='none' stroke='%230f766e' stroke-width='0.4' opacity='0.03'/%3E%3Ccircle cx='120' cy='180' r='1.2' fill='%230f766e' opacity='0.06'/%3E%3Ccircle cx='400' cy='320' r='1' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='500' cy='150' r='0.8' fill='%230f766e' opacity='0.04'/%3E%3Ccircle cx='250' cy='450' r='1' fill='%230f766e' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 600px 600px;
+}
+
+/* ── Subtle network lines for landing hero ── */
+.network-bg {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='50' y1='80' x2='200' y2='150' stroke='%230f766e' stroke-width='0.4' opacity='0.04'/%3E%3Cline x1='200' y1='150' x2='350' y2='100' stroke='%230f766e' stroke-width='0.4' opacity='0.04'/%3E%3Cline x1='200' y1='150' x2='150' y2='300' stroke='%230f766e' stroke-width='0.4' opacity='0.03'/%3E%3Cline x1='200' y1='150' x2='320' y2='280' stroke='%230f766e' stroke-width='0.3' opacity='0.03'/%3E%3Ccircle cx='200' cy='150' r='2' fill='%230f766e' opacity='0.06'/%3E%3Ccircle cx='50' cy='80' r='1.5' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='350' cy='100' r='1.5' fill='%230f766e' opacity='0.05'/%3E%3Ccircle cx='150' cy='300' r='1.5' fill='%230f766e' opacity='0.04'/%3E%3Ccircle cx='320' cy='280' r='1.5' fill='%230f766e' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 400px 400px;
+}
+
+/* ── Grid map background effect (light version) ── */
 .map-grid-bg {
   background-image:
-    linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(15, 118, 110, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 118, 110, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
-/* ── Glassmorphism (used sparingly) ── */
+/* ── Clean white panel (replaces glassmorphism) ── */
 .glass-card {
-  background: rgba(15, 28, 53, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e2dd;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }

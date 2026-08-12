@@ -20,8 +20,8 @@ export default function MapView({ markers = [], center = [18.5204, 73.8567], zoo
 
     mapRef.current = map;
 
-    // CartoDB Dark Matter tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // CartoDB Positron tile layer
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
       maxZoom: 20
@@ -70,20 +70,20 @@ export default function MapView({ markers = [], center = [18.5204, 73.8567], zoo
         popupContent = `
           <div class="p-2 min-w-[200px]">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-semibold text-gray-400 uppercase">${m.agencyType || m.type}</span>
+              <span class="text-xs font-semibold text-stone-500 uppercase">${m.agencyType || m.type}</span>
               <span class="inline-block w-2.5 h-2.5 rounded-full bg-${status === 'AVAILABLE' ? 'available' : status === 'LIMITED' ? 'limited' : 'deployed'}"></span>
             </div>
-            <h4 class="text-sm font-bold text-white mb-1">${m.name}</h4>
-            <p class="text-xs text-gray-300 mb-2">${m.district}, ${m.state}</p>
-            <div class="grid grid-cols-2 gap-1 mb-3 text-[10px] text-gray-400">
-              <div>Boats: <span class="text-white font-medium">${m.resources?.boats?.available || 0}</span></div>
-              <div>Personnel: <span class="text-white font-medium">${m.resources?.personnel?.available || 0}</span></div>
-              <div>Vehicles: <span class="text-white font-medium">${m.resources?.rescueVehicles?.available || 0}</span></div>
-              <div>Drones: <span class="text-white font-medium">${m.resources?.drones?.available || 0}</span></div>
+            <h4 class="text-sm font-bold text-stone-900 mb-1">${m.name}</h4>
+            <p class="text-xs text-stone-600 mb-2">${m.district}, ${m.state}</p>
+            <div class="grid grid-cols-2 gap-1 mb-3 text-[10px] text-stone-500">
+              <div>Boats: <span class="text-stone-900 font-medium">${m.resources?.boats?.available || 0}</span></div>
+              <div>Personnel: <span class="text-stone-900 font-medium">${m.resources?.personnel?.available || 0}</span></div>
+              <div>Vehicles: <span class="text-stone-900 font-medium">${m.resources?.rescueVehicles?.available || 0}</span></div>
+              <div>Drones: <span class="text-stone-900 font-medium">${m.resources?.drones?.available || 0}</span></div>
             </div>
             <button 
               id="btn-map-agency-${m.id}"
-              class="w-full text-center bg-[#162447] hover:bg-[#1e3163] border border-slate-700 hover:border-cyan-500 text-cyan-400 text-xs font-semibold py-1.5 px-3 rounded transition-colors"
+              class="w-full text-center bg-white hover:bg-stone-50 border border-stone-300 hover:border-teal-500 text-teal-700 text-xs font-semibold py-1.5 px-3 rounded transition-colors"
             >
               View Agency Profile
             </button>
@@ -105,14 +105,14 @@ export default function MapView({ markers = [], center = [18.5204, 73.8567], zoo
         popupContent = `
           <div class="p-2 min-w-[200px]">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-semibold ${severityColors[severity] || 'text-gray-400'} uppercase font-mono">${severity}</span>
-              <span class="text-[10px] text-gray-400">${m.time || 'Active'}</span>
+              <span class="text-xs font-semibold ${severityColors[severity] || 'text-stone-500'} uppercase font-mono">${severity}</span>
+              <span class="text-[10px] text-stone-500">${m.time || 'Active'}</span>
             </div>
-            <h4 class="text-sm font-bold text-white mb-1">${m.incidentType || m.name} — ${m.location}</h4>
-            <p class="text-xs text-gray-300 mb-3">${m.description || ''}</p>
+            <h4 class="text-sm font-bold text-stone-900 mb-1">${m.incidentType || m.name} — ${m.location}</h4>
+            <p class="text-xs text-stone-600 mb-3">${m.description || ''}</p>
             <button 
               id="btn-map-incident-${m.id}"
-              class="w-full text-center bg-[#162447] hover:bg-[#1e3163] border border-slate-700 hover:border-cyan-500 text-cyan-400 text-xs font-semibold py-1.5 px-3 rounded transition-colors"
+              class="w-full text-center bg-white hover:bg-stone-50 border border-stone-300 hover:border-teal-500 text-teal-700 text-xs font-semibold py-1.5 px-3 rounded transition-colors"
             >
               Incident Command Centre
             </button>
@@ -154,7 +154,7 @@ export default function MapView({ markers = [], center = [18.5204, 73.8567], zoo
   }, [markers]);
 
   return (
-    <div className="w-full h-full relative border border-slate-800 rounded-lg overflow-hidden bg-navy-900">
+    <div className="w-full h-full relative border border-stone-200 rounded-lg overflow-hidden bg-stone-100">
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full" />
     </div>

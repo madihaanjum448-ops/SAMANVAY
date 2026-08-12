@@ -93,11 +93,11 @@ export default function AgencyDetails() {
 
     const customIcon = L.divIcon({
       className: 'custom-marker-icon',
-      html: `<div class="${statusClasses[status] || 'marker-available'} animate-pulse"></div>`,
+      html: `<div class="${statusClasses[status] || 'marker-available'}"></div>`,
       iconSize: [20, 20]
     });
 
-    L.marker([lat, lng], { icon: customIcon }).addTo(map).bindPopup(`<h4 class="text-xs font-bold text-white">${agency.name}</h4>`).openPopup();
+    L.marker([lat, lng], { icon: customIcon }).addTo(map).bindPopup(`<h4 class="text-xs font-bold text-stone-900">${agency.name}</h4>`).openPopup();
 
     return () => {
       if (mapRef.current) {
@@ -191,7 +191,7 @@ export default function AgencyDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 flex">
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
       {/* Sidebar navigation */}
       {renderSidebar()}
 
@@ -207,30 +207,30 @@ export default function AgencyDetails() {
           {/* Back Navigation */}
           <button 
             onClick={() => navigate('/agencies')}
-            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-cyan-400 font-bold uppercase tracking-wider mb-5 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-stone-500 hover:text-teal-700 font-bold uppercase tracking-wider mb-5 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} /> Back to Force Registry
           </button>
 
           {/* Profile Content card */}
-          <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-6 flex flex-col gap-6 fade-in shadow-2xl">
+          <div className="bg-white border border-stone-200 rounded-lg p-6 flex flex-col gap-6 fade-in shadow-lg">
             
             {/* Header Block */}
-            <div className="flex items-start justify-between flex-wrap gap-4 border-b border-slate-800 pb-5">
+            <div className="flex items-start justify-between flex-wrap gap-4 border-b border-stone-200 pb-5">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded bg-cyan-500/10 border border-cyan-500/35 text-cyan-400">
+                <div className="p-3 rounded bg-teal-50 border border-teal-300 text-teal-700">
                   <Radio size={24} className="animate-pulse" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h1 className="text-lg sm:text-xl font-extrabold text-white leading-tight">{agency.name}</h1>
+                    <h1 className="text-lg sm:text-xl font-extrabold text-stone-900 leading-tight">{agency.name}</h1>
                     <VerificationBadge status={agency.verificationStatus} />
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-2 font-mono">
-                    <MapPin size={12} className="text-slate-500" />
+                  <div className="flex items-center gap-1.5 text-xs text-stone-500 mt-2 font-mono">
+                    <MapPin size={12} className="text-stone-500" />
                     <span>{agency.district}, {agency.state}</span>
                     <span>•</span>
-                    <Clock size={12} className="text-slate-500" />
+                    <Clock size={12} className="text-stone-500" />
                     <span>Updated {agency.lastUpdated}</span>
                   </div>
                 </div>
@@ -246,18 +246,18 @@ export default function AgencyDetails() {
                 
                 {/* About Section */}
                 <div>
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Operational Profile</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed bg-navy-900/40 border border-slate-850 p-3 rounded">
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Operational Profile</h3>
+                  <p className="text-xs text-stone-700 leading-relaxed bg-[#f5f3ef]/40 border border-stone-300 p-3 rounded">
                     {agency.about || 'Verified tactical response group registered under the SAMANVAY system. Dedicated to providing emergency rescue operations and resource mobilization during disasters.'}
                   </p>
                 </div>
 
                 {/* Expertise */}
                 <div>
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Tactical Rescue Expertise</h3>
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Tactical Rescue Expertise</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {agency.expertise.map((exp, idx) => (
-                      <span key={idx} className="bg-slate-800 text-slate-300 text-xs font-semibold px-2.5 py-0.5 rounded border border-slate-700/60">
+                      <span key={idx} className="bg-stone-100 text-stone-700 text-xs font-semibold px-2.5 py-0.5 rounded border border-stone-300">
                         {exp}
                       </span>
                     ))}
@@ -266,33 +266,33 @@ export default function AgencyDetails() {
 
                 {/* Contact Section (Masked if Public) */}
                 <div>
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Secure Communications Channel</h3>
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2">Secure Communications Channel</h3>
                   
                   {role === 'public' ? (
-                    <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-400 font-mono leading-relaxed">
+                    <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-700 font-mono leading-relaxed">
                       ⚠️ <strong>SECURE COMMUNICATIONS MASKED:</strong> Authorized EOC credentials or tactical agency verification is required to view exact phone lines and operational email routers.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-slate-400 bg-navy-900/40 border border-slate-850 p-4 rounded">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-stone-500 bg-[#f5f3ef]/40 border border-stone-300 p-4 rounded">
                       <div className="flex items-center gap-2">
-                        <Phone size={14} className="text-slate-500" />
+                        <Phone size={14} className="text-stone-500" />
                         <div>
-                          <span className="text-[9px] text-slate-600 block uppercase font-bold">Operational Phone</span>
-                          <span className="text-white font-bold">{agency.phone}</span>
+                          <span className="text-[9px] text-stone-400 block uppercase font-bold">Operational Phone</span>
+                          <span className="text-stone-900 font-bold">{agency.phone}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Mail size={14} className="text-slate-500" />
+                        <Mail size={14} className="text-stone-500" />
                         <div>
-                          <span className="text-[9px] text-slate-600 block uppercase font-bold">Secure Email Router</span>
-                          <span className="text-white font-bold">{agency.email}</span>
+                          <span className="text-[9px] text-stone-400 block uppercase font-bold">Secure Email Router</span>
+                          <span className="text-stone-900 font-bold">{agency.email}</span>
                         </div>
                       </div>
-                      <div className="col-span-1 sm:col-span-2 border-t border-slate-850/60 pt-2.5 mt-1 flex items-start gap-2">
-                        <MapPin size={14} className="text-slate-500 mt-0.5" />
+                      <div className="col-span-1 sm:col-span-2 border-t border-stone-300 pt-2.5 mt-1 flex items-start gap-2">
+                        <MapPin size={14} className="text-stone-500 mt-0.5" />
                         <div>
-                          <span className="text-[9px] text-slate-600 block uppercase font-bold">HQ Base Street Address</span>
-                          <span className="text-white font-sans">{agency.address}</span>
+                          <span className="text-[9px] text-stone-400 block uppercase font-bold">HQ Base Street Address</span>
+                          <span className="text-stone-900 font-sans">{agency.address}</span>
                         </div>
                       </div>
                     </div>
@@ -302,19 +302,19 @@ export default function AgencyDetails() {
 
               {/* Right Map location column */}
               <div className="lg:col-span-5 flex flex-col gap-4">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Base GIS Location</h3>
-                <div className="flex-1 min-h-[220px] rounded border border-slate-800 overflow-hidden relative">
+                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Base GIS Location</h3>
+                <div className="flex-1 min-h-[220px] rounded border border-stone-200 overflow-hidden relative">
                   <div ref={mapContainerRef} className="w-full h-full" />
                 </div>
               </div>
             </div>
 
             {/* Resources inventories Section */}
-            <div className="border-t border-slate-800 pt-6">
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Resource Capacity Allocations</h3>
+            <div className="border-t border-stone-200 pt-6">
+              <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-4">Resource Capacity Allocations</h3>
               
               {role === 'public' ? (
-                <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-400 font-mono leading-relaxed">
+                <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded text-xs text-orange-700 font-mono leading-relaxed">
                   ⚠️ <strong>EXACT ASSETS INVENTORY RESTRICTED:</strong> Public observers can see availability status but cannot view exact staff numbers, boat counts, or medical inventory lists.
                 </div>
               ) : (
@@ -323,19 +323,19 @@ export default function AgencyDetails() {
                     const item = agency.resources[key];
                     const percentage = item.total > 0 ? Math.round((item.available / item.total) * 100) : 0;
                     return (
-                      <div key={key} className="bg-navy-900 border border-slate-850 p-4 rounded flex flex-col gap-3">
-                        <div className="flex justify-between items-center text-xs text-slate-400">
+                      <div key={key} className="bg-[#f5f3ef] border border-stone-300 p-4 rounded flex flex-col gap-3">
+                        <div className="flex justify-between items-center text-xs text-stone-500">
                           <div className="flex items-center gap-2">
-                            <span className="text-cyan-400">{resourceIcons[key]}</span>
-                            <span className="font-bold text-white uppercase tracking-wider text-[10px]">{resourceLabels[key] || key}</span>
+                            <span className="text-teal-700">{resourceIcons[key]}</span>
+                            <span className="font-bold text-stone-900 uppercase tracking-wider text-[10px]">{resourceLabels[key] || key}</span>
                           </div>
                         </div>
                         <div className="flex items-end justify-between">
-                          <span className="text-lg font-bold text-white font-mono">{item.available} <span className="text-xs text-slate-500">/ {item.total}</span></span>
-                          <span className="text-[10px] text-green-400 font-mono font-bold">{percentage}% Available</span>
+                          <span className="text-lg font-bold text-stone-900 font-mono">{item.available} <span className="text-xs text-stone-500">/ {item.total}</span></span>
+                          <span className="text-[10px] text-green-700 font-mono font-bold">{percentage}% Available</span>
                         </div>
                         <div className="w-full h-1 bg-slate-950 rounded-full overflow-hidden">
-                          <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${percentage}%` }} />
+                          <div className="h-full bg-teal-700 rounded-full" style={{ width: `${percentage}%` }} />
                         </div>
                       </div>
                     );
@@ -345,18 +345,18 @@ export default function AgencyDetails() {
             </div>
 
             {/* Bottom Actions Row */}
-            <div className="border-t border-slate-800 pt-6 flex justify-end gap-3 flex-wrap">
+            <div className="border-t border-stone-200 pt-6 flex justify-end gap-3 flex-wrap">
               {role === 'public' ? (
                 <button
                   disabled
-                  className="bg-navy-800 text-slate-600 border border-slate-850 text-xs font-bold px-6 py-3 rounded cursor-not-allowed"
+                  className="bg-white text-stone-400 border border-stone-300 text-xs font-bold px-6 py-3 rounded cursor-not-allowed"
                 >
                   Send Assistance Request (EOC Login Required)
                 </button>
               ) : (
                 <button
                   onClick={() => setIsRequestModalOpen(true)}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-3 rounded text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_0_16px_rgba(6,182,212,0.25)]"
+                  className="bg-teal-700 hover:bg-teal-600 text-stone-900 font-bold px-6 py-3 rounded text-xs transition-colors flex items-center gap-1.5 cursor-pointer "
                 >
                   <Send size={13} /> Send Assistance Request
                 </button>
@@ -403,18 +403,18 @@ export default function AgencyDetails() {
           />
 
           <div>
-            <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Details Message Directive</label>
+            <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Details Message Directive</label>
             <textarea
               rows={3}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder="e.g. stranded civilians on rooftops in Sector 5 Hadapsar require immediate motorboat evacuation support..."
-              className="w-full bg-[#0a1020] border border-slate-800 focus:border-cyan-500 text-xs rounded p-2 text-white focus:outline-none transition-colors"
+              className="w-full bg-[#faf9f6] border border-stone-200 focus:border-teal-500 text-xs rounded p-2 text-stone-900 focus:outline-none transition-colors"
               required
             />
           </div>
 
-          <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-stone-200">
             <Button
               type="button"
               variant="secondary"

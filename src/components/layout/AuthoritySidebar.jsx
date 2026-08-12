@@ -43,14 +43,14 @@ export default function AuthoritySidebar({ activeTab, onTabChange }) {
   };
 
   return (
-    <aside className="w-64 bg-navy-950 border-r border-slate-800/80 flex flex-col h-screen sticky top-0">
+    <aside className="w-64 bg-white border-r border-stone-200 flex flex-col h-screen sticky top-0">
       {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800/80">
+      <div className="h-16 flex items-center px-6 border-b border-stone-200">
         <Link to="/" className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+          <div className="p-1.5 rounded bg-teal-50 border border-teal-200 text-teal-700">
             <Activity size={16} className="animate-pulse" />
           </div>
-          <span className="text-sm font-extrabold tracking-wider text-white">SAMANVAY</span>
+          <span className="text-sm font-extrabold tracking-wider text-stone-900">SAMANVAY</span>
         </Link>
       </div>
 
@@ -64,11 +64,11 @@ export default function AuthoritySidebar({ activeTab, onTabChange }) {
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2 text-xs font-semibold rounded transition-colors group ${
                 active
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/25'
-                  : 'text-slate-400 hover:text-white border border-transparent hover:bg-slate-900/60'
+                  ? 'bg-teal-50 text-teal-700 border border-teal-200'
+                  : 'text-stone-500 hover:text-stone-900 border border-transparent hover:bg-stone-50'
               }`}
             >
-              <span className={active ? 'text-cyan-400' : 'text-slate-500 group-hover:text-slate-300'}>
+              <span className={active ? 'text-teal-700' : 'text-stone-500 group-hover:text-stone-700'}>
                 {item.icon}
               </span>
               <span>{item.label}</span>
@@ -78,22 +78,22 @@ export default function AuthoritySidebar({ activeTab, onTabChange }) {
       </nav>
 
       {/* Footer Profile & Logout */}
-      <div className="p-4 border-t border-slate-800/80 bg-navy-950/80 flex flex-col gap-3">
+      <div className="p-4 border-t border-stone-200 bg-stone-50 flex flex-col gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-xs uppercase">
+          <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700 font-bold text-xs uppercase">
             PD
           </div>
           <div className="min-w-0">
-            <div className="text-xs font-semibold text-white truncate">Priya Desai</div>
-            <div className="text-[10px] text-slate-500 truncate">District Collector</div>
+            <div className="text-xs font-semibold text-stone-900 truncate">Priya Desai</div>
+            <div className="text-[10px] text-stone-500 truncate">District Collector</div>
           </div>
         </div>
 
         <Link
           to="/"
-          className="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/5 rounded transition-all"
+          className="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-stone-500 hover:text-red-700 hover:bg-red-50 rounded transition-all"
         >
-          <LogOut size={14} className="text-slate-500 group-hover:text-red-400" />
+          <LogOut size={14} className="text-stone-500 group-hover:text-red-700" />
           <span>Exit Portal</span>
         </Link>
       </div>

@@ -135,7 +135,7 @@ export default function ResourceInventory() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 flex">
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
       {/* Sidebar navigation */}
       {renderSidebar()}
 
@@ -152,8 +152,8 @@ export default function ResourceInventory() {
             
             {/* Header info */}
             <div>
-              <h2 className="text-xl font-extrabold text-white tracking-tight">Resource Inventory Database</h2>
-              <p className="text-xs text-slate-500 mt-1">
+              <h2 className="text-xl font-extrabold text-stone-900 tracking-tight">Resource Inventory Database</h2>
+              <p className="text-xs text-stone-500 mt-1">
                 {role === 'agency' 
                   ? 'Internal asset allocation table. Ensure counts are updated in compliance with EOC mandates.'
                   : 'Master catalog of municipal dispatches, reserve stocks, and active responder counts.'
@@ -163,12 +163,12 @@ export default function ResourceInventory() {
 
             {/* Public view blocker warning */}
             {role === 'public' ? (
-              <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full">
+              <div className="bg-white border border-stone-200 rounded-lg p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6">
+                <div className="p-3 bg-orange-50 border border-orange-200 text-orange-700 rounded-full">
                   <ShieldAlert size={24} />
                 </div>
-                <h3 className="text-base font-extrabold text-white">Access Denied</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h3 className="text-base font-extrabold text-stone-900">Access Denied</h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
                   Resource allocations, reserve capacities, and deployment metrics are classified. Please log in as District Authority EOC or Rescue Agency dispatcher to view and edit inventories.
                 </p>
               </div>
@@ -184,9 +184,9 @@ export default function ResourceInventory() {
 
                 {/* Editable Resource Table */}
                 <div>
-                  <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
-                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">Asset Capacity Database</h3>
-                    <span className="text-[10px] text-slate-500 font-mono">EDITABLE DEMO STATE</span>
+                  <div className="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
+                    <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Asset Capacity Database</h3>
+                    <span className="text-[10px] text-stone-500 font-mono">EDITABLE DEMO STATE</span>
                   </div>
                   <ResourceTable 
                     data={tableData} 

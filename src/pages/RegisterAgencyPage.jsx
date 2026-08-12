@@ -80,7 +80,7 @@ export default function RegisterAgencyPage() {
     // Initial Marker icon
     const customIcon = L.divIcon({
       className: 'custom-marker-icon',
-      html: '<div class="marker-deployed animate-pulse"></div>',
+      html: '<div class="marker-deployed"></div>',
       iconSize: [20, 20]
     });
 
@@ -219,26 +219,26 @@ export default function RegisterAgencyPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-navy-900 text-slate-200 flex flex-col items-center justify-center p-6 relative">
-        <div className="absolute inset-0 map-grid-bg opacity-15 pointer-events-none" />
+      <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex flex-col items-center justify-center p-6 relative">
+        <div className="absolute inset-0 topo-bg network-bg opacity-15 pointer-events-none" />
         
-        <div className="max-w-md w-full bg-[#0f1c35] border border-slate-800 rounded-xl p-8 text-center shadow-2xl flex flex-col items-center gap-6 relative z-10 fade-in">
-          <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+        <div className="max-w-md w-full bg-white border border-stone-200 rounded-xl p-8 text-center shadow-lg flex flex-col items-center gap-6 relative z-10 fade-in">
+          <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
             <CheckCircle2 size={36} className="animate-bounce" />
           </div>
 
           <div>
-            <h2 className="text-xl font-extrabold text-white">REGISTRATION SUBMITTED</h2>
-            <div className="inline-block mt-2 px-3 py-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 font-mono text-[10px] font-bold rounded uppercase tracking-wider">
+            <h2 className="text-xl font-extrabold text-stone-900">REGISTRATION SUBMITTED</h2>
+            <div className="inline-block mt-2 px-3 py-1 bg-orange-500/10 border border-orange-200 text-orange-700 font-mono text-[10px] font-bold rounded uppercase tracking-wider">
               Status: PENDING VERIFICATION
             </div>
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-stone-500 leading-relaxed">
             Your rescue agency credentials and resource lists have been submitted for review. Your agency will become visible on the response network after verification by Pune District Authority EOC.
           </p>
 
-          <div className="w-full border-t border-slate-800/80 pt-6">
+          <div className="w-full border-t border-stone-200 pt-6">
             <Button
               variant="secondary"
               size="sm"
@@ -254,18 +254,18 @@ export default function RegisterAgencyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 relative pb-16 flex flex-col">
-      <div className="absolute inset-0 map-grid-bg opacity-15 pointer-events-none" />
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 relative pb-16 flex flex-col">
+      <div className="absolute inset-0 topo-bg network-bg opacity-15 pointer-events-none" />
 
       {/* Header */}
-      <header className="h-16 border-b border-slate-800/80 px-6 flex items-center justify-between bg-navy-950/80 backdrop-blur-md sticky top-0 z-20">
+      <header className="h-16 border-b border-stone-200 px-6 flex items-center justify-between bg-white/90  sticky top-0 z-20">
         <Link to="/" className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+          <div className="p-1.5 rounded bg-teal-50 border border-teal-200 text-teal-700">
             <Activity size={16} />
           </div>
-          <span className="text-sm font-extrabold tracking-wider text-white">SAMANVAY</span>
+          <span className="text-sm font-extrabold tracking-wider text-stone-900">SAMANVAY</span>
         </Link>
-        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+        <span className="text-[10px] font-mono text-stone-500 uppercase tracking-widest">
           Network Registration Form
         </span>
       </header>
@@ -275,8 +275,8 @@ export default function RegisterAgencyPage() {
         
         {/* Title */}
         <div className="mb-6 text-center">
-          <h2 className="text-xl font-extrabold text-white tracking-tight">Rescue Agency Registry</h2>
-          <p className="text-xs text-slate-500 mt-1">Provide precise specifications to integrate your force into SAMANVAY.</p>
+          <h2 className="text-xl font-extrabold text-stone-900 tracking-tight">Rescue Agency Registry</h2>
+          <p className="text-xs text-stone-500 mt-1">Provide precise specifications to integrate your force into SAMANVAY.</p>
         </div>
 
         {/* Wizard Steps indicator */}
@@ -287,16 +287,16 @@ export default function RegisterAgencyPage() {
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs border transition-all ${
                     step === s
-                      ? 'bg-cyan-500 border-cyan-400 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.25)]'
+                      ? 'bg-teal-700 border-cyan-400 text-stone-900 '
                       : step > s
-                      ? 'bg-cyan-500/10 border-cyan-500 text-cyan-400'
-                      : 'bg-navy-950 border-slate-800 text-slate-500'
+                      ? 'bg-teal-50 border-teal-600 text-teal-700'
+                      : 'bg-[#faf9f6] border-stone-200 text-stone-500'
                   }`}
                 >
                   {s}
                 </div>
                 <span className={`text-[8px] font-mono font-bold tracking-wider mt-1.5 uppercase ${
-                  step === s ? 'text-cyan-400' : 'text-slate-500'
+                  step === s ? 'text-teal-700' : 'text-stone-500'
                 }`}>
                   {s === 1 && 'Info'}
                   {s === 2 && 'Expertise'}
@@ -307,7 +307,7 @@ export default function RegisterAgencyPage() {
               {s < 4 && (
                 <div
                   className={`flex-1 h-[2.5px] -mt-4 transition-all duration-300 ${
-                    step > s ? 'bg-cyan-500' : 'bg-slate-800'
+                    step > s ? 'bg-teal-700' : 'bg-stone-100'
                   }`}
                 />
               )}
@@ -316,16 +316,16 @@ export default function RegisterAgencyPage() {
         </div>
 
         {/* Wizard Body Card */}
-        <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-6 flex-1 shadow-2xl flex flex-col justify-between">
+        <div className="bg-white border border-stone-200 rounded-lg p-6 flex-1 shadow-lg flex flex-col justify-between">
           
           <form onSubmit={step === 4 ? handleSubmit : (e) => e.preventDefault()} className="flex-1 flex flex-col">
             
             {/* STEP 1: Agency Information */}
             {step === 1 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-slate-800 pb-3 mb-2 flex items-center gap-2">
-                  <Building2 size={16} className="text-cyan-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">Step 1: Agency Information</h3>
+                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
+                  <Building2 size={16} className="text-teal-700" />
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 1: Agency Information</h3>
                 </div>
                 
                 <FormInput
@@ -390,11 +390,11 @@ export default function RegisterAgencyPage() {
             {/* STEP 2: Expertise */}
             {step === 2 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-slate-800 pb-3 mb-2 flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-cyan-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">Step 2: Tactical Rescue Expertise</h3>
+                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
+                  <ShieldCheck size={16} className="text-teal-700" />
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 2: Tactical Rescue Expertise</h3>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-normal">
+                <p className="text-[11px] text-stone-500 leading-normal">
                   Select disaster rescue disciplines that your tactical unit has certified capabilities to coordinate.
                 </p>
 
@@ -406,8 +406,8 @@ export default function RegisterAgencyPage() {
                         key={opt}
                         className={`flex items-center gap-3 p-3 rounded border text-xs cursor-pointer select-none transition-all ${
                           checked
-                            ? 'bg-cyan-500/10 border-cyan-500/35 text-cyan-400 font-semibold'
-                            : 'bg-navy-900/40 border-slate-850 text-slate-400 hover:border-slate-700/60'
+                            ? 'bg-teal-50 border-teal-300 text-teal-700 font-semibold'
+                            : 'bg-[#f5f3ef]/40 border-stone-300 text-stone-500 hover:border-stone-300/60'
                         }`}
                       >
                         <input
@@ -417,7 +417,7 @@ export default function RegisterAgencyPage() {
                           className="hidden"
                         />
                         <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center ${
-                          checked ? 'border-cyan-400 bg-cyan-500 text-slate-950' : 'border-slate-700'
+                          checked ? 'border-cyan-400 bg-teal-700 text-stone-900' : 'border-stone-300'
                         }`}>
                           {checked && <span className="text-[8px] font-extrabold">✓</span>}
                         </div>
@@ -432,9 +432,9 @@ export default function RegisterAgencyPage() {
             {/* STEP 3: Location */}
             {step === 3 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-slate-800 pb-3 mb-2 flex items-center gap-2">
-                  <MapPin size={16} className="text-cyan-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">Step 3: Base Location</h3>
+                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
+                  <MapPin size={16} className="text-teal-700" />
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 3: Base Location</h3>
                 </div>
 
                 <FormInput
@@ -466,16 +466,16 @@ export default function RegisterAgencyPage() {
                 {/* Location Map Selector */}
                 <div className="flex flex-col gap-1.5 flex-1 min-h-[220px]">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Map Pin Locator</span>
+                    <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Map Pin Locator</span>
                     <button
                       type="button"
                       onClick={handleUseCurrentLocation}
-                      className="text-cyan-400 hover:text-cyan-300 font-bold uppercase tracking-wider text-[10px] cursor-pointer flex items-center gap-1 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded"
+                      className="text-teal-700 hover:text-teal-600 font-bold uppercase tracking-wider text-[10px] cursor-pointer flex items-center gap-1 bg-teal-50 border border-teal-600/20 px-2 py-0.5 rounded"
                     >
                       Use Demo HQ Location
                     </button>
                   </div>
-                  <div className="flex-1 w-full h-[220px] rounded border border-slate-800 overflow-hidden relative">
+                  <div className="flex-1 w-full h-[220px] rounded border border-stone-200 overflow-hidden relative">
                     <div ref={mapContainerRef} className="w-full h-full" />
                   </div>
                 </div>
@@ -485,11 +485,11 @@ export default function RegisterAgencyPage() {
             {/* STEP 4: Resources */}
             {step === 4 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-slate-800 pb-3 mb-2 flex items-center gap-2">
-                  <FileText size={16} className="text-cyan-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">Step 4: Resource Counts</h3>
+                <div className="border-b border-stone-200 pb-3 mb-2 flex items-center gap-2">
+                  <FileText size={16} className="text-teal-700" />
+                  <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider">Step 4: Resource Counts</h3>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-normal">
+                <p className="text-[11px] text-stone-500 leading-normal">
                   Define active inventories immediately available. All parameters will be verified by the District EOC.
                 </p>
 
@@ -539,20 +539,20 @@ export default function RegisterAgencyPage() {
                 </div>
 
                 <div className="mt-2">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Other Equipment Details</label>
+                  <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Other Equipment Details</label>
                   <textarea
                     rows={2}
                     value={resources.other}
                     onChange={(e) => setResources(prev => ({ ...prev, other: e.target.value }))}
                     placeholder="e.g. Hydraulic cutters, chemical containment gear, life vests, SAT phones..."
-                    className="w-full bg-[#0a1020] border border-slate-800 focus:border-cyan-500 text-xs rounded p-2 text-white focus:outline-none transition-colors"
+                    className="w-full bg-[#faf9f6] border border-stone-200 focus:border-teal-500 text-xs rounded p-2 text-stone-900 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
             )}
 
             {/* Bottom Actions Row */}
-            <div className="flex items-center justify-between border-t border-slate-800/80 pt-5 mt-6">
+            <div className="flex items-center justify-between border-t border-stone-200 pt-5 mt-6">
               {step > 1 ? (
                 <Button
                   type="button"

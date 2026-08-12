@@ -154,7 +154,7 @@ export default function CoordinationRequests() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-200 flex">
+    <div className="min-h-screen bg-[#f5f3ef] text-stone-700 flex">
       {/* Sidebar navigation */}
       {renderSidebar()}
 
@@ -172,14 +172,14 @@ export default function CoordinationRequests() {
             {/* Header Title */}
             <div className="flex justify-between items-start gap-4 flex-wrap">
               <div>
-                <h2 className="text-xl font-extrabold text-white tracking-tight">Structured Coordination Requests</h2>
-                <p className="text-xs text-slate-500 mt-1">Issue and track resource dispatches between EOC command cells and tactical field units.</p>
+                <h2 className="text-xl font-extrabold text-stone-900 tracking-tight">Structured Coordination Requests</h2>
+                <p className="text-xs text-stone-500 mt-1">Issue and track resource dispatches between EOC command cells and tactical field units.</p>
               </div>
 
               {role !== 'public' && (
                 <button
                   onClick={() => setIsCreateOpen(true)}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold px-4 py-2.5 rounded transition-all cursor-pointer flex items-center gap-1.5 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
+                  className="bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold px-4 py-2.5 rounded transition-all cursor-pointer flex items-center gap-1.5 "
                 >
                   <Plus size={14} className="stroke-[3]" /> Issue Assistance Request
                 </button>
@@ -188,27 +188,27 @@ export default function CoordinationRequests() {
 
             {/* Public observer blocker */}
             {role === 'public' ? (
-              <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full">
+              <div className="bg-white border border-stone-200 rounded-lg p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6">
+                <div className="p-3 bg-orange-50 border border-orange-200 text-orange-700 rounded-full">
                   <ShieldAlert size={24} />
                 </div>
-                <h3 className="text-base font-extrabold text-white">Access Restricted</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h3 className="text-base font-extrabold text-stone-900">Access Restricted</h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
                   Coordination requests contain operational frequencies, location markers, and unit dispatches. Log in as District Authority or Rescue Agency dispatcher to interact with the dispatch log.
                 </p>
               </div>
             ) : (
               <>
                 {/* Filters Tab buttons */}
-                <div className="flex items-center gap-2 border-b border-slate-800 pb-1 overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-2 border-b border-stone-200 pb-1 overflow-x-auto no-scrollbar">
                   {['ALL', 'INITIATED', 'ACKNOWLEDGED', 'DEPLOYED', 'RESOLVED'].map((status) => (
                     <button
                       key={status}
                       onClick={() => setFilterStatus(status)}
                       className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border-b-2 cursor-pointer transition-all ${
                         filterStatus === status
-                          ? 'border-cyan-500 text-cyan-400 font-extrabold'
-                          : 'border-transparent text-slate-400 hover:text-slate-200'
+                          ? 'border-teal-600 text-teal-700 font-extrabold'
+                          : 'border-transparent text-stone-500 hover:text-stone-700'
                       }`}
                     >
                       {status}
@@ -218,7 +218,7 @@ export default function CoordinationRequests() {
 
                 {/* Request cards list */}
                 {finalFiltered.length === 0 ? (
-                  <div className="py-16 text-center text-xs text-slate-500 font-mono uppercase bg-[#0f1c35] border border-slate-800 rounded-lg">
+                  <div className="py-16 text-center text-xs text-stone-500 font-mono uppercase bg-white border border-stone-200 rounded-lg">
                     No requests found matching current filter state.
                   </div>
                 ) : (
@@ -287,18 +287,18 @@ export default function CoordinationRequests() {
           />
 
           <div>
-            <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Details Message Directive</label>
+            <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Details Message Directive</label>
             <textarea
               rows={3}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder="Provide context, exact street directions, contact details, or mission priorities..."
-              className="w-full bg-[#0a1020] border border-slate-800 focus:border-cyan-500 text-xs rounded p-2 text-white focus:outline-none transition-colors"
+              className="w-full bg-[#faf9f6] border border-stone-200 focus:border-teal-600 text-xs rounded p-2 text-stone-900 focus:outline-none transition-colors"
               required
             />
           </div>
 
-          <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-stone-200">
             <Button
               type="button"
               variant="secondary"

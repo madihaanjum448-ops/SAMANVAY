@@ -19,10 +19,10 @@ export default function RequestTimeline({ status }) {
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${
                   isDone
-                    ? 'bg-green-500/10 border-green-500 text-green-400'
+                    ? 'bg-green-50 border-green-500 text-green-700'
                     : isActive
-                    ? 'bg-cyan-500/10 border-cyan-400 text-cyan-400 font-bold shadow-[0_0_12px_rgba(6,182,212,0.2)]'
-                    : 'bg-slate-900 border-slate-800 text-slate-600'
+                    ? 'bg-teal-50 border-teal-600 text-teal-700 font-bold'
+                    : 'bg-stone-50 border-stone-300 text-stone-400'
                 }`}
               >
                 {isDone ? (
@@ -33,7 +33,7 @@ export default function RequestTimeline({ status }) {
               </div>
               <span
                 className={`text-[9px] font-semibold mt-1.5 uppercase tracking-wider ${
-                  isActive ? 'text-cyan-400 font-extrabold' : isDone ? 'text-green-400' : 'text-slate-500'
+                  isActive ? 'text-teal-700 font-extrabold' : isDone ? 'text-green-700' : 'text-stone-500'
                 }`}
               >
                 {step}
@@ -44,7 +44,7 @@ export default function RequestTimeline({ status }) {
             {idx < steps.length - 1 && (
               <div
                 className={`flex-1 h-[2px] -mt-4 transition-all duration-300 ${
-                  idx < currentIdx ? 'bg-green-500' : 'bg-slate-800'
+                  idx < currentIdx ? 'bg-green-600' : 'bg-stone-200'
                 }`}
               />
             )}

@@ -35,9 +35,9 @@ export default function Dropdown({
   return (
     <div className={`flex flex-col gap-1.5 ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <label className="text-xs font-semibold uppercase tracking-wider text-stone-500">
           {label}
-          {required && <span className="text-red-400 ml-1">*</span>}
+          {required && <span className="text-red-700 ml-1">*</span>}
         </label>
       )}
       <div className="relative">
@@ -46,27 +46,28 @@ export default function Dropdown({
           disabled={disabled}
           onClick={() => setIsOpen(!isOpen)}
           className={`
-            flex items-center justify-between w-full bg-[#0f1c35] border 
-            ${error ? 'border-red-500/60' : isOpen ? 'border-cyan-500/60' : 'border-[#1e2a40]'} 
-            rounded-md px-3 py-2.5 text-sm text-slate-200 transition-colors cursor-pointer text-left
-            focus:outline-none focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-40 disabled:cursor-not-allowed
+            flex items-center justify-between w-full bg-white border 
+            ${error ? 'border-red-400' : isOpen ? 'border-teal-400' : 'border-stone-200'} 
+            rounded-md px-3 py-2.5 text-sm transition-colors cursor-pointer text-left
+            focus:outline-none focus:ring-1 focus:ring-teal-200 disabled:opacity-40 disabled:cursor-not-allowed
+            ${selectedOption ? 'text-stone-700' : 'text-stone-500'}
           `}
         >
-          <span className={selectedOption ? 'text-slate-200' : 'text-slate-500'}>
+          <span>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronDown
             size={16}
-            className={`text-slate-400 transition-transform duration-150 ${
+            className={`text-stone-400 transition-transform duration-150 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
         </button>
 
         {isOpen && !disabled && (
-          <div className="absolute z-50 w-full mt-1.5 bg-[#0f1c35] border border-[#1e2a40] rounded-md shadow-xl max-h-60 overflow-y-auto py-1">
+          <div className="absolute z-50 w-full mt-1.5 bg-white border border-stone-200 rounded-md shadow-xl max-h-60 overflow-y-auto py-1">
             {options.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-slate-500">No options available</div>
+              <div className="px-3 py-2 text-sm text-stone-500">No options available</div>
             ) : (
               options.map((option) => {
                 const isSelected = option.value === value;
@@ -82,13 +83,13 @@ export default function Dropdown({
                       flex items-center justify-between w-full px-3 py-2 text-sm text-left transition-colors cursor-pointer
                       ${
                         isSelected
-                          ? 'bg-cyan-500/10 text-cyan-400'
-                          : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                          ? 'bg-teal-50 text-teal-700'
+                          : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
                       }
                     `}
                   >
                     <span>{option.label}</span>
-                    {isSelected && <Check size={14} className="text-cyan-400" />}
+                    {isSelected && <Check size={14} className="text-teal-700" />}
                   </button>
                 );
               })
@@ -96,7 +97,7 @@ export default function Dropdown({
           </div>
         )}
       </div>
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-700">{error}</span>}
     </div>
   );
 }
@@ -115,17 +116,17 @@ export function NativeSelect({
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <label className="text-xs font-semibold uppercase tracking-wider text-stone-500">
           {label}
-          {required && <span className="text-red-400 ml-1">*</span>}
+          {required && <span className="text-red-700 ml-1">*</span>}
         </label>
       )}
       <div className="relative">
         <select
-          className={`bg-[#0f1c35] border ${
-            error ? 'border-red-500/60' : 'border-[#1e2a40]'
-          } rounded-md px-3 py-2.5 text-sm text-slate-200 appearance-none
-          focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/20
+          className={`bg-white border ${
+            error ? 'border-red-400' : 'border-stone-200'
+          } rounded-md px-3 py-2.5 text-sm text-stone-700 appearance-none
+          focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-200
           transition-colors w-full cursor-pointer pr-10`}
           {...props}
         >
@@ -133,10 +134,10 @@ export function NativeSelect({
         </select>
         <ChevronDown
           size={16}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
         />
       </div>
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-700">{error}</span>}
     </div>
   );
 }

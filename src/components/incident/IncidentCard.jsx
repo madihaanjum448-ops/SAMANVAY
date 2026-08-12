@@ -26,30 +26,30 @@ export default function IncidentCard({ incident }) {
   return (
     <div 
       onClick={() => navigate(`/incidents/${id}`)}
-      className={`bg-[#0f1c35] border border-slate-800 rounded p-3 cursor-pointer card-hover flex flex-col justify-between gap-2.5 ${severityColors[severity] || ''} fade-in`}
+      className={`bg-white border border-stone-200 rounded p-3 cursor-pointer card-hover flex flex-col justify-between gap-2.5 ${severityColors[severity] || ''} fade-in`}
     >
       <div className="flex items-start justify-between gap-2">
         <div>
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider font-mono">{id}</span>
-          <h4 className="text-sm font-bold text-white hover:text-cyan-400 transition-colors leading-tight mt-0.5">
+          <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider font-mono">{id}</span>
+          <h4 className="text-sm font-bold text-stone-900 hover:text-teal-700 transition-colors leading-tight mt-0.5">
             {type} — {location}
           </h4>
         </div>
         <SeverityBadge severity={severity} showDot={false} />
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="flex items-center justify-between text-xs text-stone-500">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <Clock size={12} className="text-slate-500" />
+            <Clock size={12} className="text-stone-500" />
             <span>{getFormatTime(createdAt)}</span>
           </div>
-          <span className="text-slate-600">•</span>
-          <span className={`text-[10px] font-bold tracking-widest ${status === 'ACTIVE' ? 'text-red-400' : 'text-green-400'}`}>
+          <span className="text-stone-400">•</span>
+          <span className={`text-[10px] font-bold tracking-widest ${status === 'ACTIVE' ? 'text-red-700' : 'text-green-700'}`}>
             {status}
           </span>
         </div>
-        <span className="text-cyan-400 flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
+        <span className="text-teal-700 flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
           CMD <ArrowRight size={10} />
         </span>
       </div>

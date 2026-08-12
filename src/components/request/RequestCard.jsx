@@ -23,7 +23,7 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       return (
         <button
           onClick={() => onStatusChange(id, 'ACKNOWLEDGED')}
-          className="bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
+          className="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
         >
           Acknowledge Request
         </button>
@@ -33,7 +33,7 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       return (
         <button
           onClick={() => onStatusChange(id, 'DEPLOYED')}
-          className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
+          className="bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
         >
           Dispatch Resources
         </button>
@@ -43,7 +43,7 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       return (
         <button
           onClick={() => onStatusChange(id, 'RESOLVED')}
-          className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
+          className="bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 text-xs font-semibold px-3 py-1.5 rounded cursor-pointer transition-colors"
         >
           Mark Resolved
         </button>
@@ -53,16 +53,16 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
   };
 
   return (
-    <div className="bg-[#0f1c35] border border-slate-800 rounded-lg p-5 flex flex-col gap-4 fade-in">
+    <div className="bg-white border border-stone-200 rounded-lg p-5 flex flex-col gap-4 fade-in">
       {/* Top Header Row */}
-      <div className="flex items-start justify-between gap-3 border-b border-slate-800/60 pb-3 flex-wrap">
+      <div className="flex items-start justify-between gap-3 border-b border-stone-200 pb-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400">
+          <div className="p-1.5 rounded bg-blue-50 border border-blue-200 text-blue-700">
             <FileText size={14} />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-400 font-mono">{id}</h4>
-            <span className="text-[10px] text-slate-500 font-medium">Created {getFormatTime(createdAt)}</span>
+            <h4 className="text-xs font-bold text-stone-500 font-mono">{id}</h4>
+            <span className="text-[10px] text-stone-500 font-medium">Created {getFormatTime(createdAt)}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -72,20 +72,20 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       </div>
 
       {/* From / To Routing */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-900/35 border border-slate-800/40 p-3 rounded">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-stone-50 border border-stone-200 p-3 rounded">
         <div>
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">Requesting Agency (From)</span>
+          <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-0.5">Requesting Agency (From)</span>
           <span 
-            className="text-white font-bold hover:text-cyan-400 cursor-pointer"
+            className="text-stone-900 font-bold hover:text-teal-700 cursor-pointer"
             onClick={() => navigate(`/agencies/${from}`)}
           >
             {fromName}
           </span>
         </div>
-        <div className="border-t md:border-t-0 md:border-l border-slate-800/80 pt-2.5 md:pt-0 md:pl-4">
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">Assigned Responder (To)</span>
+        <div className="border-t md:border-t-0 md:border-l border-stone-200 pt-2.5 md:pt-0 md:pl-4">
+          <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-0.5">Assigned Responder (To)</span>
           <span 
-            className="text-white font-bold hover:text-cyan-400 cursor-pointer"
+            className="text-stone-900 font-bold hover:text-teal-700 cursor-pointer"
             onClick={() => navigate(`/agencies/${to}`)}
           >
             {toName}
@@ -95,11 +95,11 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
 
       {/* Incident Link */}
       {incidentLabel && (
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Related Incident:</span>
+        <div className="flex items-center gap-2 text-xs text-stone-500">
+          <span className="text-[10px] text-stone-500 font-semibold uppercase tracking-wider">Related Incident:</span>
           <span
             onClick={() => incident && navigate(`/incidents/${incident}`)}
-            className="text-cyan-400 font-semibold cursor-pointer hover:underline flex items-center gap-0.5"
+            className="text-teal-700 font-semibold cursor-pointer hover:underline flex items-center gap-0.5"
           >
             {incidentLabel}
           </span>
@@ -108,8 +108,8 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
 
       {/* Required items detail */}
       <div>
-        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Resources Required</span>
-        <div className="text-sm font-bold text-white font-mono bg-cyan-500/5 border border-cyan-500/10 rounded px-3 py-2">
+        <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Resources Required</span>
+        <div className="text-sm font-bold text-stone-900 font-mono bg-teal-50/50 border border-teal-200 rounded px-3 py-2">
           {required}
         </div>
       </div>
@@ -117,8 +117,8 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       {/* Message description */}
       {message && (
         <div>
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Details / Mission Directive</span>
-          <p className="text-xs text-slate-300 italic font-medium leading-relaxed bg-[#0a1020] border border-slate-800/40 rounded p-3">
+          <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Details / Mission Directive</span>
+          <p className="text-xs text-stone-700 italic font-medium leading-relaxed bg-[#faf9f6] border border-stone-200 rounded p-3">
             "{message}"
           </p>
         </div>
@@ -130,8 +130,8 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
       </div>
 
       {/* Actions bottom row */}
-      <div className="flex items-center justify-between border-t border-slate-800/60 pt-4 mt-1 flex-wrap gap-3">
-        <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider font-mono">
+      <div className="flex items-center justify-between border-t border-stone-200 pt-4 mt-1 flex-wrap gap-3">
+        <span className="text-[10px] text-stone-500 font-semibold uppercase tracking-wider font-mono">
           Prototype Demo State
         </span>
         <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function RequestCard({ request, onStatusChange, currentRole = 'au
           {incident && (
             <button
               onClick={() => navigate(`/incidents/${incident}`)}
-              className="text-xs text-slate-400 hover:text-white border border-slate-700/60 hover:border-slate-600 px-3 py-1.5 rounded font-semibold transition-colors"
+              className="text-xs text-stone-500 hover:text-stone-900 border border-stone-300 hover:border-stone-400 px-3 py-1.5 rounded font-semibold transition-colors"
             >
               Open Incident Command
             </button>

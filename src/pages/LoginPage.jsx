@@ -32,36 +32,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900 grid grid-cols-1 lg:grid-cols-12 text-slate-200">
+    <div className="min-h-screen bg-[#f5f3ef] grid grid-cols-1 lg:grid-cols-12 text-stone-700">
       
       {/* LEFT SIDE: Brand & Operational Visuals */}
-      <div className="hidden lg:flex lg:col-span-7 bg-navy-950 border-r border-slate-800 relative flex-col justify-between p-12 overflow-hidden">
+      <div className="hidden lg:flex lg:col-span-7 bg-[#faf9f6] border-r border-stone-200 relative flex-col justify-between p-12 overflow-hidden">
         {/* Grid Overlay */}
-        <div className="absolute inset-0 map-grid-bg opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 topo-bg network-bg opacity-20 pointer-events-none" />
         
         {/* Header Logo */}
         <div className="flex items-center gap-2 relative z-10">
-          <div className="p-1.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+          <div className="p-1.5 rounded bg-teal-50 border border-teal-200 text-teal-700">
             <Activity size={18} className="animate-pulse" />
           </div>
-          <span className="text-base font-extrabold tracking-wider text-white">SAMANVAY</span>
+          <span className="text-base font-extrabold tracking-wider text-stone-900">SAMANVAY</span>
         </div>
 
         {/* Core Tagline Info */}
         <div className="relative z-10 max-w-lg my-auto flex flex-col gap-6">
-          <h2 className="text-3xl font-extrabold text-white leading-tight tracking-tight">
+          <h2 className="text-3xl font-extrabold text-stone-900 leading-tight tracking-tight">
             Unified Emergency Response Command Portal
           </h2>
-          <p className="text-sm text-slate-400 leading-relaxed">
+          <p className="text-sm text-stone-500 leading-relaxed">
             Authorized portal for Pune District Emergency Operations Center (EOC) and verified tactical rescue groups. Access resource databases, live situation logs, and trigger coordination tasks.
           </p>
 
-          <div className="flex flex-col gap-3.5 bg-navy-900/50 border border-slate-850 p-4 rounded-lg font-mono text-xs">
-            <div className="flex items-center justify-between text-slate-500">
+          <div className="flex flex-col gap-3.5 bg-[#f5f3ef]/50 border border-stone-300 p-4 rounded-lg font-mono text-xs">
+            <div className="flex items-center justify-between text-stone-500">
               <span>SYSTEM LOGS:</span>
-              <span className="text-cyan-400 font-bold">NOMINAL</span>
+              <span className="text-teal-700 font-bold">NOMINAL</span>
             </div>
-            <div className="text-[10px] text-slate-400 space-y-1">
+            <div className="text-[10px] text-stone-500 space-y-1">
               <div>&gt; EOC Server initialized: Port 8080 active</div>
               <div>&gt; Live GIS Interface synchronizing with ISRO Bhuvan</div>
               <div>&gt; 48 vetted tactical responder groups connected</div>
@@ -70,42 +70,42 @@ export default function LoginPage() {
         </div>
 
         {/* Footer info */}
-        <div className="relative z-10 text-[10px] font-mono text-slate-600">
+        <div className="relative z-10 text-[10px] font-mono text-stone-400">
           SECURE PROTOCOL CLASSIFIED • DEMONSTRATION MODE ONLY
         </div>
       </div>
 
       {/* RIGHT SIDE: Interactive Login Form */}
       <div className="lg:col-span-5 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12 relative">
-        <div className="absolute inset-0 map-grid-bg opacity-10 lg:hidden" />
+        <div className="absolute inset-0 topo-bg network-bg opacity-10 lg:hidden" />
         
         <div className="w-full max-w-sm mx-auto relative z-10">
           
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="p-1.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+            <div className="p-1.5 rounded bg-teal-50 border border-teal-200 text-teal-700">
               <Activity size={16} />
             </div>
-            <span className="text-sm font-extrabold tracking-wider text-white">SAMANVAY</span>
+            <span className="text-sm font-extrabold tracking-wider text-stone-900">SAMANVAY</span>
           </div>
 
           <div className="mb-6">
-            <h3 className="text-xl font-bold text-white tracking-tight">Access Dashboard</h3>
-            <p className="text-xs text-slate-500 mt-1">Select your designated response role to log in.</p>
+            <h3 className="text-xl font-bold text-stone-900 tracking-tight">Access Dashboard</h3>
+            <p className="text-xs text-stone-500 mt-1">Select your designated response role to log in.</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             
             {/* Role selection tab style */}
-            <div className="grid grid-cols-2 gap-2 bg-[#0f1c35] border border-slate-850 p-1 rounded">
+            <div className="grid grid-cols-2 gap-2 bg-white border border-stone-300 p-1 rounded">
               <button
                 type="button"
                 onClick={() => setRole('authority')}
                 className={`py-2 px-3 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                   role === 'authority'
-                    ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.15)]'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-teal-700 text-stone-900 '
+                    : 'text-stone-500 hover:text-stone-800'
                 }`}
               >
                 <ShieldAlert size={12} />
@@ -116,8 +116,8 @@ export default function LoginPage() {
                 onClick={() => setRole('agency')}
                 className={`py-2 px-3 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                   role === 'agency'
-                    ? 'bg-green-500 text-slate-950 shadow-[0_0_12px_rgba(34,197,94,0.15)]'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-green-600 text-stone-900 '
+                    : 'text-stone-500 hover:text-stone-800'
                 }`}
               >
                 <ShieldCheck size={12} />
@@ -148,12 +148,12 @@ export default function LoginPage() {
             />
 
             {/* Remember & Forgot options */}
-            <div className="flex items-center justify-between text-[11px] text-slate-500">
+            <div className="flex items-center justify-between text-[11px] text-stone-500">
               <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="checkbox" className="rounded bg-slate-900 border-slate-800 text-cyan-500 focus:ring-0 w-3.5 h-3.5" />
+                <input type="checkbox" className="rounded bg-stone-50 border-stone-200 text-cyan-500 focus:ring-0 w-3.5 h-3.5" />
                 <span>Keep session active</span>
               </label>
-              <a href="#" className="hover:text-cyan-400 transition-colors" onClick={(e) => e.preventDefault()}>Forgot password?</a>
+              <a href="#" className="hover:text-teal-700 transition-colors" onClick={(e) => e.preventDefault()}>Forgot password?</a>
             </div>
 
             {/* Sign In Button */}
@@ -168,12 +168,12 @@ export default function LoginPage() {
           </form>
 
           {/* Agency Registration Link */}
-          <div className="text-center mt-6 text-xs border-t border-slate-850 pt-5">
-            <span className="text-slate-500">Not part of the coordination network?</span>
+          <div className="text-center mt-6 text-xs border-t border-stone-300 pt-5">
+            <span className="text-stone-500">Not part of the coordination network?</span>
             <br />
             <button
               onClick={() => navigate('/register-agency')}
-              className="text-cyan-400 hover:text-cyan-300 font-bold inline-flex items-center gap-1 mt-1 transition-colors hover:underline cursor-pointer"
+              className="text-teal-700 hover:text-teal-600 font-bold inline-flex items-center gap-1 mt-1 transition-colors hover:underline cursor-pointer"
             >
               Register Rescue Agency <ArrowRight size={12} />
             </button>

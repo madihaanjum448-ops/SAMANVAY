@@ -1,12 +1,12 @@
 import React from 'react';
 
 const variants = {
-  primary:   'bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-500 hover:border-cyan-400 shadow-[0_0_16px_rgba(6,182,212,0.25)] hover:shadow-[0_0_24px_rgba(6,182,212,0.4)]',
-  secondary: 'bg-transparent hover:bg-slate-700/60 text-slate-300 border-slate-600 hover:border-slate-500 hover:text-white',
-  danger:    'bg-red-500/15 hover:bg-red-500/25 text-red-400 border-red-500/40 hover:border-red-500/60',
-  success:   'bg-green-500/15 hover:bg-green-500/25 text-green-400 border-green-500/40 hover:border-green-500/60',
-  ghost:     'bg-transparent hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-transparent',
-  outline:   'bg-transparent hover:bg-cyan-500/10 text-cyan-400 border-cyan-500/40 hover:border-cyan-500/60',
+  primary:   'bg-teal-700 hover:bg-teal-600 text-white border-teal-700 hover:border-teal-600',
+  secondary: 'bg-transparent hover:bg-stone-100 text-stone-600 border-stone-300 hover:border-stone-400 hover:text-stone-900',
+  danger:    'bg-red-50 hover:bg-red-100 text-red-700 border-red-200 hover:border-red-300',
+  success:   'bg-green-50 hover:bg-green-100 text-green-700 border-green-200 hover:border-green-300',
+  ghost:     'bg-transparent hover:bg-stone-100 text-stone-500 hover:text-stone-800 border-transparent',
+  outline:   'bg-transparent hover:bg-teal-50 text-teal-700 border-teal-300 hover:border-teal-400',
 };
 
 const sizes = {

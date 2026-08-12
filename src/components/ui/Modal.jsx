@@ -33,20 +33,20 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
     >
       <div
-        className={`relative w-full ${sizes[size] || sizes.md} bg-[#0f1c35] border border-[#1e2a40] rounded-xl shadow-2xl overflow-hidden fade-in`}
+        className={`relative w-full ${sizes[size] || sizes.md} bg-white border border-stone-200 rounded-xl shadow-lg overflow-hidden fade-in`}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e2a40]">
-            <h2 className="text-base font-semibold text-white tracking-wide">{title}</h2>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200">
+            <h2 className="text-base font-semibold text-stone-900 tracking-wide">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded hover:bg-stone-100 text-stone-500 hover:text-stone-900 transition-colors cursor-pointer"
               aria-label="Close modal"
             >
               <X size={16} />
@@ -58,7 +58,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
         {!title && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors z-10 cursor-pointer"
+            className="absolute top-4 right-4 p-1.5 rounded hover:bg-stone-100 text-stone-500 hover:text-stone-900 transition-colors z-10 cursor-pointer"
             aria-label="Close modal"
           >
             <X size={16} />
@@ -66,7 +66,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
         )}
 
         {/* Content */}
-        <div className="p-6 text-slate-200">{children}</div>
+        <div className="p-6 text-stone-700">{children}</div>
       </div>
     </div>
   );

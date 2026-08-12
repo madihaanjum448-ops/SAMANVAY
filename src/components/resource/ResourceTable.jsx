@@ -50,7 +50,7 @@ export default function ResourceTable({ data = [], onUpdate }) {
   };
 
   return (
-    <div className="bg-[#0f1c35] border border-slate-800 rounded-lg overflow-x-auto fade-in">
+    <div className="bg-white border border-stone-200 rounded-lg overflow-x-auto fade-in">
       <table className="data-table">
         <thead>
           <tr>
@@ -68,8 +68,8 @@ export default function ResourceTable({ data = [], onUpdate }) {
             return (
               <tr key={row.id}>
                 <td>
-                  <div className="flex items-center gap-2 font-semibold text-white">
-                    <span className="text-cyan-400">
+                  <div className="flex items-center gap-2 font-semibold text-stone-900">
+                    <span className="text-teal-700">
                       {icons[row.name] || <Package size={14} />}
                     </span>
                     <span>{row.name}</span>
@@ -81,7 +81,7 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.total}
                       onChange={(e) => handleInputChange('total', e.target.value)}
-                      className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white font-mono text-center focus:outline-none focus:border-cyan-500"
+                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-stone-900 font-mono text-center focus:outline-none focus:border-teal-500"
                     />
                   ) : (
                     <span className="font-mono">{row.total}</span>
@@ -93,10 +93,10 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.available}
                       onChange={(e) => handleInputChange('available', e.target.value)}
-                      className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-green-400 font-mono text-center focus:outline-none focus:border-green-500"
+                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-green-700 font-mono text-center focus:outline-none focus:border-green-500"
                     />
                   ) : (
-                    <span className="text-green-400 font-mono">{row.available}</span>
+                    <span className="text-green-700 font-mono">{row.available}</span>
                   )}
                 </td>
                 <td>
@@ -105,28 +105,28 @@ export default function ResourceTable({ data = [], onUpdate }) {
                       type="number"
                       value={editValues.deployed}
                       onChange={(e) => handleInputChange('deployed', e.target.value)}
-                      className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-red-400 font-mono text-center focus:outline-none focus:border-red-500"
+                      className="w-20 bg-stone-50 border border-stone-300 rounded px-2 py-1 text-xs text-red-700 font-mono text-center focus:outline-none focus:border-red-500"
                     />
                   ) : (
-                    <span className="text-red-400 font-mono">{row.deployed}</span>
+                    <span className="text-red-700 font-mono">{row.deployed}</span>
                   )}
                 </td>
                 <td>
-                  <span className="text-xs text-slate-500 font-mono">{row.lastUpdated}</span>
+                  <span className="text-xs text-stone-500 font-mono">{row.lastUpdated}</span>
                 </td>
                 <td className="text-right">
                   {isEditing ? (
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => handleSave(row.id)}
-                        className="p-1 hover:bg-green-500/10 text-green-400 border border-green-500/20 rounded transition-colors"
+                        className="p-1 hover:bg-green-50 text-green-700 border border-green-200 rounded transition-colors"
                         title="Save Changes"
                       >
                         <Check size={14} />
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="p-1 hover:bg-red-500/10 text-red-400 border border-red-500/20 rounded transition-colors"
+                        className="p-1 hover:bg-red-50 text-red-700 border border-red-200 rounded transition-colors"
                         title="Cancel"
                       >
                         <X size={14} />
@@ -135,7 +135,7 @@ export default function ResourceTable({ data = [], onUpdate }) {
                   ) : (
                     <button
                       onClick={() => handleEditClick(row)}
-                      className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white border border-transparent hover:border-slate-800 rounded transition-colors"
+                      className="p-1.5 hover:bg-stone-100 text-stone-500 hover:text-stone-900 border border-transparent hover:border-stone-200 rounded transition-colors"
                       title="Edit Row"
                     >
                       <Edit2 size={13} />
