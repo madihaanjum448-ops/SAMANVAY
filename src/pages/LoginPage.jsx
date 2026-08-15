@@ -8,8 +8,8 @@ import { api } from '../services/api';
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('collector.pune@gmail.com');
+  const [password, setPassword] = useState('123456');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -70,25 +70,6 @@ export default function LoginPage() {
             Authorized operational portal for District Emergency Operations Center (EOC) authorities and verified rescue response agencies. Real-time resource inventory, verified agency directory, and live incident coordination.
           </p>
 
-          <div className="flex flex-col gap-3 bg-[#F7F5EF] border border-[#E5E7EB] p-5 rounded-xl font-mono text-xs shadow-2xs">
-            <div className="flex items-center justify-between text-[#111827]">
-              <span className="font-bold">SYSTEM STATUS:</span>
-              <span className="text-[#166534] font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#166534] status-pulse"></span>
-                ACTIVE OPERATIONAL
-              </span>
-            </div>
-            <div className="text-[11px] text-[#64748B] space-y-1">
-              <div>&gt; Pune District EOC GIS Layer loaded</div>
-              <div>&gt; 48 Vetted Rescue Agencies on active standby</div>
-              <div>&gt; 128 Deployable Heavy Assets logged</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Info */}
-        <div className="relative z-10 text-[10px] font-mono text-[#64748B]">
-          OFFICIAL GOVERNMENT PROTOTYPE • SIH DISASTER MANAGEMENT SYSTEM
         </div>
       </div>
 
@@ -124,7 +105,7 @@ export default function LoginPage() {
               id="login-email"
               label="Official Email Address"
               type="email"
-              placeholder="e.g. collector.pune@maharashtra.gov.in"
+              placeholder="collector.pune@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -163,18 +144,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Agency Registration Link */}
-          <div className="text-center mt-6 text-xs border-t border-[#E5E7EB] pt-5">
-            <span className="text-[#64748B]">New rescue agency applying for verification?</span>
-            <br />
-            <button
-              onClick={() => navigate('/register-agency')}
-              className="text-[#166534] font-bold inline-flex items-center gap-1 mt-1 transition-colors hover:underline cursor-pointer"
-            >
-              Register Rescue Agency <ArrowRight size={12} />
-            </button>
-          </div>
-          
         </div>
       </div>
     </div>

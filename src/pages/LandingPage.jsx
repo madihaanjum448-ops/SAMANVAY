@@ -193,19 +193,8 @@ export default function LandingPage() {
             <div className="flex flex-wrap items-center gap-4 pt-2">
 
               <button
-                onClick={() => navigate('/agencies')}
-                className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3.5 rounded-md text-sm transition-all flex items-center gap-2 shadow-xs cursor-pointer"
-              >
-
-                Explore Response Network
-
-                <ArrowRight size={16} />
-
-              </button>
-
-              <button
                 onClick={() => navigate('/register-agency')}
-                className="bg-white hover:bg-[#FAF9F5] text-[#166534] border border-[#E5E7EB] hover:border-[#CBD5E1] font-bold px-6 py-3.5 rounded-md text-sm transition-all cursor-pointer shadow-2xs"
+                className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3.5 rounded-md text-sm transition-all cursor-pointer shadow-xs"
               >
 
                 Register Your Agency

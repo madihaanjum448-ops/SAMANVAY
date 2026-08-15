@@ -46,8 +46,8 @@ export const api = {
         {
           id: 'USR-001',
           name: 'Priya Desai (EOC Officer)',
-          email: 'eoc@samanvay.gov.in',
-          password: 'password123',
+          email: 'collector.pune@gmail.com',
+          password: '123456',
           role: 'district_eoc',
           district: 'Pune',
           state: 'Maharashtra',
