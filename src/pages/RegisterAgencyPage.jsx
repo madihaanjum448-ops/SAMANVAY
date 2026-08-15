@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -16,7 +17,8 @@ import FormInput from '../components/ui/FormInput';
 import Dropdown from '../components/ui/Dropdown';
 import { AGENCY_TYPES, EXPERTISE_OPTIONS } from '../data/mockData';
 import { api } from '../services/api';
-
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 export default function RegisterAgencyPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -168,7 +170,13 @@ export default function RegisterAgencyPage() {
       },
       resources: resources
     };
+    const agencyData = {
+  ...newAgencyPayload,
+  status: 'pending',
+  createdAt: serverTimestamp()
+  };
 
+  await addDoc(collection(db, 'agencies'), agencyData);
 
     const existing = localStorage.getItem('samanvay_agencies');
     let agenciesList = [];
@@ -178,7 +186,7 @@ export default function RegisterAgencyPage() {
       agenciesList = [];
     }
     
-    agenciesList.push(newAgency);
+    agenciesList.push(newAgencyPayload);
     localStorage.setItem('samanvay_agencies', JSON.stringify(agenciesList));
 
     // Update notifications to show submission

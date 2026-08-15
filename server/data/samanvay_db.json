@@ -386,6 +386,213 @@
       "submittedAt": "2026-08-12T09:53:43.668Z",
       "activeIncidents": 0,
       "totalMissions": 0
+    },
+    {
+      "name": "srdf ",
+      "type": "SDRF",
+      "district": "bangalore",
+      "state": "karnataka",
+      "phone": "7795329020",
+      "email": "asd@srdf.gov.in",
+      "status": "AVAILABLE",
+      "coordinates": [
+        18.5204,
+        73.8567
+      ],
+      "address": "Shivajinagar",
+      "expertise": [
+        "Flood Rescue",
+        "Earthquake Response"
+      ],
+      "resources": {
+        "personnel": {
+          "total": 2,
+          "available": 2
+        },
+        "ambulances": {
+          "total": 10,
+          "available": 10
+        },
+        "rescueVehicles": {
+          "total": 9,
+          "available": 9
+        },
+        "boats": {
+          "total": 2,
+          "available": 2
+        },
+        "drones": {
+          "total": 1,
+          "available": 1
+        },
+        "medicalKits": {
+          "total": 4,
+          "available": 4
+        }
+      },
+      "about": "Registered disaster rescue agency operating in bangalore jurisdiction.",
+      "id": "AG-008",
+      "verificationStatus": "VERIFIED",
+      "verifiedAt": "2026-08-12",
+      "verifiedBy": "Priya Desai (Pune EOC)",
+      "submittedAt": "2026-08-12T15:30:07.313Z",
+      "activeIncidents": 0,
+      "totalMissions": 0
+    },
+    {
+      "name": "srdf banglore",
+      "type": "SDRF",
+      "district": "bangalore",
+      "state": "karnataka",
+      "phone": "8739303033",
+      "email": "aop@srdf.gov.in",
+      "status": "AVAILABLE",
+      "coordinates": [
+        18.5354,
+        73.87
+      ],
+      "address": "Shivajinagar EOC",
+      "expertise": [
+        "Flood Rescue"
+      ],
+      "resources": {
+        "personnel": {
+          "total": 0,
+          "available": 0
+        },
+        "ambulances": {
+          "total": 0,
+          "available": 0
+        },
+        "rescueVehicles": {
+          "total": 0,
+          "available": 0
+        },
+        "boats": {
+          "total": 0,
+          "available": 0
+        },
+        "drones": {
+          "total": 0,
+          "available": 0
+        },
+        "medicalKits": {
+          "total": 0,
+          "available": 0
+        }
+      },
+      "about": "Registered disaster rescue agency operating in bangalore jurisdiction.",
+      "id": "AG-009",
+      "verificationStatus": "VERIFIED",
+      "verifiedAt": "2026-08-12",
+      "verifiedBy": "Priya Desai (Pune EOC)",
+      "submittedAt": "2026-08-12T15:31:20.021Z",
+      "activeIncidents": 0,
+      "totalMissions": 0
+    },
+    {
+      "name": "srdf bangalore",
+      "type": "SDRF",
+      "district": "bangalore",
+      "state": "karnataka",
+      "phone": "8390306756",
+      "email": "opsa@srdf.gov.in",
+      "status": "AVAILABLE",
+      "coordinates": [
+        18.5204,
+        73.8567
+      ],
+      "address": "Shivajinagar",
+      "expertise": [
+        "Flood Rescue",
+        "Earthquake Response"
+      ],
+      "resources": {
+        "personnel": {
+          "total": 0,
+          "available": 0
+        },
+        "ambulances": {
+          "total": 0,
+          "available": 0
+        },
+        "rescueVehicles": {
+          "total": 0,
+          "available": 0
+        },
+        "boats": {
+          "total": 0,
+          "available": 0
+        },
+        "drones": {
+          "total": 0,
+          "available": 0
+        },
+        "medicalKits": {
+          "total": 0,
+          "available": 0
+        }
+      },
+      "about": "Registered disaster rescue agency operating in bangalore jurisdiction.",
+      "id": "AG-010",
+      "verificationStatus": "VERIFIED",
+      "verifiedAt": "2026-08-12",
+      "verifiedBy": "Priya Desai (Pune EOC)",
+      "submittedAt": "2026-08-12T15:32:06.837Z",
+      "activeIncidents": 0,
+      "totalMissions": 0
+    },
+    {
+      "name": "sdrf",
+      "type": "SDRF",
+      "district": "chikballapur",
+      "state": "karnataka",
+      "phone": "7898675645",
+      "email": "opsq@srdf.gov.in",
+      "status": "AVAILABLE",
+      "coordinates": [
+        18.5204,
+        73.8567
+      ],
+      "address": "mg road chintamani",
+      "expertise": [
+        "Flood Rescue",
+        "Water Rescue"
+      ],
+      "resources": {
+        "personnel": {
+          "total": 0,
+          "available": 0
+        },
+        "ambulances": {
+          "total": 0,
+          "available": 0
+        },
+        "rescueVehicles": {
+          "total": 0,
+          "available": 0
+        },
+        "boats": {
+          "total": 0,
+          "available": 0
+        },
+        "drones": {
+          "total": 0,
+          "available": 0
+        },
+        "medicalKits": {
+          "total": 0,
+          "available": 0
+        }
+      },
+      "about": "Registered disaster rescue agency operating in chikballapur jurisdiction.",
+      "id": "AG-011",
+      "verificationStatus": "PENDING",
+      "verifiedAt": null,
+      "verifiedBy": null,
+      "submittedAt": "2026-08-12T15:43:07.806Z",
+      "activeIncidents": 0,
+      "totalMissions": 0
     }
   ],
   "incidents": [
@@ -706,6 +913,168 @@
   ],
   "activity": [
     {
+      "id": 1786553497181.1882,
+      "time": "10:21 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553492279.9841,
+      "time": "10:21 PM",
+      "type": "verification",
+      "action": "Agency Rejected",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to REJECTED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553490198.4592,
+      "time": "10:21 PM",
+      "type": "verification",
+      "action": "Agency Rejected",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to REJECTED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553480230.8801,
+      "time": "10:21 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553277381.0005,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553265796.024,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553263815.33,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553261813.926,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553258546.5583,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553256396.6167,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553253099.9656,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "Pimpri-Chinchwad Fire Unit status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553250414.0366,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "srdf bangalore status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553248331.1667,
+      "time": "10:17 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "srdf banglore status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786553219839.4473,
+      "time": "10:16 PM",
+      "type": "verification",
+      "action": "Agency Verified",
+      "detail": "srdf  status updated to VERIFIED",
+      "actor": "Priya Desai (Pune EOC)",
+      "severity": null
+    },
+    {
+      "id": 1786549387806.651,
+      "time": "09:13 PM",
+      "type": "verification",
+      "action": "Agency Registration Received",
+      "detail": "sdrf (SDRF) submitted for district verification",
+      "actor": "Public Portal",
+      "severity": null
+    },
+    {
+      "id": 1786548726837.361,
+      "time": "09:02 PM",
+      "type": "verification",
+      "action": "Agency Registration Received",
+      "detail": "srdf bangalore (SDRF) submitted for district verification",
+      "actor": "Public Portal",
+      "severity": null
+    },
+    {
+      "id": 1786548680021.9072,
+      "time": "09:01 PM",
+      "type": "verification",
+      "action": "Agency Registration Received",
+      "detail": "srdf banglore (SDRF) submitted for district verification",
+      "actor": "Public Portal",
+      "severity": null
+    },
+    {
+      "id": 1786548607313.725,
+      "time": "09:00 PM",
+      "type": "verification",
+      "action": "Agency Registration Received",
+      "detail": "srdf  (SDRF) submitted for district verification",
+      "actor": "Public Portal",
+      "severity": null
+    },
+    {
       "id": 1786530353899.2466,
       "time": "03:55 pm",
       "type": "verification",
@@ -788,6 +1157,150 @@
     }
   ],
   "notifications": [
+    {
+      "id": 1786553497181.9712,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553492279.1082,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "Agency REJECTED",
+      "message": "Pimpri-Chinchwad Fire Unit has been rejected for emergency deployment."
+    },
+    {
+      "id": 1786553490198.8657,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "Agency REJECTED",
+      "message": "Pimpri-Chinchwad Fire Unit has been rejected for emergency deployment."
+    },
+    {
+      "id": 1786553480230.1448,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553277381.1013,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553265796.3171,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553263815.0312,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553261813.0115,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553258547.221,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553256397.4917,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553253099.4124,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "Pimpri-Chinchwad Fire Unit has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553250414.4614,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "srdf bangalore has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553248332.4233,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "srdf banglore has been verified for emergency deployment."
+    },
+    {
+      "id": 1786553219839.2417,
+      "time": "Just now",
+      "read": false,
+      "type": "system",
+      "title": "Agency VERIFIED",
+      "message": "srdf  has been verified for emergency deployment."
+    },
+    {
+      "id": 1786549387814.265,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "New Agency Registration",
+      "message": "sdrf submitted for verification in chikballapur."
+    },
+    {
+      "id": 1786548726837.1143,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "New Agency Registration",
+      "message": "srdf bangalore submitted for verification in bangalore."
+    },
+    {
+      "id": 1786548680022.7031,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "New Agency Registration",
+      "message": "srdf banglore submitted for verification in bangalore."
+    },
+    {
+      "id": 1786548607331.0862,
+      "time": "Just now",
+      "read": false,
+      "type": "alert",
+      "title": "New Agency Registration",
+      "message": "srdf  submitted for verification in bangalore."
+    },
     {
       "id": 1786530353946.0645,
       "time": "Just now",

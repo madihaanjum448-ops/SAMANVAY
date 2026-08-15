@@ -19,9 +19,14 @@ export default function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const selectedOption = options.find((opt) =>
+const selectedOption = options.find((opt) =>
   typeof opt === 'string' ? opt === value : opt.value === value
 );
+
+const selectedLabel =
+  typeof selectedOption === 'string'
+    ? selectedOption
+    : selectedOption?.label;
 
   // Close when clicking outside of the component
   useEffect(() => {
@@ -56,7 +61,7 @@ export default function Dropdown({
           `}
         >
           <span>
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedLabel || placeholder}
           </span>
           <ChevronDown
             size={16}
@@ -79,9 +84,12 @@ export default function Dropdown({
                     key={typeof option === 'string' ? option : option.value}
                     type="button"
                     onClick={() => {
-                      if (onChange) onChange(option.value);
-                      setIsOpen(false);
-                    }}
+  const optionValue =
+    typeof option === 'string' ? option : option.value;
+
+  if (onChange) onChange(optionValue);
+  setIsOpen(false);
+}}
                     className={`
                       flex items-center justify-between w-full px-3 py-2 text-sm text-left transition-colors cursor-pointer
                       ${

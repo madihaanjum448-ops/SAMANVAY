@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc
+} from 'firebase/firestore';
+import { db } from '../../firebase';
 import { 
   AlertTriangle, 
   Users, 
@@ -42,7 +49,12 @@ export default function AuthorityDashboard() {
     async function loadData() {
       try {
         const [agenciesData, incidentsData, requestsData, resourcesData, activityData] = await Promise.all([
-          api.agencies.getAll(),
+          getDocs(collection(db, 'agencies')).then(snapshot =>
+  snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }))
+),
           api.incidents.getAll(),
           api.requests.getAll(),
           api.resources.getAll(),
@@ -61,8 +73,34 @@ export default function AuthorityDashboard() {
   }, [activeTab]);
 
   // Verification actions
-  const handleApproveAgency = async (id) => {
-    await api.agencies.verify(id, 'VERIFIED', 'Priya Desai (Pune EOC)');
+    const handleApproveAgency = async (id) => {
+  try {
+    // Update agency directly in Firestore
+    await updateDoc(doc(db, 'agencies', id), {
+      verificationStatus: 'VERIFIED',
+      verifiedAt: new Date().toISOString(),
+      verifiedBy: 'Priya Desai (Pune EOC)'
+    });
+
+    // Update screen immediately
+    setAgencies(prev =>
+      prev.map(a =>
+        a.id === id
+          ? {
+              ...a,
+              verificationStatus: 'VERIFIED',
+              verifiedAt: new Date().toISOString()
+            }
+          : a
+      )
+    );
+
+    alert('Agency approved successfully!');
+  } catch (error) {
+    console.error('Error approving agency:', error);
+    alert('Failed to approve agency. Check Firestore permissions.');
+  }
+};
     const updated = agencies.map(a => 
       a.id === id ? { ...a, verificationStatus: 'VERIFIED', verifiedAt: new Date().toISOString().split('T')[0] } : a
     );
@@ -86,8 +124,31 @@ export default function AuthorityDashboard() {
 
   };
 
-  const handleRejectAgency = async (id) => {
-    await api.agencies.verify(id, 'REJECTED', 'Priya Desai (Pune EOC)');
+    const handleRejectAgency = async (id) => {
+  try {
+    await updateDoc(doc(db, 'agencies', id), {
+      verificationStatus: 'REJECTED',
+      verifiedAt: new Date().toISOString(),
+      verifiedBy: 'Priya Desai (Pune EOC)'
+    });
+
+    setAgencies(prev =>
+      prev.map(a =>
+        a.id === id
+          ? {
+              ...a,
+              verificationStatus: 'REJECTED'
+            }
+          : a
+      )
+    );
+
+    alert('Agency rejected.');
+  } catch (error) {
+    console.error('Error rejecting agency:', error);
+    alert('Failed to reject agency. Check Firestore permissions.');
+  }
+};
     const updated = agencies.map(a => 
       a.id === id ? { ...a, verificationStatus: 'REJECTED' } : a
     );
