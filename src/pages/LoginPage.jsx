@@ -1,34 +1,43 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ShieldCheck, ShieldAlert, ArrowRight, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ShieldCheck, ShieldAlert, ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FormInput from '../components/ui/FormInput';
+import { api } from '../services/api';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const initialRole = searchParams.get('role') || 'authority';
 
-  const [role, setRole] = useState(initialRole);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await api.auth.login({ email, password });
       setLoading(false);
-      localStorage.setItem('samanvay_role', role);
       
-      if (role === 'authority') {
-        navigate('/authority/dashboard');
+      if (res?.success && res?.user) {
+        const userRole = res.user.role;
+        if (userRole === 'agency_admin') {
+          navigate('/agency/dashboard');
+        } else if (userRole === 'district_eoc' || userRole === 'state_authority') {
+          navigate('/authority/dashboard');
+        } else {
+          setError('Logged in user has an invalid role assignment.');
+        }
       } else {
-        navigate('/agency/dashboard');
+        setError(res?.error || 'Invalid credentials. Please verify official email and password.');
       }
-    }, 800);
+    } catch (err) {
+      setLoading(false);
+      setError('Connection error. Failed to reach verification server.');
+    }
   };
 
   return (
@@ -97,39 +106,18 @@ export default function LoginPage() {
 
           <div className="mb-6">
             <h3 className="text-2xl font-extrabold text-[#111827] tracking-tight">Portal Sign In</h3>
-            <p className="text-xs text-[#64748B] mt-1">Select designated operational role to access dashboard.</p>
+            <p className="text-xs text-[#64748B] mt-1">Enter official credentials to access operational dashboard.</p>
           </div>
+
+          {error && (
+            <div className="mb-4 bg-[#FEF2F2] border border-[#FCA5A5] text-[#B91C1C] px-3.5 py-2.5 rounded-lg flex items-center gap-2 text-xs font-semibold">
+              <AlertCircle size={16} className="shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            
-            {/* Role Switcher */}
-            <div className="grid grid-cols-2 gap-2 bg-[#F7F5EF] border border-[#E5E7EB] p-1.5 rounded-lg">
-              <button
-                type="button"
-                onClick={() => setRole('authority')}
-                className={`py-2 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  role === 'authority'
-                    ? 'bg-[#166534] text-white shadow-2xs'
-                    : 'text-[#64748B] hover:text-[#111827]'
-                }`}
-              >
-                <ShieldAlert size={14} />
-                District EOC
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole('agency')}
-                className={`py-2 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  role === 'agency'
-                    ? 'bg-[#166534] text-white shadow-2xs'
-                    : 'text-[#64748B] hover:text-[#111827]'
-                }`}
-              >
-                <ShieldCheck size={14} />
-                Rescue Agency
-              </button>
-            </div>
 
             {/* Email Field */}
             <FormInput

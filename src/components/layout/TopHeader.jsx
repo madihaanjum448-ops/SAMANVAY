@@ -9,25 +9,12 @@ export default function TopHeader({ title = 'Pune District' }) {
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [simulatedRole, setSimulatedRole] = useState('authority');
 
-  // Load state
+  // Load authenticated user profile
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
   useEffect(() => {
-    // Determine active role based on URL or localStorage
-    const path = location.pathname;
-    let role = 'public';
-    if (path.startsWith('/authority')) {
-      role = 'authority';
-    } else if (path.startsWith('/agency')) {
-      role = 'agency';
-    } else if (path === '/resources' || path === '/requests' || path.startsWith('/incidents')) {
-      role = localStorage.getItem('samanvay_role') || 'authority';
-    } else if (path === '/' || path === '/agencies' || path.startsWith('/agencies/')) {
-      role = localStorage.getItem('samanvay_role') || 'public';
-    }
-    setSimulatedRole(role);
-    localStorage.setItem('samanvay_role', role);
-
     // Load mock notifications
     const stored = localStorage.getItem('samanvay_notifications');
     if (stored) {
@@ -37,20 +24,6 @@ export default function TopHeader({ title = 'Pune District' }) {
       localStorage.setItem('samanvay_notifications', JSON.stringify(MOCK_NOTIFICATIONS));
     }
   }, [location.pathname]);
-
-  const handleRoleChange = (e) => {
-    const role = e.target.value;
-    setSimulatedRole(role);
-    localStorage.setItem('samanvay_role', role);
-    
-    if (role === 'authority') {
-      navigate('/authority/dashboard');
-    } else if (role === 'agency') {
-      navigate('/agency/dashboard');
-    } else {
-      navigate('/');
-    }
-  };
 
   const handleMarkAllRead = () => {
     const updated = notifications.map(n => ({ ...n, read: true }));
@@ -65,7 +38,9 @@ export default function TopHeader({ title = 'Pune District' }) {
       {/* Title & Operational Status */}
       <div className="flex items-center gap-4">
         <div>
-          <h1 className="text-sm font-bold text-[#111827] uppercase tracking-wider">{title} EOC</h1>
+          <h1 className="text-sm font-bold text-[#111827] uppercase tracking-wider">
+            {user?.jurisdiction ? user.jurisdiction : `${title} EOC`}
+          </h1>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="w-2 h-2 rounded-full bg-[#166534] status-pulse"></span>
             <span className="text-[10px] font-bold text-[#166534] uppercase tracking-widest">SYSTEM OPERATIONAL</span>
@@ -73,22 +48,19 @@ export default function TopHeader({ title = 'Pune District' }) {
         </div>
       </div>
 
-      {/* Role Switcher & Notifications */}
+      {/* Role Badge & Notifications */}
       <div className="flex items-center gap-4">
-        {/* Simulation Role Selector */}
-        <div className="flex items-center gap-2 bg-white border border-[#E5E7EB] rounded-md px-3 py-1.5 text-xs shadow-2xs">
-          <Laptop size={14} className="text-[#166534]" />
-          <span className="text-[10px] text-[#64748B] font-bold uppercase tracking-wider">Role View:</span>
-          <select
-            value={simulatedRole}
-            onChange={handleRoleChange}
-            className="bg-transparent text-[#166534] font-bold focus:outline-none cursor-pointer text-xs"
-          >
-            <option value="authority" className="bg-white text-[#111827]">District Authority (EOC)</option>
-            <option value="agency" className="bg-white text-[#111827]">Rescue Agency (SDRF)</option>
-            <option value="public" className="bg-white text-[#111827]">Public Observer View</option>
-          </select>
-        </div>
+        {/* Operational Role Badge */}
+        {user && (
+          <div className="flex items-center gap-2 bg-white border border-[#CBD5E1] rounded-md px-3 py-1.5 text-xs text-[#166534] font-bold uppercase tracking-wider shadow-2xs">
+            <Laptop size={14} className="text-[#166534]" />
+            <span>
+              {user.role === 'agency_admin' ? 'Agency Admin' : 
+               user.role === 'district_eoc' ? 'District EOC' : 
+               `Authority (${user.scope || 'State'})`}
+            </span>
+          </div>
+        )}
 
         {/* Prototype Indicator */}
         <div className="hidden lg:flex items-center gap-1.5 text-xs text-[#64748B] bg-white border border-[#E5E7EB] rounded-md px-3 py-1.5 font-mono shadow-2xs">

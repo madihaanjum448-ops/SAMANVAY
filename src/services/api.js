@@ -42,16 +42,66 @@ export const api = {
   // --- AUTHENTICATION ---
   auth: {
     login: async (credentials) => {
+      const mockUsers = [
+        {
+          id: 'USR-001',
+          name: 'Priya Desai (EOC Officer)',
+          email: 'eoc@samanvay.gov.in',
+          password: 'password123',
+          role: 'district_eoc',
+          district: 'Pune',
+          state: 'Maharashtra',
+          jurisdiction: 'Pune District'
+        },
+        {
+          id: 'USR-002',
+          name: 'Capt. Rajesh V. (SDRF Commander)',
+          email: 'agency@samanvay.gov.in',
+          password: 'password123',
+          role: 'agency_admin',
+          agencyId: 'AG-002',
+          district: 'Pune',
+          state: 'Maharashtra',
+          jurisdiction: 'Pune District'
+        },
+        {
+          id: 'USR-003',
+          name: 'Shri A. K. Sharma (State Director)',
+          email: 'state@samanvay.gov.in',
+          password: 'password123',
+          role: 'state_authority',
+          scope: 'state',
+          state: 'Maharashtra',
+          district: '',
+          jurisdiction: 'Maharashtra State'
+        },
+        {
+          id: 'USR-004',
+          name: 'Dr. N. G. Rao (National Chairman)',
+          email: 'national@samanvay.gov.in',
+          password: 'password123',
+          role: 'state_authority',
+          scope: 'national',
+          state: '',
+          district: '',
+          jurisdiction: 'National EOC'
+        }
+      ];
+
+      const found = mockUsers.find(u => u.email === credentials.email && u.password === credentials.password);
+      const fallbackResponse = found 
+        ? { success: true, user: found, token: `samanvay_jwt_${btoa(JSON.stringify(found))}` }
+        : { success: false, error: 'Invalid official credentials. Please try again.' };
+
       const res = await fetchWithFallback('/auth/login', {
         method: 'POST',
         body: JSON.stringify(credentials)
-      }, null, {
-        success: true,
-        user: { role: credentials.role || 'authority', district: 'Pune' }
-      });
-      if (res?.user) {
+      }, null, fallbackResponse);
+
+      if (res?.success && res?.user) {
         localStorage.setItem('samanvay_role', res.user.role);
         localStorage.setItem('samanvay_user', JSON.stringify(res.user));
+        localStorage.setItem('samanvay_token', res.token);
       }
       return res;
     }
@@ -182,11 +232,14 @@ export const api = {
         null
       );
 
+      const isEscalated = requestData.type === 'escalated';
       const newReq = res?.request || {
         ...requestData,
         id: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
-        status: 'INITIATED',
-        createdAt: new Date().toISOString()
+        status: isEscalated ? 'PENDING_APPROVAL' : 'INITIATED',
+        createdAt: new Date().toISOString(),
+        approvedBy: null,
+        approvedAt: null
       };
 
       const cached = localStorage.getItem('samanvay_requests');
@@ -197,12 +250,12 @@ export const api = {
       return res || { success: true, request: newReq };
     },
 
-    updateStatus: async (id, status, actor) => {
+    updateStatus: async (id, status, actor, updates = {}) => {
       const res = await fetchWithFallback(
         `/requests/${id}/status`,
         {
           method: 'PATCH',
-          body: JSON.stringify({ status, actor })
+          body: JSON.stringify({ status, actor, updates })
         },
         null,
         null
@@ -211,7 +264,7 @@ export const api = {
       const cached = localStorage.getItem('samanvay_requests');
       if (cached) {
         let list = JSON.parse(cached);
-        list = list.map(r => r.id === id ? { ...r, status } : r);
+        list = list.map(r => r.id === id ? { ...r, status, ...updates } : r);
         localStorage.setItem('samanvay_requests', JSON.stringify(list));
       }
 

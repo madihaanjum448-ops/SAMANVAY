@@ -21,7 +21,7 @@ import { MOCK_INCIDENTS, MOCK_AGENCIES } from '../data/mockData';
 export default function IncidentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [role, setRole] = useState('authority');
+  const [role, setRole] = useState('public');
   const [incidents] = useState(() => {
     const stored = localStorage.getItem('samanvay_incidents');
     return stored ? JSON.parse(stored) : MOCK_INCIDENTS;
@@ -92,8 +92,8 @@ export default function IncidentDetails() {
   }, [incident, agencies]);
 
   const renderSidebar = () => {
-    if (role === 'authority') return <AuthoritySidebar />;
-    if (role === 'agency') return <AgencySidebar />;
+    if (role === 'district_eoc' || role === 'state_authority') return <AuthoritySidebar />;
+    if (role === 'agency_admin') return <AgencySidebar />;
     return null;
   };
 
@@ -115,14 +115,14 @@ export default function IncidentDetails() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header */}
-        {role === 'public' ? <Navbar /> : <TopHeader title="Emergency Command Room" />}
+        {(!role || role === 'public') ? <Navbar /> : <TopHeader title="Emergency Command Room" />}
 
         {/* Outer body wrapper */}
-        <main className={`p-6 flex-1 overflow-y-auto ${role === 'public' ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
+        <main className={`p-6 flex-1 overflow-y-auto ${(!role || role === 'public') ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
           
           {/* Back Navigation */}
           <button 
-            onClick={() => navigate(role === 'public' ? '/' : '/authority/dashboard?tab=incidents')}
+            onClick={() => navigate(role === 'agency_admin' ? '/agency/dashboard' : ((!role || role === 'public') ? '/' : '/authority/dashboard?tab=incidents'))}
             className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#166534] font-bold uppercase tracking-wider mb-5 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} /> Back to Command center

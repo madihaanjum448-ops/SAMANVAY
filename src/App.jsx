@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterAgencyPage from './pages/RegisterAgencyPage';
@@ -21,6 +21,28 @@ import {
   MOCK_NOTIFICATIONS
 } from './data/mockData';
 
+// Route Guard Component
+function ProtectedRoute({ children, allowedRoles }) {
+  const role = localStorage.getItem('samanvay_role');
+  const userStr = localStorage.getItem('samanvay_user');
+
+  if (!userStr || !role) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    if (role === 'agency_admin') {
+      return <Navigate to="/agency/dashboard" replace />;
+    } else if (role === 'district_eoc' || role === 'state_authority') {
+      return <Navigate to="/authority/dashboard" replace />;
+    } else {
+      return <Navigate to="/login" replace />;
+    }
+  }
+
+  return children;
+}
+
 export default function App() {
   
   // Prepopulate mock data in localStorage once at startup
@@ -37,11 +59,6 @@ export default function App() {
     seedStorage('samanvay_resources', RESOURCE_INVENTORY);
     seedStorage('samanvay_activity', MOCK_ACTIVITY_LOG);
     seedStorage('samanvay_notifications', MOCK_NOTIFICATIONS);
-    
-    // Set default simulation role to authority if not present
-    if (!localStorage.getItem('samanvay_role')) {
-      localStorage.setItem('samanvay_role', 'authority');
-    }
   }, []);
 
   return (
@@ -56,14 +73,49 @@ export default function App() {
         <Route path="/agencies" element={<AgencyDirectory />} />
         <Route path="/agencies/:id" element={<AgencyDetails />} />
         
-        {/* Command center layouts */}
-        <Route path="/authority/dashboard" element={<AuthorityDashboard />} />
-        <Route path="/agency/dashboard" element={<AgencyDashboard />} />
+        {/* Command center layouts (Protected) */}
+        <Route 
+          path="/authority/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['district_eoc', 'state_authority']}>
+              <AuthorityDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/agency/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin']}>
+              <AgencyDashboard />
+            </ProtectedRoute>
+          } 
+        />
         
-        {/* Shared ledgers */}
-        <Route path="/resources" element={<ResourceInventory />} />
-        <Route path="/requests" element={<CoordinationRequests />} />
-        <Route path="/incidents/:id" element={<IncidentDetails />} />
+        {/* Shared ledgers (Protected) */}
+        <Route 
+          path="/resources" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin', 'district_eoc', 'state_authority']}>
+              <ResourceInventory />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/requests" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin', 'district_eoc', 'state_authority']}>
+              <CoordinationRequests />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/incidents/:id" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin', 'district_eoc', 'state_authority']}>
+              <IncidentDetails />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </Router>
   );

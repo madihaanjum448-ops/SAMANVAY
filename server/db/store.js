@@ -28,19 +28,45 @@ class DataStore {
         {
           id: 'USR-001',
           name: 'Priya Desai (EOC Officer)',
-          email: 'authority@pune.gov.in',
-          role: 'authority',
+          email: 'eoc@samanvay.gov.in',
+          password: 'password123',
+          role: 'district_eoc',
           district: 'Pune',
-          state: 'Maharashtra'
+          state: 'Maharashtra',
+          jurisdiction: 'Pune District'
         },
         {
           id: 'USR-002',
-          name: 'Capt. Rajesh V. (NDRF Commander)',
-          email: 'ndrf6.pune@ndrf.gov.in',
-          role: 'agency',
-          agencyId: 'AG-001',
+          name: 'Capt. Rajesh V. (SDRF Commander)',
+          email: 'agency@samanvay.gov.in',
+          password: 'password123',
+          role: 'agency_admin',
+          agencyId: 'AG-002',
           district: 'Pune',
-          state: 'Maharashtra'
+          state: 'Maharashtra',
+          jurisdiction: 'Pune District'
+        },
+        {
+          id: 'USR-003',
+          name: 'Shri A. K. Sharma (State Director)',
+          email: 'state@samanvay.gov.in',
+          password: 'password123',
+          role: 'state_authority',
+          scope: 'state',
+          state: 'Maharashtra',
+          district: '',
+          jurisdiction: 'Maharashtra State'
+        },
+        {
+          id: 'USR-004',
+          name: 'Dr. N. G. Rao (National Chairman)',
+          email: 'national@samanvay.gov.in',
+          password: 'password123',
+          role: 'state_authority',
+          scope: 'national',
+          state: '',
+          district: '',
+          jurisdiction: 'National EOC'
         }
       ]
     };
@@ -192,16 +218,17 @@ class DataStore {
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    const initialStatus = reqPayload.status || 'INITIATED';
     const newRequest = {
       ...reqPayload,
       id,
-      status: 'INITIATED',
+      status: initialStatus,
       createdAt: now.toISOString(),
       acknowledgedAt: null,
       deployedAt: null,
       resolvedAt: null,
       timeline: [
-        { status: 'INITIATED', time: timeStr, done: true },
+        { status: initialStatus, time: timeStr, done: true },
         { status: 'ACKNOWLEDGED', time: null, done: false },
         { status: 'DEPLOYED', time: null, done: false },
         { status: 'RESOLVED', time: null, done: false }
@@ -228,7 +255,7 @@ class DataStore {
     return newRequest;
   }
 
-  async updateRequestStatus(id, newStatus, actor = 'Agency Dispatcher') {
+  async updateRequestStatus(id, newStatus, actor = 'Agency Dispatcher', updates = {}) {
     const req = this.getRequestById(id);
     if (!req) return null;
 
@@ -236,15 +263,21 @@ class DataStore {
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     req.status = newStatus;
 
+    // Apply additional fields
+    Object.assign(req, updates);
+
     if (newStatus === 'ACKNOWLEDGED') req.acknowledgedAt = now.toISOString();
     if (newStatus === 'DEPLOYED') req.deployedAt = now.toISOString();
     if (newStatus === 'RESOLVED') req.resolvedAt = now.toISOString();
+    if (newStatus === 'APPROVED') req.approvedAt = now.toISOString();
 
     // Update timeline step
-    const timelineStep = req.timeline.find(t => t.status === newStatus);
+    let timelineStep = req.timeline.find(t => t.status === newStatus);
     if (timelineStep) {
       timelineStep.time = timeStr;
       timelineStep.done = true;
+    } else {
+      req.timeline.push({ status: newStatus, time: timeStr, done: true });
     }
 
     this.addActivity({

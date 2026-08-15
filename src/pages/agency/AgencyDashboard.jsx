@@ -38,7 +38,11 @@ import { api } from '../../services/api';
 
 export default function AgencyDashboard() {
   const navigate = useNavigate();
-  const agencyId = 'AG-002'; // Logged-in agency: SDRF UNIT 01
+
+  // Load authenticated user profile
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const agencyId = user?.agencyId || 'AG-002';
 
   // Local state synced with backend API
   const [agencies, setAgencies] = useState([]);

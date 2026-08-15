@@ -5,17 +5,16 @@ const router = Router();
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { email, role, district } = req.body;
+  const { email, password } = req.body;
 
-  // Simple tokenless/lightweight simulation login for authority & agency
-  const user = store.data.users.find(u => u.email === email) || {
-    id: `USR-${Date.now()}`,
-    name: email ? email.split('@')[0].toUpperCase() : 'Commander',
-    email: email || 'user@samanvay.gov.in',
-    role: role || 'authority',
-    district: district || 'Pune',
-    state: 'Maharashtra'
-  };
+  const user = store.data.users.find(u => u.email === email && u.password === password);
+  
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: 'Invalid official credentials. Please try again.'
+    });
+  }
 
   return res.json({
     success: true,

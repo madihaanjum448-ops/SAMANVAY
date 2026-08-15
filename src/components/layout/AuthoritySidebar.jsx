@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Map, 
@@ -15,7 +15,18 @@ import {
 
 export default function AuthoritySidebar({ activeTab, onTabChange }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
+
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  const handleLogout = () => {
+    localStorage.removeItem('samanvay_role');
+    localStorage.removeItem('samanvay_user');
+    localStorage.removeItem('samanvay_token');
+    navigate('/login');
+  };
 
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={16} />, path: '/authority/dashboard?tab=overview' },
@@ -83,21 +94,25 @@ export default function AuthoritySidebar({ activeTab, onTabChange }) {
       <div className="p-4 border-t border-[#E5E7EB] bg-[#F7F5EF] flex flex-col gap-3">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#166534] text-white flex items-center justify-center font-bold text-xs">
-            PD
+            {user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'UA'}
           </div>
           <div className="min-w-0">
-            <div className="text-xs font-bold text-[#111827] truncate">Priya Desai</div>
-            <div className="text-[10px] text-[#64748B] truncate">District Collector & EOC Lead</div>
+            <div className="text-xs font-bold text-[#111827] truncate">{user?.name || 'Priya Desai'}</div>
+            <div className="text-[10px] text-[#64748B] truncate font-semibold">
+              {user?.role === 'state_authority' 
+                ? (user.scope === 'national' ? 'National Authority' : 'State Authority')
+                : 'District Officer & EOC Lead'}
+            </div>
           </div>
         </div>
 
-        <Link
-          to="/"
-          className="flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded-md transition-all border border-[#E5E7EB]"
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded-md transition-all border border-[#E5E7EB] cursor-pointer"
         >
           <LogOut size={14} />
           <span>Exit EOC Portal</span>
-        </Link>
+        </button>
       </div>
     </aside>
   );

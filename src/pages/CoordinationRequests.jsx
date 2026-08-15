@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Plus } from 'lucide-react';
+import { ShieldAlert, Plus, ArrowUpRight, Check, X } from 'lucide-react';
 import AuthoritySidebar from '../components/layout/AuthoritySidebar';
 import AgencySidebar from '../components/layout/AgencySidebar';
 import TopHeader from '../components/layout/TopHeader';
@@ -13,22 +13,28 @@ import { MOCK_REQUESTS, MOCK_INCIDENTS, MOCK_AGENCIES } from '../data/mockData';
 import { api } from '../services/api';
 
 export default function CoordinationRequests() {
-  const [role, setRole] = useState('authority');
+  const [role, setRole] = useState('district_eoc');
   const [requests, setRequests] = useState([]);
   const [incidents, setIncidents] = useState([]);
   const [agencies, setAgencies] = useState([]);
   const [filterStatus, setFilterStatus] = useState('ALL');
   
+  // Load authenticated user profile
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
   // Create Request Modal State
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [requestType, setRequestType] = useState('direct');
   const [toSelected, setToSelected] = useState('');
   const [incidentSelected, setIncidentSelected] = useState('');
   const [resourcesRequired, setResourcesRequired] = useState('');
   const [urgencySelected, setUrgencySelected] = useState('HIGH');
   const [messageText, setMessageText] = useState('');
+  const [targetState, setTargetState] = useState('');
 
   useEffect(() => {
-    const activeRole = localStorage.getItem('samanvay_role') || 'authority';
+    const activeRole = localStorage.getItem('samanvay_role') || 'district_eoc';
     setRole(activeRole);
 
     async function loadData() {
@@ -49,7 +55,9 @@ export default function CoordinationRequests() {
   }, []);
 
   const handleStatusChange = async (reqId, newStatus) => {
-    const actor = role === 'authority' ? 'Priya Desai (EOC)' : 'Agency Dispatcher';
+    const actor = (role === 'district_eoc' || role === 'state_authority')
+      ? (user?.name || 'EOC Officer')
+      : (user?.name || 'Agency Dispatcher');
     await api.requests.updateStatus(reqId, newStatus, actor);
 
     const updated = requests.map(r => {
@@ -76,47 +84,87 @@ export default function CoordinationRequests() {
       type: 'request',
       action: `Request ${newStatus}`,
       detail: `${reqCode} status transitioned to ${newStatus}`,
-      actor: role === 'authority' ? 'Priya Desai (EOC Lead)' : 'Agency Dispatcher',
+      actor: user?.name || 'System',
       time: 'Just now',
     };
     logsList.unshift(newLog);
     localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
+  };
 
+  // Handle approve/reject escalated requests (state_authority only)
+  const handleApproveEscalation = (reqId) => {
+    const updated = requests.map(r => {
+      if (r.id === reqId) {
+        return {
+          ...r,
+          status: 'APPROVED',
+          approvedBy: user?.name || 'State Authority',
+          approvedAt: new Date().toISOString(),
+          timeline: [...(r.timeline || []), { status: 'APPROVED', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), done: true }]
+        };
+      }
+      return r;
+    });
+    syncState('samanvay_requests', updated, setRequests);
+  };
+
+  const handleRejectEscalation = (reqId) => {
+    const updated = requests.map(r => {
+      if (r.id === reqId) {
+        return {
+          ...r,
+          status: 'REJECTED',
+          approvedBy: user?.name || 'State Authority',
+          approvedAt: new Date().toISOString(),
+          timeline: [...(r.timeline || []), { status: 'REJECTED', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), done: true }]
+        };
+      }
+      return r;
+    });
+    syncState('samanvay_requests', updated, setRequests);
   };
 
   const handleCreateRequest = async (e) => {
     e.preventDefault();
 
     let fromId = 'EOC-PUNE';
-    let fromName = 'District EOC Control Room';
-    if (role === 'agency') {
-      fromId = 'AG-002';
-      fromName = 'SDRF Unit 01';
+    let fromName = user?.name || 'District EOC Control Room';
+    if (role === 'agency_admin') {
+      fromId = user?.agencyId || 'AG-002';
+      fromName = user?.name || 'SDRF Unit 01';
     }
+
+    const isEscalated = requestType === 'escalated';
 
     const selectedTo = agencies.find(a => a.id === toSelected);
     const selectedInc = incidents.find(i => i.id === incidentSelected);
 
     const newRequestPayload = {
+      type: requestType,
       from: fromId,
       fromName: fromName,
-      to: toSelected,
-      toName: selectedTo ? selectedTo.name : 'Unknown Agency',
+      to: isEscalated ? null : toSelected,
+      toName: isEscalated ? 'State/National EOC Review' : (selectedTo ? selectedTo.name : 'Unknown Agency'),
       incident: incidentSelected || null,
       incidentLabel: selectedInc ? `${selectedInc.type} — ${selectedInc.location}` : 'General Coordinate Action',
       required: resourcesRequired,
       urgency: urgencySelected,
-      message: messageText
+      message: messageText,
+      fromState: user?.state || 'Maharashtra',
+      fromDistrict: user?.district || 'Pune',
+      targetState: isEscalated ? (targetState || '') : '',
+      status: isEscalated ? 'PENDING_APPROVAL' : 'INITIATED',
+      approvedBy: null,
+      approvedAt: null
     };
 
     const res = await api.requests.create(newRequestPayload);
     const createdReq = res?.request || {
       ...newRequestPayload,
       id: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
-      status: 'INITIATED',
       createdAt: new Date().toISOString(),
       timeline: [
-        { status: 'INITIATED', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), done: true },
+        { status: isEscalated ? 'PENDING_APPROVAL' : 'INITIATED', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), done: true },
         { status: 'ACKNOWLEDGED', time: null, done: false },
         { status: 'DEPLOYED', time: null, done: false },
         { status: 'RESOLVED', time: null, done: false },
@@ -130,19 +178,29 @@ export default function CoordinationRequests() {
     setIncidentSelected('');
     setResourcesRequired('');
     setMessageText('');
+    setTargetState('');
+    setRequestType('direct');
   };
 
-  const roleFiltered = role === 'agency' 
-    ? requests.filter(r => r.from === 'AG-002' || r.to === 'AG-002')
+  const syncState = (key, data, setter) => {
+    setter(data);
+    localStorage.setItem(key, JSON.stringify(data));
+  };
+
+  const agencyId = user?.agencyId || 'AG-002';
+  const roleFiltered = role === 'agency_admin' 
+    ? requests.filter(r => r.from === agencyId || r.to === agencyId)
     : requests;
 
   const finalFiltered = filterStatus === 'ALL'
     ? roleFiltered
     : roleFiltered.filter(r => r.status === filterStatus);
 
+  const filterTabs = ['ALL', 'INITIATED', 'PENDING_APPROVAL', 'APPROVED', 'ACKNOWLEDGED', 'DEPLOYED', 'RESOLVED'];
+
   const renderSidebar = () => {
-    if (role === 'authority') return <AuthoritySidebar />;
-    if (role === 'agency') return <AgencySidebar />;
+    if (role === 'district_eoc' || role === 'state_authority') return <AuthoritySidebar />;
+    if (role === 'agency_admin') return <AgencySidebar />;
     return null;
   };
 
@@ -155,10 +213,10 @@ export default function CoordinationRequests() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header */}
-        {role === 'public' ? <Navbar /> : <TopHeader title="EOC Coordination Desk" />}
+        {(!role || role === 'public') ? <Navbar /> : <TopHeader title="EOC Coordination Desk" />}
 
         {/* Coordination Body */}
-        <main className={`p-6 flex-1 overflow-y-auto ${role === 'public' ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
+        <main className={`p-6 flex-1 overflow-y-auto ${(!role || role === 'public') ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
           
           <div className="flex flex-col gap-6">
             
@@ -169,7 +227,7 @@ export default function CoordinationRequests() {
                 <p className="text-xs text-[#64748B] mt-1">Issue and track resource dispatches between EOC command cells and tactical field units.</p>
               </div>
 
-              {role !== 'public' && (
+              {role && role !== 'public' && (
                 <button
                   onClick={() => setIsCreateOpen(true)}
                   className="bg-[#166534] hover:bg-[#14532D] text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all cursor-pointer flex items-center gap-2 shadow-xs"
@@ -180,7 +238,7 @@ export default function CoordinationRequests() {
             </div>
 
             {/* Public observer blocker */}
-            {role === 'public' ? (
+            {(!role || role === 'public') ? (
               <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6 shadow-xs">
                 <div className="p-3.5 bg-[#FFF7ED] border border-[#FED7AA] text-[#EA580C] rounded-full">
                   <ShieldAlert size={28} />
@@ -194,17 +252,17 @@ export default function CoordinationRequests() {
               <>
                 {/* Filters Tab buttons */}
                 <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-1 overflow-x-auto no-scrollbar">
-                  {['ALL', 'INITIATED', 'ACKNOWLEDGED', 'DEPLOYED', 'RESOLVED'].map((status) => (
+                  {filterTabs.map((status) => (
                     <button
                       key={status}
                       onClick={() => setFilterStatus(status)}
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition-all ${
+                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition-all whitespace-nowrap ${
                         filterStatus === status
                           ? 'border-[#166534] text-[#166534]'
                           : 'border-transparent text-[#64748B] hover:text-[#111827]'
                       }`}
                     >
-                      {status}
+                      {status.replace('_', ' ')}
                     </button>
                   ))}
                 </div>
@@ -217,12 +275,48 @@ export default function CoordinationRequests() {
                 ) : (
                   <div className="grid grid-cols-1 gap-6 max-w-4xl">
                     {finalFiltered.map((req) => (
-                      <RequestCard 
-                        key={req.id} 
-                        request={req} 
-                        onStatusChange={handleStatusChange} 
-                        currentRole={role}
-                      />
+                      <div key={req.id}>
+                        <RequestCard 
+                          request={req} 
+                          onStatusChange={handleStatusChange} 
+                          currentRole={role}
+                        />
+                        {/* Escalation badge and authority actions */}
+                        {req.type === 'escalated' && (
+                          <div className="mt-2 bg-[#FFF7ED] border border-[#FED7AA] rounded-xl px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#EA580C]">
+                              <ArrowUpRight size={14} />
+                              <span>INTER-STATE ESCALATION</span>
+                              {req.approvedBy && (
+                                <span className="text-[#166534] bg-[#F0FDF4] border border-[#DCFCE7] rounded px-2 py-0.5 text-[10px]">
+                                  Approved by {req.approvedBy}
+                                </span>
+                              )}
+                              {req.status === 'REJECTED' && (
+                                <span className="text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded px-2 py-0.5 text-[10px]">
+                                  REJECTED
+                                </span>
+                              )}
+                            </div>
+                            {role === 'state_authority' && req.status === 'PENDING_APPROVAL' && (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleApproveEscalation(req.id)}
+                                  className="bg-[#F0FDF4] hover:bg-[#DCFCE7] text-[#166534] border border-[#DCFCE7] text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-colors flex items-center gap-1"
+                                >
+                                  <Check size={14} /> Approve
+                                </button>
+                                <button
+                                  onClick={() => handleRejectEscalation(req.id)}
+                                  className="bg-[#FEF2F2] hover:bg-[#FECACA] text-[#DC2626] border border-[#FECACA] text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-colors flex items-center gap-1"
+                                >
+                                  <X size={14} /> Reject
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -241,16 +335,66 @@ export default function CoordinationRequests() {
         title="Issue Assistance Coordination Request"
       >
         <form onSubmit={handleCreateRequest} className="flex flex-col gap-4">
-          
-          <Dropdown
-            id="req-agency"
-            label="Assigned tactical Unit (To)"
-            options={agencies.filter(a => a.verificationStatus === 'VERIFIED').map(a => ({ value: a.id, label: `${a.type}: ${a.name} (${a.district})` }))}
-            value={toSelected}
-            onChange={(e) => setToSelected(e.target.value)}
-            required
-            placeholder="Select target rescue agency..."
-          />
+
+          {/* Request Type Selector (only for district_eoc) */}
+          {role === 'district_eoc' && (
+            <div>
+              <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1.5">Request Type</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRequestType('direct')}
+                  className={`py-2 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                    requestType === 'direct'
+                      ? 'bg-[#166534] text-white border-[#166534] shadow-2xs'
+                      : 'text-[#64748B] hover:text-[#111827] border-[#E5E7EB] bg-white'
+                  }`}
+                >
+                  Direct (In-State)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRequestType('escalated')}
+                  className={`py-2 px-3 text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                    requestType === 'escalated'
+                      ? 'bg-[#EA580C] text-white border-[#EA580C] shadow-2xs'
+                      : 'text-[#64748B] hover:text-[#111827] border-[#E5E7EB] bg-white'
+                  }`}
+                >
+                  <ArrowUpRight size={14} /> Inter-State Escalation
+                </button>
+              </div>
+            </div>
+          )}
+
+          {requestType === 'escalated' && (
+            <div className="bg-[#FFF7ED] border border-[#FED7AA] rounded-lg px-3.5 py-2.5 text-xs text-[#92400E] font-semibold">
+              ⚠ This escalation will require approval from the State/National Authority before resources are dispatched.
+            </div>
+          )}
+
+          {requestType !== 'escalated' && (
+            <Dropdown
+              id="req-agency"
+              label="Assigned tactical Unit (To)"
+              options={agencies.filter(a => a.verificationStatus === 'VERIFIED').map(a => ({ value: a.id, label: `${a.type}: ${a.name} (${a.district})` }))}
+              value={toSelected}
+              onChange={(e) => setToSelected(e.target.value)}
+              required
+              placeholder="Select target rescue agency..."
+            />
+          )}
+
+          {requestType === 'escalated' && (
+            <FormInput
+              id="req-target-state"
+              label="Target State for Interstate Assistance"
+              placeholder="e.g. Gujarat, Rajasthan"
+              value={targetState}
+              onChange={(e) => setTargetState(e.target.value)}
+              required
+            />
+          )}
 
           <Dropdown
             id="req-incident"
@@ -305,7 +449,7 @@ export default function CoordinationRequests() {
               variant="primary"
               size="sm"
             >
-              Confirm Dispatch
+              {requestType === 'escalated' ? 'Submit Escalation' : 'Confirm Dispatch'}
             </Button>
           </div>
         </form>

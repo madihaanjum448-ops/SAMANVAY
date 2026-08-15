@@ -31,6 +31,11 @@ export default function AgencyDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [role, setRole] = useState('public');
+
+  // Load authenticated user profile
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
   const [agencies] = useState(() => {
     const stored = localStorage.getItem('samanvay_agencies');
     return stored ? JSON.parse(stored) : MOCK_AGENCIES;
@@ -106,14 +111,14 @@ export default function AgencyDetails() {
   const handleRequestSubmit = (e) => {
     e.preventDefault();
     
-    let fromId = 'AG-003';
-    let fromName = 'Pune Fire Brigade — Central';
-    if (role === 'agency') {
-      fromId = 'AG-001';
-      fromName = 'NDRF Battalion 6';
-    } else if (role === 'authority') {
+    let fromId = 'EOC-PUNE';
+    let fromName = 'District EOC Control Room';
+    if (role === 'agency_admin') {
+      fromId = user?.agencyId || 'AG-002';
+      fromName = user?.name || 'SDRF Unit 01';
+    } else if (role === 'district_eoc' || role === 'state_authority') {
       fromId = 'EOC-PUNE';
-      fromName = 'District EOC Control Room';
+      fromName = user?.name || 'District EOC Control Room';
     }
 
     const selectedInc = incidents.find(i => i.id === incidentSelected);
@@ -161,8 +166,8 @@ export default function AgencyDetails() {
   };
 
   const renderSidebar = () => {
-    if (role === 'authority') return <AuthoritySidebar />;
-    if (role === 'agency') return <AgencySidebar />;
+    if (role === 'district_eoc' || role === 'state_authority') return <AuthoritySidebar />;
+    if (role === 'agency_admin') return <AgencySidebar />;
     return null;
   };
 

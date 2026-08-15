@@ -9,13 +9,17 @@ import StatCard from '../components/ui/StatCard';
 import { RESOURCE_INVENTORY, MOCK_AGENCIES } from '../data/mockData';
 
 export default function ResourceInventory() {
-  const [role, setRole] = useState('authority');
+  const [role, setRole] = useState('district_eoc');
   const [districtResources, setDistrictResources] = useState([]);
   const [agencies, setAgencies] = useState([]);
-  const agencyId = 'AG-002'; // Logged-in tactical agency
+
+  // Load authenticated user profile
+  const userStr = localStorage.getItem('samanvay_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const agencyId = user?.agencyId || 'AG-002';
 
   useEffect(() => {
-    const activeRole = localStorage.getItem('samanvay_role') || 'authority';
+    const activeRole = localStorage.getItem('samanvay_role') || 'district_eoc';
     setRole(activeRole);
 
     const initData = (key, fallback) => {
@@ -114,7 +118,7 @@ export default function ResourceInventory() {
     localStorage.setItem('samanvay_activity', JSON.stringify(logsList));
   };
 
-  const tableData = role === 'agency' ? getAgencyTableData() : districtResources;
+  const tableData = role === 'agency_admin' ? getAgencyTableData() : districtResources;
 
   const personnelTotal = tableData.find(d => d.name === 'Personnel')?.total || 0;
   const personnelAvail = tableData.find(d => d.name === 'Personnel')?.available || 0;
@@ -122,8 +126,8 @@ export default function ResourceInventory() {
   const ambulancesAvail = tableData.find(d => d.name === 'Ambulances')?.available || 0;
 
   const renderSidebar = () => {
-    if (role === 'authority') return <AuthoritySidebar />;
-    if (role === 'agency') return <AgencySidebar />;
+    if (role === 'district_eoc' || role === 'state_authority') return <AuthoritySidebar />;
+    if (role === 'agency_admin') return <AgencySidebar />;
     return null;
   };
 
@@ -136,10 +140,10 @@ export default function ResourceInventory() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header */}
-        {role === 'public' ? <Navbar /> : <TopHeader title="Resource Allocation Ledger" />}
+        {(!role || role === 'public') ? <Navbar /> : <TopHeader title="Resource Allocation Ledger" />}
 
         {/* Outer body wrapper */}
-        <main className={`p-6 flex-1 overflow-y-auto ${role === 'public' ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
+        <main className={`p-6 flex-1 overflow-y-auto ${(!role || role === 'public') ? 'max-w-4xl mx-auto w-full mt-16' : ''}`}>
           
           <div className="flex flex-col gap-6">
             
@@ -147,7 +151,7 @@ export default function ResourceInventory() {
             <div>
               <h2 className="text-2xl font-extrabold text-[#111827] tracking-tight">Resource Inventory Database</h2>
               <p className="text-xs text-[#64748B] mt-1">
-                {role === 'agency' 
+                {role === 'agency_admin' 
                   ? 'Internal asset allocation table. Ensure counts are updated in compliance with EOC mandates.'
                   : 'Master catalog of municipal dispatches, reserve stocks, and active responder counts.'
                 }
@@ -155,7 +159,7 @@ export default function ResourceInventory() {
             </div>
 
             {/* Public view blocker warning */}
-            {role === 'public' ? (
+            {(!role || role === 'public') ? (
               <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center flex flex-col items-center gap-4 max-w-lg mx-auto mt-6 shadow-xs">
                 <div className="p-3.5 bg-[#FFF7ED] border border-[#FED7AA] text-[#EA580C] rounded-full">
                   <ShieldAlert size={28} />
@@ -183,7 +187,7 @@ export default function ResourceInventory() {
                   </div>
                   <ResourceTable 
                     data={tableData} 
-                    onUpdate={role === 'agency' ? handleUpdateAgency : handleUpdateDistrict} 
+                    onUpdate={role === 'agency_admin' ? handleUpdateAgency : handleUpdateDistrict} 
                   />
                 </div>
               </>

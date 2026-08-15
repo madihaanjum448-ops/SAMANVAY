@@ -127,8 +127,8 @@ export default function AgencyDirectory() {
   };
 
   const renderSidebar = () => {
-    if (role === 'authority') return <AuthoritySidebar />;
-    if (role === 'agency') return <AgencySidebar />;
+    if (role === 'district_eoc' || role === 'state_authority') return <AuthoritySidebar />;
+    if (role === 'agency_admin') return <AgencySidebar />;
     return null;
   };
 
@@ -141,7 +141,7 @@ export default function AgencyDirectory() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Operational Header */}
-        {role === 'public' ? <Navbar /> : <TopHeader title="Emergency Response Network Registry" />}
+        {(!role || role === 'public') ? <Navbar /> : <TopHeader title="Emergency Response Network Registry" />}
 
         {/* Outer body wrapper */}
         <div className={`p-6 flex-1 flex flex-col lg:flex-row gap-6 mt-16 lg:mt-0 ${role === 'public' ? 'max-w-7xl mx-auto w-full' : ''}`}>

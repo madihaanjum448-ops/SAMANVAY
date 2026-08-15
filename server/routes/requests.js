@@ -25,22 +25,33 @@ router.get('/:id', (req, res) => {
 // POST /api/requests (CAP-Lite Dispatch)
 router.post('/', async (req, res) => {
   try {
-    const { from, fromName, to, toName, incident, incidentLabel, required, urgency, message } = req.body;
+    const { 
+      type, from, fromName, to, toName, incident, incidentLabel, 
+      required, urgency, message, fromState, fromDistrict, targetState 
+    } = req.body;
 
-    if (!from || !to || !required) {
-      return res.status(400).json({ error: 'from, to, and required capability fields are mandatory' });
+    if (!from || (!to && type !== 'escalated') || !required) {
+      return res.status(400).json({ error: 'from, to (for direct requests), and required capability fields are mandatory' });
     }
 
+    const isEscalated = type === 'escalated';
     const newRequest = await store.addRequest({
+      type: type || 'direct',
       from,
       fromName: fromName || store.getAgencyById(from)?.name || from,
-      to,
-      toName: toName || store.getAgencyById(to)?.name || to,
+      to: to || null,
+      toName: toName || (to ? (store.getAgencyById(to)?.name || to) : 'State/National EOC Review'),
       incident: incident || null,
-      incidentLabel: incidentLabel || (incident ? `Incident ${incident}` : 'Direct Tasking'),
+      incidentLabel: incidentLabel || (incident ? `Incident ${incident}` : 'General Coordinate Action'),
       required,
       urgency: urgency || 'HIGH',
-      message: message || 'Urgent inter-agency disaster assistance requested.'
+      message: message || 'Urgent inter-state disaster assistance requested.',
+      fromState: fromState || '',
+      fromDistrict: fromDistrict || '',
+      targetState: targetState || '',
+      status: isEscalated ? 'PENDING_APPROVAL' : 'INITIATED',
+      approvedBy: null,
+      approvedAt: null
     });
 
     res.status(201).json({
@@ -56,12 +67,12 @@ router.post('/', async (req, res) => {
 // PATCH /api/requests/:id/status
 router.patch('/:id/status', async (req, res) => {
   try {
-    const { status, actor } = req.body; // 'ACKNOWLEDGED' | 'DEPLOYED' | 'RESOLVED'
-    if (!['ACKNOWLEDGED', 'DEPLOYED', 'RESOLVED'].includes(status)) {
+    const { status, actor, updates } = req.body; // 'ACKNOWLEDGED' | 'DEPLOYED' | 'RESOLVED' | 'APPROVED' | 'REJECTED'
+    if (!['ACKNOWLEDGED', 'DEPLOYED', 'RESOLVED', 'APPROVED', 'REJECTED'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status transition' });
     }
 
-    const updatedRequest = await store.updateRequestStatus(req.params.id, status, actor);
+    const updatedRequest = await store.updateRequestStatus(req.params.id, status, actor, updates);
     if (!updatedRequest) {
       return res.status(404).json({ error: 'Request not found' });
     }
