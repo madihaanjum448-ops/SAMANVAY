@@ -64,10 +64,22 @@ export default function AgencyDirectory() {
     });
   };
 
+  // Get logged-in user for state scoping
+  const currentUser = (() => {
+    try {
+      const u = localStorage.getItem('samanvay_user');
+      return u ? JSON.parse(u) : null;
+    } catch { return null; }
+  })();
+
   // Filter logic
   const filteredAgencies = agencies.filter((agency) => {
-    // In observer view, show only VERIFIED agencies.
-    if (role === 'public' && agency.verificationStatus !== 'VERIFIED') return false;
+    // All roles: only show VERIFIED agencies in the directory
+    if (agency.verificationStatus !== 'VERIFIED') return false;
+
+    // State scoping: District EOC sees only their own state's agencies
+    if (role === 'district_eoc' && currentUser?.state && agency.state && agency.state !== currentUser.state) return false;
+    // state_authority sees all agencies (no state filter)
 
     // Search query matches name
     if (filters.search && !agency.name.toLowerCase().includes(filters.search.toLowerCase())) return false;

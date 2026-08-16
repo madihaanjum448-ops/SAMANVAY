@@ -93,8 +93,10 @@ export default function RegisterAgencyPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (step !== 4) return; // Guard against accidental submit on non-final steps
     
-    const newAgencyPayload = {
+    const agencyData = {
+      id: `AG-${Date.now()}`,
       name: agencyInfo.name,
       type: agencyInfo.type,
       district: selectedDistrict || 'Pune',
@@ -107,16 +109,12 @@ export default function RegisterAgencyPage() {
         lng: location.lng,
         address: location.address
       },
+      address: location.address,
       resources: resources,
       verificationStatus: 'PENDING',
-      status: 'AVAILABLE'
-    };
-
-    const agencyData = {
-      ...newAgencyPayload,
-      verificationStatus: 'PENDING',
-      status: 'AVAILABLE',
-      createdAt: new Date().toISOString()
+      status: 'PENDING_VERIFICATION',
+      createdAt: new Date().toISOString(),
+      submittedAt: new Date().toISOString()
     };
 
     try {
@@ -126,27 +124,25 @@ export default function RegisterAgencyPage() {
       console.warn('[SAMANVAY] Firestore direct write failed, proceeding with local fallback:', err);
     }
 
+    // Single localStorage write — agency goes into list with PENDING status
     const existing = localStorage.getItem('samanvay_agencies');
     let agenciesList = existing ? JSON.parse(existing) : [];
-    agenciesList.push(newAgencyPayload);
+    agenciesList.push(agencyData);
     localStorage.setItem('samanvay_agencies', JSON.stringify(agenciesList));
 
-    // Update notifications to show submission
+    // Update notifications to show submission queued for EOC review
     const storedNotifs = localStorage.getItem('samanvay_notifications');
     let notifs = storedNotifs ? JSON.parse(storedNotifs) : [];
     const newNotif = {
       id: Date.now(),
       type: 'alert',
       title: 'New Agency Registration',
-      message: `${agencyInfo.name} (${agencyInfo.type}) submitted for verification.`,
+      message: `${agencyInfo.name} (${agencyInfo.type}) submitted for EOC verification.`,
       time: 'Just now',
       read: false
     };
     notifs.unshift(newNotif);
     localStorage.setItem('samanvay_notifications', JSON.stringify(notifs));
-
-    // Dispatch to Backend API
-    await api.agencies.register(newAgencyPayload);
 
     setSubmitted(true);
   };
@@ -248,7 +244,7 @@ export default function RegisterAgencyPage() {
         {/* Wizard Body Card */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 flex-1 shadow-xs flex flex-col justify-between">
           
-          <form onSubmit={step === 4 ? handleSubmit : (e) => e.preventDefault()} className="flex-1 flex flex-col">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
             
             {/* STEP 1: Agency Information & Expertise */}
             {step === 1 && (

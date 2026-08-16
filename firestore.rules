@@ -3,9 +3,20 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // SAMANVAY — Firestore Security Rules
+    // Currently permissive for prototype/demo. Production rules below as comments.
+    //
+    // INTENDED PRODUCTION RULES:
+    // - Agency reads: district_eoc can only read where agency.state == user.state
+    // - Agency writes: only agency_admin can update their own agency doc
+    // - Escalated request writes: require requester.role == 'district_eoc'
+    //   and target agency.state != requester.state
+    //   → auto-routes to status: 'pending_authority_approval'
+    // - State authority: can read all agencies, approve escalated requests
+    // - Verification updates: only district_eoc or state_authority can verify
+
     match /{document=**} {
       allow read, write: if true;
     }
-
   }
 }

@@ -182,18 +182,17 @@ export const api = {
         null
       );
 
-      // Also persist to local cache
+      // NOTE: localStorage write is handled by RegisterAgencyPage directly.
+      // This method only dispatches to backend API.
+      // Do NOT duplicate-push to localStorage here.
+
       const newAgency = res?.agency || {
         ...agencyData,
-        id: `AG-${Date.now()}`,
+        id: agencyData.id || `AG-${Date.now()}`,
         verificationStatus: 'PENDING',
+        status: 'PENDING_VERIFICATION',
         submittedAt: new Date().toISOString()
       };
-
-      const cached = localStorage.getItem('samanvay_agencies');
-      let list = cached ? JSON.parse(cached) : [];
-      list.push(newAgency);
-      localStorage.setItem('samanvay_agencies', JSON.stringify(list));
 
       return res || { success: true, agency: newAgency };
     },
@@ -209,11 +208,16 @@ export const api = {
         null
       );
 
-      // Sync local storage
+      // Sync local storage — when VERIFIED, also set operational status to AVAILABLE
       const cached = localStorage.getItem('samanvay_agencies');
       if (cached) {
         let list = JSON.parse(cached);
-        list = list.map(a => a.id === id ? { ...a, verificationStatus: status, verifiedAt: new Date().toISOString().split('T')[0] } : a);
+        list = list.map(a => a.id === id ? {
+          ...a,
+          verificationStatus: status,
+          status: status === 'VERIFIED' ? 'AVAILABLE' : (status === 'REJECTED' ? 'REJECTED' : a.status),
+          verifiedAt: new Date().toISOString().split('T')[0]
+        } : a);
         localStorage.setItem('samanvay_agencies', JSON.stringify(list));
       }
 

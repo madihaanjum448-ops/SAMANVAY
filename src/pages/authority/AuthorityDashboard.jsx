@@ -51,6 +51,18 @@ export default function AuthorityDashboard() {
   const navigate = useNavigate();
   const activeTab = searchParams.get('tab') || 'overview';
 
+  // Get logged-in user for dynamic header and state scoping
+  const currentUser = (() => {
+    try {
+      const u = localStorage.getItem('samanvay_user');
+      return u ? JSON.parse(u) : null;
+    } catch { return null; }
+  })();
+  const userRole = currentUser?.role || localStorage.getItem('samanvay_role') || 'district_eoc';
+  const headerTitle = currentUser?.jurisdiction
+    ? currentUser.jurisdiction.toUpperCase()
+    : 'DISTRICT EOC';
+
   // State loaded from localStorage/Firestore/API for full interactivity
   const [agencies, setAgencies] = useState([]);
   const [incidents, setIncidents] = useState([]);
@@ -125,12 +137,26 @@ export default function AuthorityDashboard() {
             ? {
                 ...a,
                 verificationStatus: 'VERIFIED',
+                status: 'AVAILABLE',
                 verifiedAt: new Date().toISOString()
               }
             : a
         )
       );
 
+      // Sync localStorage so the change persists across page reloads
+      const cached = localStorage.getItem('samanvay_agencies');
+      if (cached) {
+        let list = JSON.parse(cached);
+        list = list.map(a => a.id === id ? {
+          ...a,
+          verificationStatus: 'VERIFIED',
+          status: 'AVAILABLE',
+          verifiedAt: new Date().toISOString(),
+          verifiedBy: 'Priya Desai (Pune EOC)'
+        } : a);
+        localStorage.setItem('samanvay_agencies', JSON.stringify(list));
+      }
       const agencyName = agencies.find(a => a.id === id)?.name || 'Agency';
       const newLog = {
         id: Date.now(),
@@ -168,11 +194,26 @@ export default function AuthorityDashboard() {
           a.id === id
             ? {
                 ...a,
-                verificationStatus: 'REJECTED'
+                verificationStatus: 'REJECTED',
+                status: 'REJECTED'
               }
             : a
         )
       );
+
+      // Sync localStorage so the change persists across page reloads
+      const cached = localStorage.getItem('samanvay_agencies');
+      if (cached) {
+        let list = JSON.parse(cached);
+        list = list.map(a => a.id === id ? {
+          ...a,
+          verificationStatus: 'REJECTED',
+          status: 'REJECTED',
+          verifiedAt: new Date().toISOString(),
+          verifiedBy: 'Priya Desai (Pune EOC)'
+        } : a);
+        localStorage.setItem('samanvay_agencies', JSON.stringify(list));
+      }
 
       const agencyName = agencies.find(a => a.id === id)?.name || 'Agency';
       const newLog = {
@@ -332,7 +373,7 @@ export default function AuthorityDashboard() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         
         {/* Compact Professional Header */}
-        <TopHeader title="PUNE DISTRICT" />
+        <TopHeader title={headerTitle} />
 
         {/* Dynamic page content based on tab query */}
         <main className="p-4 md:p-6 flex-1 overflow-y-auto space-y-5">

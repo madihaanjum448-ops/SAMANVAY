@@ -379,7 +379,7 @@ export default function CoordinationRequests() {
               label="Assigned tactical Unit (To)"
               options={agencies.filter(a => a.verificationStatus === 'VERIFIED').map(a => ({ value: a.id, label: `${a.type}: ${a.name} (${a.district})` }))}
               value={toSelected}
-              onChange={(e) => setToSelected(e.target.value)}
+              onChange={(value) => setToSelected(value)}
               required
               placeholder="Select target rescue agency..."
             />
@@ -401,7 +401,7 @@ export default function CoordinationRequests() {
             label="Relate to EOC Incident log"
             options={incidents.filter(i => i.status === 'ACTIVE').map(i => ({ value: i.id, label: `${i.id}: ${i.type} — ${i.location}` }))}
             value={incidentSelected}
-            onChange={(e) => setIncidentSelected(e.target.value)}
+            onChange={(value) => setIncidentSelected(value)}
             placeholder="Select active incident (optional)..."
           />
 
@@ -419,7 +419,7 @@ export default function CoordinationRequests() {
             label="Urgency level directive"
             options={['IMMEDIATE', 'HIGH', 'MEDIUM', 'LOW']}
             value={urgencySelected}
-            onChange={(e) => setUrgencySelected(e.target.value)}
+            onChange={(value) => setUrgencySelected(value)}
             required
           />
 

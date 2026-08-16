@@ -459,6 +459,8 @@ export const MOCK_INCIDENTS = [
 
 export const MOCK_REQUESTS = [
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1024',
     from: 'AG-002',
     fromName: 'SDRF Unit 01',
@@ -482,6 +484,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1025',
     from: 'AG-001',
     fromName: 'NDRF Battalion 6',
@@ -505,6 +509,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1026',
     from: 'AG-003',
     fromName: 'Pune Fire Brigade — Central',
@@ -528,6 +534,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1027',
     from: 'AG-007',
     fromName: 'Guwahati Flood Response Unit',
@@ -551,6 +559,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1028',
     from: 'AG-002',
     fromName: 'SDRF Unit 01',
@@ -574,6 +584,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1029',
     from: 'AG-005',
     fromName: 'Delhi Civil Defence Corps',
@@ -597,6 +609,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1030',
     from: 'AG-001',
     fromName: 'NDRF Battalion 6',
@@ -620,6 +634,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1031',
     from: 'AG-003',
     fromName: 'Pune Fire Brigade — Central',
@@ -643,6 +659,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1032',
     from: 'AG-004',
     fromName: 'Mumbai NDRF Unit 3',
@@ -666,6 +684,8 @@ export const MOCK_REQUESTS = [
     ],
   },
   {
+    type: 'direct',
+    approvedBy: null,
     id: 'REQ-1033',
     from: 'AG-009',
     fromName: 'Kolkata Medical Emergency Unit',

@@ -20,6 +20,9 @@ export default function LoginPage() {
     if (role === 'district_eoc') {
       setEmail('collector.pune@gmail.com');
       setPassword('123456');
+    } else if (role === 'state_authority') {
+      setEmail('state@samanvay.gov.in');
+      setPassword('password123');
     } else {
       setEmail('agency@samanvay.gov.in');
       setPassword('password123');
@@ -126,6 +129,17 @@ export default function LoginPage() {
               }`}
             >
               Rescue Agency
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('state_authority')}
+              className={`flex-1 text-center py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
+                activeRole === 'state_authority'
+                  ? 'border-[#166534] text-[#166534]'
+                  : 'border-transparent text-[#64748B] hover:text-[#111827]'
+              }`}
+            >
+              State Authority
             </button>
           </div>
 
