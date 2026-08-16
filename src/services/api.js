@@ -142,7 +142,7 @@ export const api = {
     getAll: async (filters = {}) => {
       try {
         const snapshot = await getDocs(collection(db, 'agencies'));
-        const agencies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const agencies = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
         if (agencies.length > 0) {
           localStorage.setItem('samanvay_agencies', JSON.stringify(agencies));
         }
