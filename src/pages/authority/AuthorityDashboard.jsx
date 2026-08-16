@@ -45,6 +45,8 @@ import Dropdown from '../../components/ui/Dropdown';
 import { SeverityBadge } from '../../components/ui/Badge';
 import { RESOURCE_INVENTORY } from '../../data/mockData';
 import { api } from '../../services/api';
+import ActivityLogTab from '../../components/authority/ActivityLogTab';
+
 
 export default function AuthorityDashboard() {
   const [searchParams] = useSearchParams();
@@ -1082,53 +1084,7 @@ export default function AuthorityDashboard() {
 
           {/* TAB 5: HISTORICAL ACTIVITY LOG */}
           {activeTab === 'activity' && (
-            <div className="bg-white border border-[#CBD5E1] p-5 shadow-2xs space-y-4">
-              <div className="border-b border-[#E2E8F0] pb-3">
-                <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider font-mono">EOC MASTER ACTIVITY TIMELINE</h2>
-                <p className="text-[10px] text-[#64748B] font-mono mt-0.5">Chronological audit log of district system alerts, verifications, and active dispatch commands</p>
-              </div>
-
-              <div className="space-y-3 max-w-4xl mx-auto py-2">
-                {activity.map((log) => (
-                  <div key={log.id} className="flex gap-3 items-start">
-                    <div className="mt-1 flex-shrink-0">
-                      <div className={`w-6 h-6 rounded-none border bg-white flex items-center justify-center text-xs ${
-                        log.type === 'incident' && log.severity === 'CRITICAL'
-                          ? 'border-[#DC2626] text-[#DC2626] font-bold'
-                          : log.type === 'verification'
-                          ? 'border-[#166534] text-[#166534]'
-                          : 'border-[#CBD5E1] text-[#64748B]'
-                      }`}>
-                        <Clock size={12} />
-                      </div>
-                    </div>
-
-                    <div className="flex-1 bg-[#F8FAFC] border border-[#CBD5E1] p-3 font-mono">
-                      <div className="flex justify-between items-start gap-2">
-                        <div>
-                          <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 border ${
-                            log.type === 'incident' 
-                              ? 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]' 
-                              : log.type === 'verification'
-                              ? 'bg-[#F0FDF4] border-[#DCFCE7] text-[#166534]'
-                              : 'bg-white border-[#E2E8F0] text-[#64748B]'
-                          }`}>
-                            {log.action}
-                          </span>
-                          <h4 className="text-xs font-bold text-[#0F172A] mt-1.5 font-sans">{log.detail}</h4>
-                        </div>
-                        <span className="text-[10px] text-[#64748B]">{log.time}</span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mt-2 text-[10px] text-[#64748B] border-t border-[#E2E8F0] pt-1.5">
-                        <span>TRIGGERED BY:</span>
-                        <span className="text-[#0F172A] font-semibold font-sans">{log.actor}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ActivityLogTab activity={activity} user={currentUser} />
           )}
 
         </main>

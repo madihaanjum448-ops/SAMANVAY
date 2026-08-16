@@ -20,7 +20,7 @@ export async function sendActivityReport({ to, periodLabel, district, state, act
   if (!EMAIL_SERVICE_CONFIGURED) {
     return {
       success: false,
-      error: 'Email service is not configured. The report was not sent. Connect an email provider to enable sharing.'
+      error: 'Email sharing is not configured yet. Download the PDF to share it manually.'
     };
   }
 

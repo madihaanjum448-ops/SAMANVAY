@@ -65,24 +65,23 @@ export default function ActivityLogTab({ activity = [], user = null }) {
 
   return (
     <div className="bg-white border border-[#CBD5E1] p-5 shadow-2xs space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 border-b border-[#E2E8F0] pb-3">
+      {/* Header and Controls */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#E2E8F0] pb-3">
         <div>
           <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider font-mono">ACTIVITY LOG</h2>
           <p className="text-[10px] text-[#64748B] font-mono mt-0.5">
-            District record of system actions, coordination events and operational changes
+            System actions, coordination events and operational changes
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 shrink-0">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="activity-period" className="text-[9px] font-bold text-[#64748B] uppercase tracking-wider font-mono">
-              Activity Period
-            </label>
+        {/* Controls: Select dropdown and PDF/Share buttons */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto shrink-0">
+          <div className="w-full sm:w-auto">
             <select
               id="activity-period"
               value={periodKey}
               onChange={(e) => setPeriodKey(e.target.value)}
-              className="text-[11px] font-mono font-bold border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[#0F172A] focus:outline-none focus:border-[#166534]"
+              className="w-full sm:w-auto text-[11px] font-mono font-bold border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[#0F172A] focus:outline-none focus:border-[#166534]"
             >
               {Object.entries(ACTIVITY_PERIODS).map(([key, { label }]) => (
                 <option key={key} value={key}>{label}</option>
@@ -90,25 +89,27 @@ export default function ActivityLogTab({ activity = [], user = null }) {
             </select>
           </div>
 
-          <button
-            type="button"
-            onClick={handleDownloadPdf}
-            className="bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] text-[#0F172A] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 transition-colors cursor-pointer font-mono flex items-center justify-center gap-1.5 mt-auto"
-          >
-            <Download size={12} /> Download PDF
-          </button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              className="flex-1 sm:flex-none bg-[#166534] hover:bg-[#14532D] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 transition-colors cursor-pointer font-mono text-center flex items-center justify-center gap-1"
+            >
+              <Download size={12} /> Download PDF
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setShowShareModal(true);
-              setShareError('');
-              setShareSuccess('');
-            }}
-            className="bg-[#166534] hover:bg-[#14532D] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 transition-colors cursor-pointer font-mono flex items-center justify-center gap-1.5 mt-auto"
-          >
-            <Share2 size={12} /> Share Report
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowShareModal(true);
+                setShareError('');
+                setShareSuccess('');
+              }}
+              className="flex-1 sm:flex-none bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#334155] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 transition-colors cursor-pointer font-mono text-center flex items-center justify-center gap-1"
+            >
+              <Share2 size={12} /> Share Report
+            </button>
+          </div>
         </div>
       </div>
 
@@ -116,10 +117,11 @@ export default function ActivityLogTab({ activity = [], user = null }) {
         Showing {filteredActivity.length} of {activity.length} records · {ACTIVITY_PERIODS[periodKey].label}
       </div>
 
+      {/* Timeline items list */}
       <div className="space-y-3 max-w-4xl mx-auto py-2">
         {filteredActivity.length === 0 ? (
           <div className="py-8 text-center text-[11px] text-[#64748B] font-mono border border-dashed border-[#CBD5E1]">
-            No activity records for {ACTIVITY_PERIODS[periodKey].label.toLowerCase()}.
+            No activity recorded during this period.
           </div>
         ) : (
           filteredActivity.map((log) => (
@@ -163,10 +165,11 @@ export default function ActivityLogTab({ activity = [], user = null }) {
         )}
       </div>
 
+      {/* Share Modal Dialog */}
       <Modal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
-        title="Share Activity Report"
+        title="SHARE ACTIVITY REPORT"
         size="sm"
       >
         <form onSubmit={handleShare} className="space-y-4">
@@ -177,7 +180,7 @@ export default function ActivityLogTab({ activity = [], user = null }) {
 
           <FormInput
             id="share-email"
-            label="Email address"
+            label="Email Address"
             type="email"
             placeholder="example@gmail.com"
             value={shareEmail}

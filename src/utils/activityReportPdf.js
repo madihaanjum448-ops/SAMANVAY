@@ -70,8 +70,8 @@ export function generateActivityReportPdf({
   };
 
   addLine('SAMANVAY', { size: 18, bold: true, color: [22, 101, 52], gap: 4 });
-  addLine('District Emergency Operations Centre', { size: 12, bold: true, gap: 4 });
-  addLine('Activity Log Report', { size: 12, bold: true, gap: 16 });
+  addLine('DISTRICT EMERGENCY OPERATIONS CENTRE', { size: 12, bold: true, gap: 4 });
+  addLine('ACTIVITY LOG REPORT', { size: 12, bold: true, gap: 16 });
 
   addLine(`District: ${district}`, { size: 10, gap: 4 });
   addLine(`State: ${state}`, { size: 10, gap: 12 });
@@ -129,7 +129,7 @@ export function generateActivityReportPdf({
   });
 
   if (activities.length === 0) {
-    addLine('No activity records found for the selected reporting period.', { size: 10, gap: 8 });
+    addLine('No activity recorded during this period.', { size: 10, gap: 8 });
   }
 
   return doc;
