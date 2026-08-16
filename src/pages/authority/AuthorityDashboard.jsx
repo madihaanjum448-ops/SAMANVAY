@@ -103,8 +103,8 @@ export default function AuthorityDashboard() {
         const [agenciesData, incidentsData, requestsData, resourcesData, activityData] = await Promise.all([
           getDocs(collection(db, 'agencies')).then(snapshot =>
             snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data()
+              ...doc.data(),
+              id: doc.id
             }))
           ),
           api.incidents.getAll(),
