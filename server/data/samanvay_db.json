@@ -1375,6 +1375,53 @@
       "agencyId": "AG-001",
       "district": "Pune",
       "state": "Maharashtra"
+    },
+    {
+      "id": "USR-001",
+      "name": "Priya Desai (EOC Officer)",
+      "email": "collector.pune@gmail.com",
+      "password": "123456",
+      "role": "district_eoc",
+      "district": "Pune",
+      "state": "Maharashtra",
+      "jurisdiction": "Pune District",
+      "status": "active"
+    },
+    {
+      "id": "USR-002",
+      "name": "Capt. Rajesh V. (SDRF Commander)",
+      "email": "agency@samanvay.gov.in",
+      "password": "password123",
+      "role": "agency_admin",
+      "agencyId": "AG-002",
+      "district": "Pune",
+      "state": "Maharashtra",
+      "jurisdiction": "Pune District",
+      "status": "active"
+    },
+    {
+      "id": "USR-003",
+      "name": "Shri A. K. Sharma (State Director)",
+      "email": "state@samanvay.gov.in",
+      "password": "password123",
+      "role": "state_authority",
+      "scope": "state",
+      "state": "Maharashtra",
+      "district": "",
+      "jurisdiction": "Maharashtra State",
+      "status": "active"
+    },
+    {
+      "id": "USR-004",
+      "name": "Dr. N. G. Rao (National Chairman)",
+      "email": "national@samanvay.gov.in",
+      "password": "password123",
+      "role": "state_authority",
+      "scope": "national",
+      "state": "",
+      "district": "",
+      "jurisdiction": "National EOC",
+      "status": "active"
     }
   ]
 }

@@ -1,7 +1,8 @@
 export const ACTIVITY_PERIODS = {
   '1w': { label: 'Last 1 Week', days: 7 },
   '2w': { label: 'Last 2 Weeks', days: 14 },
-  '3w': { label: 'Last 3 Weeks', days: 21 }
+  '3w': { label: 'Last 3 Weeks', days: 21 },
+  'older': { label: 'Earlier / Previous', days: Infinity }
 };
 
 const SEED_TIMESTAMPS = {
@@ -58,6 +59,12 @@ export function getActivityTimestamp(log) {
 }
 
 export function filterActivityByPeriod(logs, periodKey) {
+  if (periodKey === 'older') {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 21);
+    cutoff.setHours(0, 0, 0, 0);
+    return logs.filter(log => getActivityTimestamp(log) < cutoff);
+  }
   const period = ACTIVITY_PERIODS[periodKey] || ACTIVITY_PERIODS['1w'];
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - period.days);

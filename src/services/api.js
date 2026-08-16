@@ -1,3 +1,6 @@
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+
 // ============================================================
 // SAMANVAY — Frontend API Service Layer
 // Communicates with Express Backend with Automatic Local Fallback
@@ -137,32 +140,28 @@ export const api = {
   // --- AGENCIES ---
   agencies: {
     getAll: async (filters = {}) => {
-      const query = new URLSearchParams(filters).toString();
-      const res = await fetchWithFallback(
-        `/agencies${query ? `?${query}` : ''}`,
-        { method: 'GET' },
-        'samanvay_agencies',
-        { agencies: [] }
-      );
-      // Handle both backend envelope { agencies: [...] } and raw array fallback
-      const agencies = Array.isArray(res) ? res : (res?.agencies || []);
-      // Keep local storage updated
-      if (agencies.length > 0) {
-        localStorage.setItem('samanvay_agencies', JSON.stringify(agencies));
+      try {
+        const snapshot = await getDocs(collection(db, 'agencies'));
+        const agencies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (agencies.length > 0) {
+          localStorage.setItem('samanvay_agencies', JSON.stringify(agencies));
+        }
+        return agencies;
+      } catch (err) {
+        console.error('Firestore fallback failed for getAll agencies', err);
+        const cached = localStorage.getItem('samanvay_agencies');
+        return cached ? JSON.parse(cached) : [];
       }
-      return agencies;
     },
 
     getById: async (id) => {
-      const res = await fetchWithFallback(
-        `/agencies/${id}`,
-        { method: 'GET' },
-        null,
-        null
-      );
-      if (res?.agency) return res.agency;
-
-      // Fallback search in localStorage
+      try {
+        const docRef = doc(db, 'agencies', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return { id: docSnap.id, ...docSnap.data() };
+        }
+      } catch(e) { console.warn('Firestore fallback', e); }
       const cached = localStorage.getItem('samanvay_agencies');
       if (cached) {
         const list = JSON.parse(cached);

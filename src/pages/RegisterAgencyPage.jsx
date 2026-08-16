@@ -13,21 +13,22 @@ import {
 import Button from '../components/ui/Button';
 import FormInput from '../components/ui/FormInput';
 import Dropdown from '../components/ui/Dropdown';
-import { AGENCY_TYPES, EXPERTISE_OPTIONS } from '../data/mockData';
+import { AGENCY_TYPES, EXPERTISE_OPTIONS, MOCK_AGENCIES } from '../data/mockData';
 import { api } from '../services/api';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const STATE_DISTRICTS = {
-  'Maharashtra': ['Pune', 'Mumbai', 'Nagpur', 'Thane', 'Nashik'],
-  'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'],
-  'Delhi': ['New Delhi', 'North Delhi', 'South Delhi', 'West Delhi'],
-  'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Salem'],
-  'Karnataka': ['Bengaluru', 'Mysore', 'Hubli', 'Mangalore'],
-  'Assam': ['Guwahati', 'Dibrugarh', 'Silchar', 'Jorhat']
-};
-
-const STATES_LIST = Object.keys(STATE_DISTRICTS);
+const STATE_DISTRICTS = MOCK_AGENCIES.reduce((acc, agency) => {
+  if (agency.state && agency.district) {
+    if (!acc[agency.state]) acc[agency.state] = new Set();
+    acc[agency.state].add(agency.district);
+  }
+  return acc;
+}, {});
+Object.keys(STATE_DISTRICTS).forEach(state => {
+  STATE_DISTRICTS[state] = Array.from(STATE_DISTRICTS[state]).sort();
+});
+const STATES_LIST = Object.keys(STATE_DISTRICTS).sort();
 
 export default function RegisterAgencyPage() {
   const navigate = useNavigate();

@@ -78,7 +78,7 @@ export default function AgencyDirectory() {
     if (agency.verificationStatus !== 'VERIFIED') return false;
 
     // State scoping: District EOC sees only their own state's agencies
-    if (role === 'district_eoc' && currentUser?.state && agency.state && agency.state !== currentUser.state) return false;
+    if (role === 'district_eoc' && currentUser?.district && agency.district && agency.district !== currentUser.district) return false;
     // state_authority sees all agencies (no state filter)
 
     // Search query matches name

@@ -26,6 +26,7 @@ import FormInput from '../components/ui/FormInput';
 import Button from '../components/ui/Button';
 import { StatusBadge, VerificationBadge } from '../components/ui/Badge';
 import { MOCK_AGENCIES, MOCK_INCIDENTS, MOCK_REQUESTS } from '../data/mockData';
+import { api } from '../services/api';
 
 export default function AgencyDetails() {
   const { id } = useParams();
@@ -36,10 +37,23 @@ export default function AgencyDetails() {
   const userStr = localStorage.getItem('samanvay_user');
   const user = userStr ? JSON.parse(userStr) : null;
 
-  const [agencies] = useState(() => {
-    const stored = localStorage.getItem('samanvay_agencies');
-    return stored ? JSON.parse(stored) : MOCK_AGENCIES;
-  });
+  const [agency, setAgency] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadAgency() {
+      try {
+        const data = await api.agencies.getById(id);
+        if (data) setAgency(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadAgency();
+  }, [id]);
+
   const [incidents] = useState(() => {
     const stored = localStorage.getItem('samanvay_incidents');
     return stored ? JSON.parse(stored) : MOCK_INCIDENTS;
@@ -58,6 +72,8 @@ export default function AgencyDetails() {
 
   // Map Ref
   const mapContainerRef = useRef(null);
+  if (loading) return <div>Loading...</div>;
+  if (!agency) return <div>Agency not found.</div>;
   const mapRef = useRef(null);
 
   // Sync state
@@ -66,11 +82,11 @@ export default function AgencyDetails() {
     setRole(activeRole);
   }, [id]);
 
-  const agency = agencies.find(a => a.id === id) || MOCK_AGENCIES.find(a => a.id === id) || MOCK_AGENCIES[1];
+  
 
   // Leaflet Map Init
   useEffect(() => {
-    if (!mapContainerRef.current || !agency.coordinates) return;
+    if (!mapContainerRef.current || !agency || !agency.coordinates) return;
 
     const [lat, lng] = agency.coordinates;
 
