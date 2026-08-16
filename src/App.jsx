@@ -69,9 +69,23 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register-agency" element={<RegisterAgencyPage />} />
         
-        {/* Core directory / search map */}
-        <Route path="/agencies" element={<AgencyDirectory />} />
-        <Route path="/agencies/:id" element={<AgencyDetails />} />
+        {/* Core directory / search map (Protected) */}
+        <Route 
+          path="/agencies" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin', 'district_eoc', 'state_authority']}>
+              <AgencyDirectory />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/agencies/:id" 
+          element={
+            <ProtectedRoute allowedRoles={['agency_admin', 'district_eoc', 'state_authority']}>
+              <AgencyDetails />
+            </ProtectedRoute>
+          } 
+        />
         
         {/* Command center layouts (Protected) */}
         <Route 

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 import {
@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 
 import Navbar from '../components/layout/Navbar';
-import MapView from '../components/map/MapView';
 import { MOCK_AGENCIES, MOCK_INCIDENTS } from '../data/mockData';
 import { api } from '../services/api';
 
@@ -87,38 +86,6 @@ export default function LandingPage() {
     };
 
     loadStats();
-  }, []);
-
-  // ============================================================
-  // MAP MARKERS
-  // ============================================================
-
-  const mapMarkers = useMemo(() => {
-    const agencyMarkers = MOCK_AGENCIES.map((a) => ({
-      id: a.id,
-      name: a.name,
-      coordinates: a.coordinates,
-      type: 'agency',
-      agencyType: a.agencyType,
-      status: a.status,
-      district: a.district,
-      state: a.state,
-      resources: a.resources
-    }));
-
-    const incidentMarkers = MOCK_INCIDENTS.map((i) => ({
-      id: i.id,
-      name: i.title,
-      coordinates: i.coordinates,
-      type: 'incident',
-      severity: i.severity,
-      incidentType: i.type,
-      location: i.location,
-      description: i.description,
-      time: i.reportedAt
-    }));
-
-    return [...agencyMarkers, ...incidentMarkers];
   }, []);
 
   // ============================================================
@@ -615,59 +582,34 @@ export default function LandingPage() {
           id="about"
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24"
         >
+          <div className="max-w-3xl mx-auto text-center flex flex-col gap-5">
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <span className="text-xs font-bold text-[#166534] uppercase tracking-widest">
+              COORDINATION INFRASTRUCTURE
+            </span>
 
-            {/* LEFT */}
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight">
+              One Network. Every Response.
+            </h2>
 
-            <div className="lg:col-span-5 flex flex-col gap-5 text-left">
+            <p className="text-sm text-[#64748B] leading-relaxed">
+              District authorities and emergency teams can discover
+              verified rescue agencies based on live geographic location,
+              specialized expertise, operational availability, and
+              deployment-ready equipment — all managed through the secure EOC dashboard.
+            </p>
 
-              <span className="text-xs font-bold text-[#166534] uppercase tracking-widest">
-                GIS OPERATIONAL NETWORK
-              </span>
-
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight">
-                One Network. Every Response.
-              </h2>
-
-              <p className="text-sm text-[#64748B] leading-relaxed">
-                District authorities and emergency teams can discover
-                verified rescue agencies based on live geographic location,
-                specialized expertise, operational availability, and
-                deployment-ready equipment.
-              </p>
-
-              <div>
-
-                <button
-                  onClick={() => navigate('/agencies')}
-                  className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3 rounded-md text-sm transition-all inline-flex items-center gap-2 cursor-pointer shadow-xs"
-                >
-
-                  Explore Response Network
-
-                  <ArrowRight size={16} />
-
-                </button>
-
-              </div>
-
-            </div>
-
-            {/* MAP */}
-
-            <div className="lg:col-span-7 h-[420px] rounded-xl overflow-hidden border border-[#E5E7EB] shadow-xs">
-
-              <MapView
-                markers={mapMarkers}
-                center={[18.5204, 73.8567]}
-                zoom={11}
-              />
-
+            <div>
+              <button
+                onClick={() => navigate('/login')}
+                className="bg-[#166534] hover:bg-[#14532D] text-white font-bold px-6 py-3 rounded-md text-sm transition-all inline-flex items-center gap-2 cursor-pointer shadow-xs"
+              >
+                Access EOC Dashboard
+                <ArrowRight size={16} />
+              </button>
             </div>
 
           </div>
-
         </section>
 
         {/* ================================================== */}

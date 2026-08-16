@@ -88,10 +88,37 @@ export const api = {
         }
       ];
 
-      const found = mockUsers.find(u => u.email === credentials.email && u.password === credentials.password);
-      const fallbackResponse = found 
-        ? { success: true, user: found, token: `samanvay_jwt_${btoa(JSON.stringify(found))}` }
-        : { success: false, error: 'Invalid official credentials. Please try again.' };
+      const { email, password, role } = credentials;
+      const found = mockUsers.find(u => u.email === email && u.password === password);
+      
+      let success = false;
+      let error = 'Invalid credentials. Please try again.';
+      let user = null;
+      
+      if (found) {
+        if (role && found.role !== role) {
+          if (role === 'district_eoc') {
+            error = 'Invalid District EOC credentials.';
+          } else if (role === 'agency_admin') {
+            error = 'Invalid Rescue Agency credentials.';
+          } else {
+            error = 'Invalid credentials for selected role.';
+          }
+        } else {
+          success = true;
+          user = found;
+        }
+      } else {
+        if (role === 'district_eoc') {
+          error = 'Invalid District EOC credentials.';
+        } else if (role === 'agency_admin') {
+          error = 'Invalid Rescue Agency credentials.';
+        }
+      }
+
+      const fallbackResponse = success 
+        ? { success: true, user, token: `samanvay_jwt_${btoa(JSON.stringify(user))}` }
+        : { success: false, error };
 
       const res = await fetchWithFallback('/auth/login', {
         method: 'POST',
@@ -303,6 +330,88 @@ export const api = {
         return list.find(i => i.id === id) || null;
       }
       return null;
+    },
+
+    create: async (incidentData) => {
+      const res = await fetchWithFallback(
+        '/incidents',
+        {
+          method: 'POST',
+          body: JSON.stringify(incidentData)
+        },
+        null,
+        null
+      );
+
+      const newInc = res?.incident || {
+        ...incidentData,
+        id: `INC-0${Math.floor(6 + Math.random() * 94)}`,
+        status: 'ACTIVE',
+        createdAt: new Date().toISOString(),
+        timeline: [
+          { time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), event: 'Incident Reported', status: 'done', actor: incidentData.reportedBy || 'System' }
+        ]
+      };
+
+      const cached = localStorage.getItem('samanvay_incidents');
+      let list = cached ? JSON.parse(cached) : [];
+      list.push(newInc);
+      localStorage.setItem('samanvay_incidents', JSON.stringify(list));
+
+      return res || { success: true, incident: newInc };
+    },
+
+    resolve: async (id, actor) => {
+      const res = await fetchWithFallback(
+        `/incidents/${id}/resolve`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({ actor })
+        },
+        null,
+        null
+      );
+
+      const cached = localStorage.getItem('samanvay_incidents');
+      if (cached) {
+        let list = JSON.parse(cached);
+        list = list.map(i => {
+          if (i.id === id) {
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return {
+              ...i,
+              status: 'RESOLVED',
+              resolvedAt: new Date().toISOString(),
+              timeline: [
+                ...(i.timeline || []),
+                { time: timeStr, event: 'Incident Resolved', status: 'done', actor }
+              ]
+            };
+          }
+          return i;
+        });
+        localStorage.setItem('samanvay_incidents', JSON.stringify(list));
+      }
+
+      return res || { success: true };
+    },
+
+    delete: async (id, actor) => {
+      const res = await fetchWithFallback(
+        `/incidents/${id}?actor=${encodeURIComponent(actor)}`,
+        { method: 'DELETE' },
+        null,
+        null
+      );
+
+      const cached = localStorage.getItem('samanvay_incidents');
+      if (cached) {
+        let list = JSON.parse(cached);
+        list = list.filter(i => i.id !== id);
+        localStorage.setItem('samanvay_incidents', JSON.stringify(list));
+      }
+
+      return res || { success: true };
     }
   },
 

@@ -29,7 +29,6 @@ export default function AuthoritySidebar({ activeTab, onTabChange }) {
 
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={16} />, path: '/authority/dashboard?tab=overview' },
-    { id: 'map', label: 'Live Map', icon: <Map size={16} />, path: '/authority/dashboard?tab=map' },
     { id: 'incidents', label: 'Incidents', icon: <AlertTriangle size={16} />, path: '/authority/dashboard?tab=incidents' },
     { id: 'agencies', label: 'Agencies', icon: <Users size={16} />, path: '/agencies' },
     { id: 'resources', label: 'Resources', icon: <Package size={16} />, path: '/resources' },

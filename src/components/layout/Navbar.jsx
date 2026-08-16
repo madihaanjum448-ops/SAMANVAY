@@ -33,9 +33,6 @@ export default function Navbar() {
           <a href="#how-it-works" className="hover:text-[#166534] transition-colors">
             How It Works
           </a>
-          <Link to="/agencies" className="hover:text-[#166534] transition-colors">
-            Response Network
-          </Link>
           <a href="#about" className="hover:text-[#166534] transition-colors">
             About
           </a>
@@ -89,13 +86,6 @@ export default function Navbar() {
             >
               How It Works
             </a>
-            <Link 
-              to="/agencies" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-1.5 hover:text-[#166534]"
-            >
-              Response Network
-            </Link>
             <a 
               href="#about" 
               onClick={() => setMobileMenuOpen(false)}

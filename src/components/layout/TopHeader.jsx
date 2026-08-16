@@ -39,12 +39,8 @@ export default function TopHeader({ title = 'Pune District' }) {
       <div className="flex items-center gap-4">
         <div>
           <h1 className="text-sm font-bold text-[#111827] uppercase tracking-wider">
-            {user?.jurisdiction ? user.jurisdiction : `${title} EOC`}
+            {user?.role === 'district_eoc' ? 'PUNE DISTRICT EOC' : (user?.jurisdiction ? user.jurisdiction.toUpperCase() : `${title.toUpperCase()} EOC`)}
           </h1>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="w-2 h-2 rounded-full bg-[#166534] status-pulse"></span>
-            <span className="text-[10px] font-bold text-[#166534] uppercase tracking-widest">SYSTEM OPERATIONAL</span>
-          </div>
         </div>
       </div>
 
@@ -61,12 +57,6 @@ export default function TopHeader({ title = 'Pune District' }) {
             </span>
           </div>
         )}
-
-        {/* Prototype Indicator */}
-        <div className="hidden lg:flex items-center gap-1.5 text-xs text-[#64748B] bg-white border border-[#E5E7EB] rounded-md px-3 py-1.5 font-mono shadow-2xs">
-          <HelpCircle size={14} className="text-[#64748B]" />
-          <span>Government Prototype</span>
-        </div>
 
         {/* Notifications Trigger */}
         <div className="relative">

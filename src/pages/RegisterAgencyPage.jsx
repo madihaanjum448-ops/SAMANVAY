@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -19,6 +17,18 @@ import { AGENCY_TYPES, EXPERTISE_OPTIONS } from '../data/mockData';
 import { api } from '../services/api';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+
+const STATE_DISTRICTS = {
+  'Maharashtra': ['Pune', 'Mumbai', 'Nagpur', 'Thane', 'Nashik'],
+  'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'],
+  'Delhi': ['New Delhi', 'North Delhi', 'South Delhi', 'West Delhi'],
+  'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Salem'],
+  'Karnataka': ['Bengaluru', 'Mysore', 'Hubli', 'Mangalore'],
+  'Assam': ['Guwahati', 'Dibrugarh', 'Silchar', 'Jorhat']
+};
+
+const STATES_LIST = Object.keys(STATE_DISTRICTS);
+
 export default function RegisterAgencyPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -28,12 +38,12 @@ export default function RegisterAgencyPage() {
   const [agencyInfo, setAgencyInfo] = useState({
     name: '',
     type: '',
-    district: '',
-    state: '',
     phone: '',
     email: '',
   });
 
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
   const [expertise, setExpertise] = useState([]);
   
   const [location, setLocation] = useState({
@@ -52,87 +62,6 @@ export default function RegisterAgencyPage() {
     other: '',
   });
 
-  // Map Refs for Step 3
-  const mapContainerRef = useRef(null);
-  const mapRef = useRef(null);
-  const markerRef = useRef(null);
-
-  // Initialize Map in Step 3
-  useEffect(() => {
-    if (step !== 3 || !mapContainerRef.current) return;
-
-    // Create Leaflet Map
-    const initialLat = parseFloat(location.lat) || 18.5204;
-    const initialLng = parseFloat(location.lng) || 73.8567;
-
-    const map = L.map(mapContainerRef.current, {
-      zoomControl: true,
-      attributionControl: true
-    }).setView([initialLat, initialLng], 12);
-
-    mapRef.current = map;
-
-    // Light-mode Map Tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
-    }).addTo(map);
-
-    // Initial Marker icon
-    const customIcon = L.divIcon({
-      className: 'custom-marker-icon',
-      html: '<div class="marker-deployed"></div>',
-      iconSize: [20, 20]
-    });
-
-    const marker = L.marker([initialLat, initialLng], { icon: customIcon, draggable: true }).addTo(map);
-    markerRef.current = marker;
-
-    // Drag events
-    marker.on('dragend', () => {
-      const pos = marker.getLatLng();
-      setLocation(prev => ({
-        ...prev,
-        lat: pos.lat.toFixed(5),
-        lng: pos.lng.toFixed(5)
-      }));
-    });
-
-    // Map click events
-    map.on('click', (e) => {
-      const pos = e.latlng;
-      marker.setLatLng(pos);
-      setLocation(prev => ({
-        ...prev,
-        lat: pos.lat.toFixed(5),
-        lng: pos.lng.toFixed(5)
-      }));
-    });
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-    };
-  }, [step]);
-
-  const handleUseCurrentLocation = () => {
-    const demoLat = 18.5354;
-    const demoLng = 73.8776;
-    setLocation(prev => ({
-      ...prev,
-      lat: demoLat.toString(),
-      lng: demoLng.toString(),
-      address: 'Shivajinagar EOC Area, Pune, Maharashtra'
-    }));
-
-    if (mapRef.current && markerRef.current) {
-      mapRef.current.setView([demoLat, demoLng], 14);
-      markerRef.current.setLatLng([demoLat, demoLng]);
-    }
-  };
-
-  // State handles
   const handleInfoChange = (field, value) => {
     setAgencyInfo(prev => ({ ...prev, [field]: value }));
   };
@@ -149,7 +78,17 @@ export default function RegisterAgencyPage() {
     setResources(prev => ({ ...prev, [field]: Math.max(0, parseInt(value) || 0) }));
   };
 
-  const nextStep = () => setStep(prev => prev + 1);
+  const nextStep = () => {
+    if (step === 2 && !selectedState) {
+      alert('Please select a State to continue.');
+      return;
+    }
+    if (step === 3 && !selectedDistrict) {
+      alert('Please select a District to continue.');
+      return;
+    }
+    setStep(prev => prev + 1);
+  };
   const prevStep = () => setStep(prev => prev - 1);
 
   const handleSubmit = async (e) => {
@@ -158,8 +97,8 @@ export default function RegisterAgencyPage() {
     const newAgencyPayload = {
       name: agencyInfo.name,
       type: agencyInfo.type,
-      district: agencyInfo.district || 'Pune',
-      state: agencyInfo.state || 'Maharashtra',
+      district: selectedDistrict || 'Pune',
+      state: selectedState || 'Maharashtra',
       phone: agencyInfo.phone,
       email: agencyInfo.email,
       expertise: expertise,
@@ -168,31 +107,33 @@ export default function RegisterAgencyPage() {
         lng: location.lng,
         address: location.address
       },
-      resources: resources
+      resources: resources,
+      verificationStatus: 'PENDING',
+      status: 'AVAILABLE'
     };
-    const agencyData = {
-  ...newAgencyPayload,
-  status: 'pending',
-  createdAt: serverTimestamp()
-  };
 
-  await addDoc(collection(db, 'agencies'), agencyData);
+    const agencyData = {
+      ...newAgencyPayload,
+      verificationStatus: 'PENDING',
+      status: 'AVAILABLE',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      // Write to Firestore
+      await addDoc(collection(db, 'agencies'), agencyData);
+    } catch (err) {
+      console.warn('[SAMANVAY] Firestore direct write failed, proceeding with local fallback:', err);
+    }
 
     const existing = localStorage.getItem('samanvay_agencies');
-    let agenciesList = [];
-    if (existing) {
-      agenciesList = JSON.parse(existing);
-    } else {
-      agenciesList = [];
-    }
-    
+    let agenciesList = existing ? JSON.parse(existing) : [];
     agenciesList.push(newAgencyPayload);
     localStorage.setItem('samanvay_agencies', JSON.stringify(agenciesList));
 
     // Update notifications to show submission
     const storedNotifs = localStorage.getItem('samanvay_notifications');
-    let notifs = [];
-    if (storedNotifs) notifs = JSON.parse(storedNotifs);
+    let notifs = storedNotifs ? JSON.parse(storedNotifs) : [];
     const newNotif = {
       id: Date.now(),
       type: 'alert',
@@ -206,7 +147,6 @@ export default function RegisterAgencyPage() {
 
     // Dispatch to Backend API
     await api.agencies.register(newAgencyPayload);
-
 
     setSubmitted(true);
   };
@@ -223,7 +163,7 @@ export default function RegisterAgencyPage() {
           <div>
             <h2 className="text-2xl font-extrabold text-[#111827]">REGISTRATION SUBMITTED</h2>
             <div className="inline-block mt-2 px-3 py-1 bg-[#FFF7ED] border border-[#FED7AA] text-[#EA580C] font-mono text-[11px] font-bold rounded-md uppercase tracking-wider">
-              Status: PENDING VERIFICATION
+              Status: PENDING EOC VERIFICATION
             </div>
           </div>
 
@@ -288,10 +228,10 @@ export default function RegisterAgencyPage() {
                 <span className={`text-[10px] font-bold tracking-wider mt-1.5 uppercase ${
                   step === s ? 'text-[#166534]' : 'text-[#64748B]'
                 }`}>
-                  {s === 1 && 'Info'}
-                  {s === 2 && 'Expertise'}
-                  {s === 3 && 'Location'}
-                  {s === 4 && 'Resources'}
+                  {s === 1 && 'Info & Expertise'}
+                  {s === 2 && 'State'}
+                  {s === 3 && 'District'}
+                  {s === 4 && 'Details & Resources'}
                 </span>
               </div>
               {s < 4 && (
@@ -310,7 +250,7 @@ export default function RegisterAgencyPage() {
           
           <form onSubmit={step === 4 ? handleSubmit : (e) => e.preventDefault()} className="flex-1 flex flex-col">
             
-            {/* STEP 1: Agency Information */}
+            {/* STEP 1: Agency Information & Expertise */}
             {step === 1 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
                 <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
@@ -332,28 +272,9 @@ export default function RegisterAgencyPage() {
                   label="Agency Type"
                   options={AGENCY_TYPES}
                   value={agencyInfo.type}
-                  onChange={(value) => handleInfoChange('type',value)}
+                  onChange={(value) => handleInfoChange('type', value)}
                   required
                 />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormInput
-                    id="reg-district"
-                    label="District"
-                    placeholder="e.g. Pune"
-                    value={agencyInfo.district}
-                    onChange={(e) => handleInfoChange('district', e.target.value)}
-                    required
-                  />
-                  <FormInput
-                    id="reg-state"
-                    label="State"
-                    placeholder="e.g. Maharashtra"
-                    value={agencyInfo.state}
-                    onChange={(e) => handleInfoChange('state', e.target.value)}
-                    required
-                  />
-                </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput
@@ -374,59 +295,100 @@ export default function RegisterAgencyPage() {
                     required
                   />
                 </div>
+
+                <div className="border-t border-[#E5E7EB] pt-4 mt-2">
+                  <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Tactical Rescue Expertise</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {EXPERTISE_OPTIONS.map((opt) => {
+                      const checked = expertise.includes(opt);
+                      return (
+                        <label 
+                          key={opt}
+                          className={`flex items-center gap-2 p-2 rounded border text-xs cursor-pointer select-none transition-all ${
+                            checked
+                              ? 'bg-[#F0FDF4] border-[#DCFCE7] text-[#166534] font-bold'
+                              : 'bg-white border-[#E5E7EB] text-[#475569] hover:border-[#CBD5E1]'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => handleExpertiseToggle(opt)}
+                            className="hidden"
+                          />
+                          <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${
+                            checked ? 'border-[#166534] bg-[#166534] text-white' : 'border-[#CBD5E1]'
+                          }`}>
+                            {checked && <span className="text-[9px] font-bold">✓</span>}
+                          </div>
+                          <span className="truncate">{opt}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* STEP 2: Expertise */}
+            {/* STEP 2: State Selection */}
             {step === 2 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
                 <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
-                  <ShieldCheck size={18} className="text-[#166534]" />
-                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 2: Tactical Rescue Expertise</h3>
+                  <MapPin size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 2: Select State</h3>
                 </div>
                 <p className="text-xs text-[#64748B] leading-normal">
-                  Select disaster rescue disciplines that your tactical unit has certified capabilities to coordinate.
+                  Select the operational state for the rescue agency. State selection is required before selecting the district.
                 </p>
 
-                <div className="grid grid-cols-2 gap-3 mt-2">
-                  {EXPERTISE_OPTIONS.map((opt) => {
-                    const checked = expertise.includes(opt);
-                    return (
-                      <label 
-                        key={opt}
-                        className={`flex items-center gap-3 p-3 rounded-lg border text-xs cursor-pointer select-none transition-all ${
-                          checked
-                            ? 'bg-[#F0FDF4] border-[#DCFCE7] text-[#166534] font-bold'
-                            : 'bg-white border-[#E5E7EB] text-[#475569] hover:border-[#CBD5E1]'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => handleExpertiseToggle(opt)}
-                          className="hidden"
-                        />
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                          checked ? 'border-[#166534] bg-[#166534] text-white' : 'border-[#CBD5E1]'
-                        }`}>
-                          {checked && <span className="text-[10px] font-bold">✓</span>}
-                        </div>
-                        <span>{opt}</span>
-                      </label>
-                    );
-                  })}
+                <div className="mt-4">
+                  <Dropdown
+                    id="reg-state"
+                    label="State"
+                    options={STATES_LIST}
+                    value={selectedState}
+                    onChange={(value) => {
+                      setSelectedState(value);
+                      setSelectedDistrict(''); // reset district selection
+                    }}
+                    required
+                  />
                 </div>
               </div>
             )}
 
-            {/* STEP 3: Location */}
+            {/* STEP 3: District Selection */}
             {step === 3 && (
               <div className="flex-1 flex flex-col gap-4 fade-in">
                 <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
                   <MapPin size={18} className="text-[#166534]" />
-                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 3: Base Location</h3>
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 3: Select District</h3>
                 </div>
+                <p className="text-xs text-[#64748B] leading-normal">
+                  Select the district belonging to your state: <strong className="text-[#111827]">{selectedState}</strong>.
+                </p>
 
+                <div className="mt-4">
+                  <Dropdown
+                    id="reg-district"
+                    label="District"
+                    options={selectedState ? STATE_DISTRICTS[selectedState] : []}
+                    value={selectedDistrict}
+                    onChange={(value) => setSelectedDistrict(value)}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4: Details & Resources */}
+            {step === 4 && (
+              <div className="flex-1 flex flex-col gap-4 fade-in">
+                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
+                  <FileText size={18} className="text-[#166534]" />
+                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 4: Location & Resources</h3>
+                </div>
+                
                 <FormInput
                   id="reg-address"
                   label="HQ Street Address"
@@ -439,93 +401,64 @@ export default function RegisterAgencyPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput
                     id="reg-lat"
-                    label="Latitude"
+                    label="Latitude (Optional)"
                     value={location.lat}
                     onChange={(e) => setLocation(prev => ({ ...prev, lat: e.target.value }))}
-                    required
                   />
                   <FormInput
                     id="reg-lng"
-                    label="Longitude"
+                    label="Longitude (Optional)"
                     value={location.lng}
                     onChange={(e) => setLocation(prev => ({ ...prev, lng: e.target.value }))}
-                    required
                   />
                 </div>
 
-                {/* Location Map Selector */}
-                <div className="flex flex-col gap-1.5 flex-1 min-h-[220px]">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Map Pin Locator</span>
-                    <button
-                      type="button"
-                      onClick={handleUseCurrentLocation}
-                      className="text-[#166534] font-bold uppercase tracking-wider text-[10px] cursor-pointer flex items-center gap-1 bg-[#F0FDF4] border border-[#DCFCE7] px-2.5 py-1 rounded"
-                    >
-                      Use Demo HQ Location
-                    </button>
+                <div className="border-t border-[#E5E7EB] pt-4 mt-2">
+                  <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-2">Available Resources</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <FormInput
+                      id="res-personnel"
+                      label="Personnel staff count"
+                      type="number"
+                      value={resources.personnel}
+                      onChange={(e) => handleResourceChange('personnel', e.target.value)}
+                    />
+                    <FormInput
+                      id="res-ambulances"
+                      label="Ambulances Count"
+                      type="number"
+                      value={resources.ambulances}
+                      onChange={(e) => handleResourceChange('ambulances', e.target.value)}
+                    />
+                    <FormInput
+                      id="res-vehicles"
+                      label="Rescue Vehicles"
+                      type="number"
+                      value={resources.vehicles}
+                      onChange={(e) => handleResourceChange('vehicles', e.target.value)}
+                    />
+                    <FormInput
+                      id="res-boats"
+                      label="Rescue Boats"
+                      type="number"
+                      value={resources.boats}
+                      onChange={(e) => handleResourceChange('boats', e.target.value)}
+                    />
+                    <FormInput
+                      id="res-drones"
+                      label="Search Drones"
+                      type="number"
+                      value={resources.drones}
+                      onChange={(e) => handleResourceChange('drones', e.target.value)}
+                    />
+                    <FormInput
+                      id="res-kits"
+                      label="Medical Kits"
+                      type="number"
+                      value={resources.kits}
+                      onChange={(e) => handleResourceChange('kits', e.target.value)}
+                    />
                   </div>
-                  <div className="flex-1 w-full h-[220px] rounded-lg border border-[#E5E7EB] overflow-hidden relative">
-                    <div ref={mapContainerRef} className="w-full h-full" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 4: Resources */}
-            {step === 4 && (
-              <div className="flex-1 flex flex-col gap-4 fade-in">
-                <div className="border-b border-[#E5E7EB] pb-3 mb-2 flex items-center gap-2">
-                  <FileText size={18} className="text-[#166534]" />
-                  <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">Step 4: Resource Counts</h3>
-                </div>
-                <p className="text-xs text-[#64748B] leading-normal">
-                  Define active inventories immediately available. All parameters will be verified by the District EOC.
-                </p>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                  <FormInput
-                    id="res-personnel"
-                    label="Personnel staff count"
-                    type="number"
-                    value={resources.personnel}
-                    onChange={(e) => handleResourceChange('personnel', e.target.value)}
-                  />
-                  <FormInput
-                    id="res-ambulances"
-                    label="Ambulances Count"
-                    type="number"
-                    value={resources.ambulances}
-                    onChange={(e) => handleResourceChange('ambulances', e.target.value)}
-                  />
-                  <FormInput
-                    id="res-vehicles"
-                    label="Rescue Vehicles"
-                    type="number"
-                    value={resources.vehicles}
-                    onChange={(e) => handleResourceChange('vehicles', e.target.value)}
-                  />
-                  <FormInput
-                    id="res-boats"
-                    label="Rescue Boats"
-                    type="number"
-                    value={resources.boats}
-                    onChange={(e) => handleResourceChange('boats', e.target.value)}
-                  />
-                  <FormInput
-                    id="res-drones"
-                    label="Search Drones"
-                    type="number"
-                    value={resources.drones}
-                    onChange={(e) => handleResourceChange('drones', e.target.value)}
-                  />
-                  <FormInput
-                    id="res-kits"
-                    label="Medical Kits"
-                    type="number"
-                    value={resources.kits}
-                    onChange={(e) => handleResourceChange('kits', e.target.value)}
-                  />
                 </div>
 
                 <div className="mt-2">

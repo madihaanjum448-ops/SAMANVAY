@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import {
   collection,
@@ -28,12 +28,20 @@ import {
   CheckCircle2,
   AlertCircle,
   BarChart2,
-  ArrowRight
+  ArrowRight,
+  Plus,
+  MoreHorizontal,
+  Eye,
+  CheckCircle,
+  Trash2
 } from 'lucide-react';
 import AuthoritySidebar from '../../components/layout/AuthoritySidebar';
 import TopHeader from '../../components/layout/TopHeader';
 import MapView from '../../components/map/MapView';
 import MapLegend from '../../components/map/MapLegend';
+import Modal from '../../components/ui/Modal';
+import FormInput from '../../components/ui/FormInput';
+import Dropdown from '../../components/ui/Dropdown';
 import { SeverityBadge } from '../../components/ui/Badge';
 import { RESOURCE_INVENTORY } from '../../data/mockData';
 import { api } from '../../services/api';
@@ -49,6 +57,30 @@ export default function AuthorityDashboard() {
   const [requests, setRequests] = useState([]);
   const [resources, setResources] = useState([]);
   const [activity, setActivity] = useState([]);
+
+  // Incident management state
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [actionMenuId, setActionMenuId] = useState(null);
+  const [confirmAction, setConfirmAction] = useState(null); // { type: 'resolve'|'delete', incident }
+  const actionMenuRef = useRef(null);
+  const [newIncident, setNewIncident] = useState({
+    type: '',
+    location: '',
+    severity: 'MEDIUM',
+    description: '',
+    reportedBy: 'Priya Desai (EOC Lead)'
+  });
+
+  // Close action menu on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (actionMenuRef.current && !actionMenuRef.current.contains(e.target)) {
+        setActionMenuId(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Load state from Firestore & API services
   useEffect(() => {
@@ -163,6 +195,80 @@ export default function AuthorityDashboard() {
     } catch (error) {
       console.error('Error rejecting agency:', error);
       alert('Failed to reject agency. Check Firestore permissions.');
+    }
+  };
+
+  // --- INCIDENT MANAGEMENT HANDLERS ---
+  const handleReportIncident = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await api.incidents.create(newIncident);
+      const created = result?.incident || {
+        ...newIncident,
+        id: `INC-0${Math.floor(6 + Math.random() * 94)}`,
+        status: 'ACTIVE',
+        createdAt: new Date().toISOString()
+      };
+      setIncidents(prev => [created, ...prev]);
+
+      const newLog = {
+        id: Date.now(),
+        type: 'incident',
+        action: 'Incident Reported',
+        detail: `${newIncident.type} reported at ${newIncident.location} [${newIncident.severity}]`,
+        actor: newIncident.reportedBy,
+        time: 'Just now',
+        severity: newIncident.severity
+      };
+      setActivity(prev => [newLog, ...prev]);
+
+      setNewIncident({ type: '', location: '', severity: 'MEDIUM', description: '', reportedBy: 'Priya Desai (EOC Lead)' });
+      setShowReportModal(false);
+    } catch (err) {
+      console.error('Failed to report incident:', err);
+      alert('Failed to report incident.');
+    }
+  };
+
+  const handleResolveIncident = async (inc) => {
+    try {
+      await api.incidents.resolve(inc.id, 'Priya Desai (EOC Lead)');
+      setIncidents(prev => prev.map(i => i.id === inc.id ? { ...i, status: 'RESOLVED', resolvedAt: new Date().toISOString() } : i));
+
+      const newLog = {
+        id: Date.now(),
+        type: 'incident',
+        action: 'Incident Resolved',
+        detail: `${inc.type} at ${inc.location} marked resolved`,
+        actor: 'Priya Desai (EOC Lead)',
+        time: 'Just now'
+      };
+      setActivity(prev => [newLog, ...prev]);
+      setConfirmAction(null);
+    } catch (err) {
+      console.error('Failed to resolve incident:', err);
+      alert('Failed to resolve incident.');
+    }
+  };
+
+  const handleDeleteIncident = async (inc) => {
+    try {
+      await api.incidents.delete(inc.id, 'Priya Desai (EOC Lead)');
+      setIncidents(prev => prev.filter(i => i.id !== inc.id));
+
+      const newLog = {
+        id: Date.now(),
+        type: 'incident',
+        action: 'Incident Removed',
+        detail: `${inc.type} at ${inc.location} permanently removed from register`,
+        actor: 'Priya Desai (EOC Lead)',
+        time: 'Just now'
+      };
+      setActivity(prev => [newLog, ...prev]);
+      setConfirmAction(null);
+    } catch (err) {
+      console.error('Failed to delete incident:', err);
+      alert('Failed to delete incident.');
     }
   };
 
@@ -676,24 +782,7 @@ export default function AuthorityDashboard() {
             </div>
           )}
 
-          {/* TAB 2: FULL MAP VIEW */}
-          {activeTab === 'map' && (
-            <div className="bg-white border border-[#CBD5E1] p-4 h-[calc(100vh-140px)] flex flex-col shadow-2xs space-y-3">
-              <div className="flex justify-between items-center pb-2 border-b border-[#E2E8F0]">
-                <div>
-                  <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider font-mono">FULL GEOGRAPHIC INFORMATION SYSTEM (GIS)</h2>
-                  <p className="text-[10px] text-[#64748B] font-mono mt-0.5">Live tactical map overlay tracking active response units and reported incidents</p>
-                </div>
-                <div className="text-[10px] font-mono bg-[#F8FAFC] border border-[#CBD5E1] px-2.5 py-1 text-[#334155]">
-                  PUNE DISTRICT COORDINATES: 18.5204° N, 73.8567° E
-                </div>
-              </div>
-              <div className="flex-1 relative border border-[#CBD5E1] bg-[#F1F5F9]">
-                <MapView markers={getMapMarkers()} center={[18.5204, 73.8567]} zoom={12} />
-                <MapLegend />
-              </div>
-            </div>
-          )}
+          {/* MAP TAB REMOVED — map remains embedded in overview */}
 
           {/* TAB 3: FULL INCIDENTS LOG */}
           {activeTab === 'incidents' && (
@@ -703,9 +792,18 @@ export default function AuthorityDashboard() {
                   <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider font-mono">EMERGENCY INCIDENT DATABASE</h2>
                   <p className="text-[10px] text-[#64748B] font-mono mt-0.5">District register of reported disasters, emergency events, and response operations</p>
                 </div>
-                <span className="bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] text-[10px] font-mono font-bold px-2.5 py-1">
-                  {incidents.length} TOTAL LOGS
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] text-[10px] font-mono font-bold px-2.5 py-1">
+                    {incidents.length} TOTAL LOGS
+                  </span>
+                  <button
+                    onClick={() => setShowReportModal(true)}
+                    className="flex items-center gap-1.5 bg-[#166534] hover:bg-[#14532D] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 transition-colors cursor-pointer font-mono"
+                  >
+                    <Plus size={12} />
+                    REPORT NEW INCIDENT
+                  </button>
+                </div>
               </div>
 
               {/* Table list */}
@@ -719,7 +817,7 @@ export default function AuthorityDashboard() {
                       <th className="py-2.5 px-3 font-bold">SEVERITY</th>
                       <th className="py-2.5 px-3 font-bold">STATUS</th>
                       <th className="py-2.5 px-3 font-bold">TIME REPORTED</th>
-                      <th className="py-2.5 px-3 font-bold text-right">COMMAND ACTION</th>
+                      <th className="py-2.5 px-3 font-bold text-right">ACTIONS</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E2E8F0]">
@@ -743,13 +841,37 @@ export default function AuthorityDashboard() {
                         <td className="py-3 px-3 text-[#64748B]">
                           {new Date(inc.createdAt).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })}
                         </td>
-                        <td className="py-3 px-3 text-right">
+                        <td className="py-3 px-3 text-right relative">
                           <button
-                            onClick={() => navigate(`/incidents/${inc.id}`)}
-                            className="bg-[#166534] hover:bg-[#14532D] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 transition-colors cursor-pointer font-mono"
+                            onClick={() => setActionMenuId(actionMenuId === inc.id ? null : inc.id)}
+                            className="p-1.5 hover:bg-[#F1F5F9] rounded transition-colors cursor-pointer text-[#64748B] hover:text-[#0F172A]"
                           >
-                            COMMAND CENTER →
+                            <MoreHorizontal size={16} />
                           </button>
+                          {actionMenuId === inc.id && (
+                            <div ref={actionMenuRef} className="absolute right-0 top-full mt-1 z-40 bg-white border border-[#CBD5E1] shadow-lg rounded-md py-1 w-44">
+                              <button
+                                onClick={() => { setActionMenuId(null); navigate(`/incidents/${inc.id}`); }}
+                                className="w-full text-left px-3 py-2 text-xs hover:bg-[#F8FAFC] cursor-pointer flex items-center gap-2 text-[#334155] font-sans"
+                              >
+                                <Eye size={13} className="text-[#64748B]" /> View Details
+                              </button>
+                              {inc.status === 'ACTIVE' && (
+                                <button
+                                  onClick={() => { setActionMenuId(null); setConfirmAction({ type: 'resolve', incident: inc }); }}
+                                  className="w-full text-left px-3 py-2 text-xs hover:bg-[#F0FDF4] cursor-pointer flex items-center gap-2 text-[#166534] font-sans"
+                                >
+                                  <CheckCircle size={13} /> Resolve Incident
+                                </button>
+                              )}
+                              <button
+                                onClick={() => { setActionMenuId(null); setConfirmAction({ type: 'delete', incident: inc }); }}
+                                className="w-full text-left px-3 py-2 text-xs hover:bg-[#FEF2F2] cursor-pointer flex items-center gap-2 text-[#DC2626] font-sans"
+                              >
+                                <Trash2 size={13} /> Remove from Register
+                              </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -757,6 +879,93 @@ export default function AuthorityDashboard() {
                 </table>
               </div>
             </div>
+          )}
+
+          {/* REPORT NEW INCIDENT MODAL */}
+          {showReportModal && (
+            <Modal isOpen={showReportModal} onClose={() => setShowReportModal(false)} title="REPORT NEW INCIDENT" size="md">
+              <form onSubmit={handleReportIncident} className="space-y-4">
+                <FormInput
+                  id="inc-type"
+                  label="Incident Type"
+                  placeholder="e.g. Flood, Landslide, Building Collapse"
+                  value={newIncident.type}
+                  onChange={(e) => setNewIncident(prev => ({ ...prev, type: e.target.value }))}
+                  required
+                />
+                <FormInput
+                  id="inc-location"
+                  label="Location"
+                  placeholder="e.g. Sinhagad Road, Pune"
+                  value={newIncident.location}
+                  onChange={(e) => setNewIncident(prev => ({ ...prev, location: e.target.value }))}
+                  required
+                />
+                <Dropdown
+                  id="inc-severity"
+                  label="Severity Level"
+                  options={['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']}
+                  value={newIncident.severity}
+                  onChange={(value) => setNewIncident(prev => ({ ...prev, severity: value }))}
+                  required
+                />
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-stone-500 block mb-1.5">Description</label>
+                  <textarea
+                    rows={3}
+                    value={newIncident.description}
+                    onChange={(e) => setNewIncident(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Provide incident details, affected area, estimated casualties..."
+                    className="w-full bg-[#F7F5EF] border border-[#E5E7EB] focus:border-[#166534] text-xs rounded-md p-3 text-[#111827] focus:outline-none transition-colors"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-2 border-t border-stone-200">
+                  <button
+                    type="button"
+                    onClick={() => setShowReportModal(false)}
+                    className="px-4 py-2 text-xs font-bold text-[#475569] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] rounded-md transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-xs font-bold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-md transition-colors cursor-pointer"
+                  >
+                    REPORT INCIDENT
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          )}
+
+          {/* CONFIRM RESOLVE / DELETE MODAL */}
+          {confirmAction && (
+            <Modal isOpen={!!confirmAction} onClose={() => setConfirmAction(null)} title={confirmAction.type === 'resolve' ? 'CONFIRM RESOLUTION' : 'CONFIRM REMOVAL'} size="sm">
+              <div className="space-y-4">
+                <p className="text-sm text-[#334155]">
+                  {confirmAction.type === 'resolve'
+                    ? <>Are you sure you want to mark <strong>{confirmAction.incident.type}</strong> at <strong>{confirmAction.incident.location}</strong> as resolved?</>
+                    : <>Are you sure you want to permanently remove <strong>{confirmAction.incident.id}</strong> ({confirmAction.incident.type}) from the incident register? This action cannot be undone.</>
+                  }
+                </p>
+                <div className="flex justify-end gap-3 pt-2 border-t border-stone-200">
+                  <button
+                    onClick={() => setConfirmAction(null)}
+                    className="px-4 py-2 text-xs font-bold text-[#475569] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] rounded-md transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => confirmAction.type === 'resolve' ? handleResolveIncident(confirmAction.incident) : handleDeleteIncident(confirmAction.incident)}
+                    className={`px-4 py-2 text-xs font-bold text-white rounded-md transition-colors cursor-pointer ${
+                      confirmAction.type === 'resolve' ? 'bg-[#166534] hover:bg-[#14532D]' : 'bg-[#DC2626] hover:bg-[#B91C1C]'
+                    }`}
+                  >
+                    {confirmAction.type === 'resolve' ? 'CONFIRM RESOLVE' : 'CONFIRM DELETE'}
+                  </button>
+                </div>
+              </div>
+            </Modal>
           )}
 
           {/* TAB 4: VERIFICATION QUEUE DETAIL */}

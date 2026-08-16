@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, ShieldAlert, ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FormInput from '../components/ui/FormInput';
@@ -8,10 +8,23 @@ import { api } from '../services/api';
 export default function LoginPage() {
   const navigate = useNavigate();
 
+  const [activeRole, setActiveRole] = useState('district_eoc');
   const [email, setEmail] = useState('collector.pune@gmail.com');
   const [password, setPassword] = useState('123456');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleTabChange = (role) => {
+    setActiveRole(role);
+    setError('');
+    if (role === 'district_eoc') {
+      setEmail('collector.pune@gmail.com');
+      setPassword('123456');
+    } else {
+      setEmail('agency@samanvay.gov.in');
+      setPassword('password123');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +32,7 @@ export default function LoginPage() {
     setError('');
     
     try {
-      const res = await api.auth.login({ email, password });
+      const res = await api.auth.login({ email, password, role: activeRole });
       setLoading(false);
       
       if (res?.success && res?.user) {
@@ -85,9 +98,35 @@ export default function LoginPage() {
             <span className="text-base font-extrabold tracking-wide text-[#111827]">SAMANVAY</span>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4">
             <h3 className="text-2xl font-extrabold text-[#111827] tracking-tight">Portal Sign In</h3>
-            <p className="text-xs text-[#64748B] mt-1">Enter official credentials to access operational dashboard.</p>
+            <p className="text-xs text-[#64748B] mt-1">Select role and enter official credentials to access operational dashboard.</p>
+          </div>
+
+          {/* Role Tabs */}
+          <div className="flex border-b border-[#E5E7EB] mb-6">
+            <button
+              type="button"
+              onClick={() => handleTabChange('district_eoc')}
+              className={`flex-1 text-center py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
+                activeRole === 'district_eoc'
+                  ? 'border-[#166534] text-[#166534]'
+                  : 'border-transparent text-[#64748B] hover:text-[#111827]'
+              }`}
+            >
+              District EOC
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('agency_admin')}
+              className={`flex-1 text-center py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
+                activeRole === 'agency_admin'
+                  ? 'border-[#166534] text-[#166534]'
+                  : 'border-transparent text-[#64748B] hover:text-[#111827]'
+              }`}
+            >
+              Rescue Agency
+            </button>
           </div>
 
           {error && (
@@ -103,9 +142,9 @@ export default function LoginPage() {
             {/* Email Field */}
             <FormInput
               id="login-email"
-              label="Official Email Address"
+              label={activeRole === 'district_eoc' ? "EMAIL ADDRESS" : "Official Email Address"}
               type="email"
-              placeholder="collector.pune@gmail.com"
+              placeholder={activeRole === 'district_eoc' ? "Enter your email address" : "agency@samanvay.gov.in"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -143,6 +182,15 @@ export default function LoginPage() {
               {!loading && <ArrowRight size={16} />}
             </button>
           </form>
+
+          {activeRole === 'agency_admin' && (
+            <div className="mt-6 text-center text-xs text-[#64748B] border-t border-[#E5E7EB] pt-4">
+              New rescue agency applying for verification?{' '}
+              <Link to="/register-agency" className="text-[#166534] font-bold hover:underline">
+                Register Rescue Agency →
+              </Link>
+            </div>
+          )}
 
         </div>
       </div>

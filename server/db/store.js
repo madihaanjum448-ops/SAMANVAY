@@ -28,12 +28,13 @@ class DataStore {
         {
           id: 'USR-001',
           name: 'Priya Desai (EOC Officer)',
-          email: 'eoc@samanvay.gov.in',
-          password: 'password123',
+          email: 'collector.pune@gmail.com',
+          password: '123456',
           role: 'district_eoc',
           district: 'Pune',
           state: 'Maharashtra',
-          jurisdiction: 'Pune District'
+          jurisdiction: 'Pune District',
+          status: 'active'
         },
         {
           id: 'USR-002',
@@ -91,7 +92,80 @@ class DataStore {
       this.data.notifications = [...INITIAL_NOTIFICATIONS];
       await this.persist();
     }
+    this.ensureDemoUsers();
     this.initialized = true;
+  }
+
+  ensureDemoUsers() {
+    const demoUsers = [
+      {
+        id: 'USR-001',
+        name: 'Priya Desai (EOC Officer)',
+        email: 'collector.pune@gmail.com',
+        password: '123456',
+        role: 'district_eoc',
+        district: 'Pune',
+        state: 'Maharashtra',
+        jurisdiction: 'Pune District',
+        status: 'active'
+      },
+      {
+        id: 'USR-002',
+        name: 'Capt. Rajesh V. (SDRF Commander)',
+        email: 'agency@samanvay.gov.in',
+        password: 'password123',
+        role: 'agency_admin',
+        agencyId: 'AG-002',
+        district: 'Pune',
+        state: 'Maharashtra',
+        jurisdiction: 'Pune District',
+        status: 'active'
+      },
+      {
+        id: 'USR-003',
+        name: 'Shri A. K. Sharma (State Director)',
+        email: 'state@samanvay.gov.in',
+        password: 'password123',
+        role: 'state_authority',
+        scope: 'state',
+        state: 'Maharashtra',
+        district: '',
+        jurisdiction: 'Maharashtra State',
+        status: 'active'
+      },
+      {
+        id: 'USR-004',
+        name: 'Dr. N. G. Rao (National Chairman)',
+        email: 'national@samanvay.gov.in',
+        password: 'password123',
+        role: 'state_authority',
+        scope: 'national',
+        state: '',
+        district: '',
+        jurisdiction: 'National EOC',
+        status: 'active'
+      }
+    ];
+
+    if (!Array.isArray(this.data.users)) {
+      this.data.users = [];
+    }
+
+    let changed = false;
+    for (const demo of demoUsers) {
+      const idx = this.data.users.findIndex(u => u.email === demo.email);
+      if (idx >= 0) {
+        this.data.users[idx] = { ...this.data.users[idx], ...demo };
+        changed = true;
+      } else {
+        this.data.users.push(demo);
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      this.persist();
+    }
   }
 
   async persist() {
@@ -307,29 +381,96 @@ class DataStore {
     return this.data.incidents.find(i => i.id === id);
   }
 
+  generateIncidentId() {
+    const maxNum = this.data.incidents.reduce((max, inc) => {
+      const num = parseInt(String(inc.id).replace('INC-', ''), 10);
+      return Number.isFinite(num) && num > max ? num : max;
+    }, 0);
+    return `INC-${String(maxNum + 1).padStart(3, '0')}`;
+  }
+
   async addIncident(incPayload) {
-    const id = incPayload.id || `INC-${String(this.data.incidents.length + 1).padStart(3, '0')}`;
+    const id = incPayload.id || this.generateIncidentId();
+    const now = new Date();
     const newIncident = {
       ...incPayload,
       id,
-      status: 'ACTIVE',
-      createdAt: new Date().toISOString(),
+      status: incPayload.status || 'ACTIVE',
+      state: incPayload.state || 'Maharashtra',
+      district: incPayload.district || 'Pune',
+      reportedBy: incPayload.reportedBy || 'District EOC',
+      reportedAt: incPayload.reportedAt || now.toISOString(),
+      createdAt: incPayload.createdAt || now.toISOString(),
+      resolvedAt: null,
+      coordinates: incPayload.coordinates || [18.5204, 73.8567],
+      assignedAgencies: incPayload.assignedAgencies || [],
       timeline: [
-        { time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), event: 'Incident Reported', status: 'done', actor: 'EOC' }
+        {
+          time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          event: 'Incident Reported',
+          status: 'done',
+          actor: incPayload.reportedBy || 'District EOC'
+        }
       ]
     };
     this.data.incidents.unshift(newIncident);
 
     this.addActivity({
       type: 'incident',
-      action: `Incident ${newIncident.severity} Reported`,
-      detail: `${newIncident.type} at ${newIncident.location}`,
-      actor: 'Emergency Control Room',
-      severity: newIncident.severity
+      action: 'Incident Reported',
+      detail: `Incident ${id} reported — ${newIncident.type} at ${newIncident.location}`,
+      actor: newIncident.reportedBy,
+      severity: newIncident.severity,
+      incidentId: id
     });
 
     await this.persist();
     return newIncident;
+  }
+
+  async resolveIncident(id, actor = 'District EOC') {
+    const incident = this.getIncidentById(id);
+    if (!incident) return null;
+
+    const now = new Date();
+    incident.status = 'RESOLVED';
+    incident.resolvedAt = now.toISOString();
+    incident.timeline = incident.timeline || [];
+    incident.timeline.push({
+      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      event: 'Incident Resolved',
+      status: 'done',
+      actor
+    });
+
+    this.addActivity({
+      type: 'incident',
+      action: 'Incident Resolved',
+      detail: `Incident ${id} marked as resolved`,
+      actor,
+      incidentId: id
+    });
+
+    await this.persist();
+    return incident;
+  }
+
+  async deleteIncident(id, actor = 'District EOC') {
+    const idx = this.data.incidents.findIndex(i => i.id === id);
+    if (idx === -1) return null;
+
+    const [removed] = this.data.incidents.splice(idx, 1);
+
+    this.addActivity({
+      type: 'incident',
+      action: 'Incident Removed',
+      detail: `Incident ${id} removed from incident database`,
+      actor,
+      incidentId: id
+    });
+
+    await this.persist();
+    return removed;
   }
 
   // --- RESOURCES & AUDIT LOGS ---
@@ -346,9 +487,11 @@ class DataStore {
   }
 
   addActivity(item) {
+    const now = new Date();
     this.data.activity.unshift({
       id: Date.now() + Math.random(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: item.timestamp || now.toISOString(),
       ...item
     });
   }
